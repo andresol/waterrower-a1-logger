@@ -1,0 +1,25 @@
+{
+  "name": "waterrower-a1-logger",
+  "version": "0.0.1",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [
+    "waterrower",
+    "a1",
+    "node",
+    "express",
+    "raspberry pi"
+  ],
+  "author": "Andre Sollie",
+  "license": "MIT",
+  "dependencies": {
+    "debounce": "^1.1.0",
+    "express": "^4.16.2",
+    "onoff": "^1.1.9"
+  },
+  "devDependencies": {
+    "pi-gpio": "0.0.8"
+  }
+}
