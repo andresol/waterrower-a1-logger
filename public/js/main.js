@@ -6,7 +6,7 @@ $(document).ready(function(){
         e.preventDefault();
         var feedbackJson = $.ajax({
             type: "get",
-            url: "/row/simulate",
+            url: "/row/start",
             async: false
         }).responseText;
         get_rowInfo()
