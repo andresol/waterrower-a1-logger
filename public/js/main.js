@@ -13,6 +13,17 @@ $(document).ready(function(){
         intervallId  = setInterval(get_rowInfo, 10000);
     })
 
+    $('#startSimulator').click(function (e) {
+        e.preventDefault();
+        var feedbackJson = $.ajax({
+            type: "get",
+            url: "/row/simulate",
+            async: false
+        }).responseText;
+        get_rowInfo()
+        intervallId  = setInterval(get_rowInfo, 10000);
+    })
+
     $('#stopRow').click(function (e) {
         e.preventDefault();
         clearInterval(intervallId)
@@ -55,9 +66,8 @@ function getHtml(label, feedbackJson) {
                             lap += "<span>" + key2 + ": " + value[key2] + "</span> ";
                         }
                     }
-                    html += "<div>" + key + ": " + lap + "</div>";
-                })
-
+                });
+                html += "<div>" + key + ": " + lap + "</div>";
             } else {
                 html += "<div>" + key + ": " + json[key] + "</div>";
             }

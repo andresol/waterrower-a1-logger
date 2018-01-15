@@ -1,5 +1,6 @@
 
 var Gpio = require('onoff').Gpio;
+var dateFormat = require('dateformat');
 var debounce = require('debounce');
 var createGpx = require('gps-to-gpx');
 var LatLon = require('geodesy').LatLonVectors
@@ -63,7 +64,7 @@ RowSession.prototype.laps = function () {
         var endTime = this.raw[endIndex];
         var seconds = ((endTime - startTime) / 1000);
         var wattValue = watt(seconds/lapSize);
-        laps.push({start: startTime, end: endTime, meters: lapSize, seconds: seconds, watt: wattValue});
+        laps.push({start: dateFormat(startTime, "isoDateTime"), end: dateFormat(endTime, "isoDateTime"), meters: lapSize, seconds: seconds, watt: wattValue});
     }
     return laps;
 }
@@ -107,7 +108,7 @@ RowSession.prototype.stats = function() {
     stats.length = this.getTotalLength();
     stats.meters = this.totalInMeters();
     stats.seconds = this.totalTimeInSec();
-    stats.start = this.start;
+    stats.start = dateFormat(this.start, "isoDateTime");
     stats.pace = this.meterPerSeconds();
     stats.lapPace = this.fiveHundrePace();
     stats.towKPace = this.twoKPace();
