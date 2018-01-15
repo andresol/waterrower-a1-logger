@@ -1,5 +1,5 @@
 
-//var Gpio = require('onoff').Gpio;
+var Gpio = require('onoff').Gpio;
 var debounce = require('debounce');
 var createGpx = require('gps-to-gpx');
 var LatLon = require('geodesy').LatLonVectors
