@@ -17,6 +17,8 @@
   "dependencies": {
     "debounce": "^1.1.0",
     "express": "^4.16.2",
+    "geodesy": "^1.1.2",
+    "gps-to-gpx": "^1.1.0",
     "onoff": "^1.1.9"
   },
   "devDependencies": {
