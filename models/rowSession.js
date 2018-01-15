@@ -1,6 +1,8 @@
 
-var Gpio = require('onoff').Gpio;
+//var Gpio = require('onoff').Gpio;
 var debounce = require('debounce');
+var createGpx = require('gps-to-gpx');
+var LatLon = require('geodesy').LatLonVectors
 
 const RATION = 100 / 4.805; // 100 cm is 4.805 clicks. About 20.81 cm.
 const PID = 4;
@@ -73,7 +75,7 @@ RowSession.prototype.increment = function() {
     }
 };
 
-RowSession.prototype.start = function() {
+RowSession.prototype.startRow = function() {
     sensor = new Gpio(PID, 'in', 'falling');
     var that = this;
     sensor.watch(function (err, value) {
@@ -139,6 +141,17 @@ RowSession.prototype.twoKPace = function () {
     return 2000 / this.meterPerSeconds();
 }
 
+RowSession.prototype.gpxFile = function () {
+    var wayPoints = [];
+    for (var i = 0; i < this.raw.length; i++) {
+
+    }
+    return createGpx(waypoints, {
+        activityName: "ROWING",
+        startTime: this.start,
+    });
+}
+
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
@@ -155,7 +168,6 @@ function getClicksByMeters(meters) {
 function watt(pace) {
     return WATT_RATION / Math.pow(pace, 3);
 }
-
 
 // export the class
 module.exports = RowSession;
