@@ -3,76 +3,67 @@ $(document).ready(function(){
     var intervallId;
     var timeOut;
     $('#startRow').click(function (e) {
-        e.preventDefault();
-        var feedbackJson = $.ajax({
-            type: "get",
-            url: "/row/start",
-            async: false
-        }).responseText;
-        get_rowInfo()
-        intervallId  = setInterval(get_rowInfo, 10000);
+        $.get( "/row/start", function() {
+            get_rowInfo();
+            intervallId  = setInterval(get_rowInfo, 3000);
+        });
     })
 
     $('#startSimulator').click(function (e) {
         e.preventDefault();
-        var feedbackJson = $.ajax({
-            type: "get",
-            url: "/row/simulate",
-            async: false
-        }).responseText;
-        get_rowInfo()
-        intervallId  = setInterval(get_rowInfo, 10000);
+        $.get("/row/simulate", function() {
+            get_rowInfo();
+            intervallId  = setInterval(get_rowInfo, 3000);
+        });
     })
 
     $('#stopRow').click(function (e) {
         e.preventDefault();
         clearInterval(intervallId)
         clearTimeout(timeOut);
-        var feedbackJson = $.ajax({
-            type: "get",
-            url: "/row/stop",
-            async: false
-        }).responseText;
-
-        $('#table-result').html(getHtml("STOPPED", feedbackJson));
+        $.get( "/row/stop", function(data) {
+            $('#table-result').html(getHtml("STOPPED", data));
+        });
     })
-
-
 });
 
 function get_rowInfo(){
-    var feedbackJson = $.ajax({
-        type: "get",
-        url: "/row",
-        async: false
-    }).complete(function(){
-        setTimeout(function(){get_rowInfo();}, 10000);
-    }).responseText;
-
-    $('#table-content').html(getHtml("ROWING", feedbackJson));
+    $.get( "/row", function(data) {
+        $('#table-content').html(getHtml("ROWING", data));
+    }).done(function(){
+        setTimeout(function(){get_rowInfo();}, 3000);
+    });
 }
 
-function getHtml(label, feedbackJson) {
-    var json = JSON.parse(feedbackJson);
-    var html = "<div><h2>" + label +"</h2>";
-    for (var key in json) {
-        if (json.hasOwnProperty(key)) {
-            if (Array.isArray(json[key]) ) {
-                var lap = "";
-                var lapArray = json[key];
-                lapArray.forEach(function (value) {
-                    for (var key2 in value) {
-                        if (value.hasOwnProperty(key2)) {
-                            lap += "<span>" + key2 + ": " + value[key2] + "</span> ";
-                        }
-                    }
-                });
-                html += "<div>" + key + ": " + lap + "</div>";
-            } else {
-                html += "<div>" + key + ": " + json[key] + "</div>";
-            }
+function fmtMSS(s){
+    var date = new Date(null);
+    date.setSeconds(s); // specify value for SECONDS here
+    return date.toISOString().substr(11, 8);
+}
 
-        }
+function getHtml(label, json) {
+    if (parseInt(json.meters) === 0) {
+        return "<div class='col'><div class='row'><h2>NOT ROWING</h2></div></div>";
+    }
+    var html = "<div class='col'><div class='row'><h2>" + label +"</h2></div>";
+    html += '<div class="row">Start: ' + json.start +'</div>';
+    html += '<div class="row">Tid: ' + fmtMSS(parseInt(json.seconds)) +'</div>';
+    html += '<div class="row">Lengde: ' + parseInt(json.meters) +' m</div>';
+    html += '<div class="row">Pace: ' + Math.round( parseFloat(json.pace) * 3.6 * 10) / 10 +' km/t</div>';
+    html += '<div class="row">500m: ' + fmtMSS(parseInt(json.lapPace)) +'</div>';
+    html += '<div class="row">2k: ' + fmtMSS(parseInt(json.towKPace)) +'</div>';
+    html += '<div class="row">Avg. watt: ' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div>';
+    if (parseInt(json.totalLaps) > 0) {
+        html += '<div class="table-responsive"> <table class="table"><thead><tr><th>#</th><th>Meter</th><th>Tid:</th><th>Watt</th>';
+        html += '</tr></thead><tbody>';
+        var lapNum = 1;
+        json.laps.forEach(function (value) {
+            html += '<tr><th scope="row">' + lapNum + '</th><td>'+ parseInt(value.meters)+ '</td><td>'+ fmtMSS(parseInt(value.seconds)) +'</td>';
+            html += '<td>' + Math.round( parseFloat(value.watt)* 10) / 10 +'w</td></tr>';
+            lapNum++;
+            }
+        );
+        html += "</tbody></table></div>"
     }
     return html + "</div>"
 
