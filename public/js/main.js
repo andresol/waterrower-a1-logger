@@ -1,11 +1,13 @@
 $(document).ready(function(){
     get_rowInfo();
+    const UPDATE_FREQ = 5000;
     var intervallId;
     var timeOut;
     $('#startRow').click(function (e) {
+        e.preventDefault();
         $.get( "/row/start", function() {
             get_rowInfo();
-            intervallId  = setInterval(get_rowInfo, 3000);
+            intervallId  = setInterval(get_rowInfo, UPDATE_FREQ);
         });
     })
 
@@ -13,7 +15,7 @@ $(document).ready(function(){
         e.preventDefault();
         $.get("/row/simulate", function() {
             get_rowInfo();
-            intervallId  = setInterval(get_rowInfo, 3000);
+            intervallId  = setInterval(get_rowInfo, UPDATE_FREQ);
         });
     })
 
@@ -31,7 +33,7 @@ function get_rowInfo(){
     $.get( "/row", function(data) {
         $('#table-content').html(getHtml("ROWING", data));
     }).done(function(){
-        setTimeout(function(){get_rowInfo();}, 3000);
+        setTimeout(function(){get_rowInfo();}, UPDATE_FREQ);
     });
 }
 
