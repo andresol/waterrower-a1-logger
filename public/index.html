@@ -8,41 +8,40 @@
     <link href="/css/main.css"
           rel="stylesheet"/>
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
 
 </head>
 <body>
-<div class="container theme-showcase" role="main">
-    <div class="page-header">
-        <h1>Start</h1>
+<div class="container">
+    <header class="header clearfix">
+        <h3 class="text-muted">Waterrower A1</h3>
+    </header>
+
+    <div class="row">
+      <div class="col">
+            <button id="startRow" type="button" class="btn btn-lg btn-primary">Start row</button>
+            <button id="startSimulator" type="button" class="btn btn-lg btn-info">Start simulator</button>
+            <button id="stopRow" type="button" class="btn btn-lg btn-secondary">Stop row</button>
+        </div>
     </div>
-    <p>
-        <button id="startRow" type="button" class="btn btn-lg btn-default">Start row</button>
-        <button id="startSimulator" type="button" class="btn btn-lg btn-default">Start simulator</button>
-        <button id="stopRow" type="button" class="btn btn-lg btn-default">Stop row</button>
-    </p>
-    <div>
-        <div class="row">
-            <div class="col-md-6">
-                <h2>Row stats</h2>
-               <div id ="table-content"></div>
-            </div>
-            <div class="col-md-6">
-                <h2>Row Result</h2>
-                <div id ="table-result"></div>
-            </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Row stats</h2>
+            <div class="row" id ="table-content"></div>
+        </div>
+        <div class="col-md-6">
+            <h2>Row Result</h2>
+            <div class="row" id ="table-result"></div>
         </div>
     </div>
 </div>
 <!-- Latest compiled and minified JavaScript -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
 
 <!-- Latest compiled and minified JavaScript -->
-    <script src="/js/main.js"></script>
+<script src="/js/main.js"></script>
 </body>
 </html>
