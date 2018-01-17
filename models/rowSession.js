@@ -1,4 +1,8 @@
+try {
 var Gpio = require('onoff').Gpio;
+} catch (e) {
+    console.log("GPIO not supported.")
+}
 var dateFormat = require('dateformat');
 var debounce = require('debounce');
 var createGpx = require('gps-to-gpx');

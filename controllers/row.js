@@ -31,8 +31,10 @@ router.get('/stop', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     session.stop();
     var gpxFile = new GpxFile(session);
-    gpxFile.createFile();
-    res.send(JSON.stringify(session.stats(), null, 3));
+    var fileName = gpxFile.createFile();
+    var stats = session.stats();
+    stats.fileName = fileName;
+    res.send(JSON.stringify(stats, null, 3));
     session = NOT_ROWING;
 })
 

@@ -24,16 +24,19 @@ $(document).ready(function(){
         clearInterval(intervallId)
         clearTimeout(timeOut);
         $.get( "/row/stop", function(data) {
-            $('#table-result').html(getHtml("STOPPED", data));
+            $('#table-content').html(getHtml("STOPPED", data));
         });
     })
 });
 
 function get_rowInfo(){
     $.get( "/row", function(data) {
-        $('#table-content').html(getHtml("ROWING", data));
+            var html = getHtml("ROWING", data);
+            if (html) {
+                $('#table-content').html(html);
+            }
     }).done(function(){
-        setTimeout(function(){get_rowInfo();}, UPDATE_FREQ);
+        this.timeOut = setTimeout(function(){get_rowInfo();}, UPDATE_FREQ);
     });
 }
 
@@ -45,7 +48,7 @@ function fmtMSS(s){
 
 function getHtml(label, json) {
     if (parseInt(json.meters) === 0) {
-        return "<div class='col'><div class='row'><h2>NOT ROWING</h2></div></div>";
+        return ;//"<div class='col'><div class='row'><h2>NOT ROWING</h2></div></div>";
     }
     var html = "<div class='col'><div class='row'><h2>" + label +"</h2></div>";
     html += '<div class="row">Start: ' + json.start +'</div>';
@@ -55,6 +58,9 @@ function getHtml(label, json) {
     html += '<div class="row">500m: ' + fmtMSS(parseInt(json.lapPace)) +'</div>';
     html += '<div class="row">2k: ' + fmtMSS(parseInt(json.towKPace)) +'</div>';
     html += '<div class="row">Avg. watt: ' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div>';
+    if(json.fileName) {
+        html += '<div class="row"><a href="/session/' + json.fileName + '">' + json.fileName+ '</a></div>';
+    }
     if (parseInt(json.totalLaps) > 0) {
         html += '<div class="table-responsive"> <table class="table"><thead><tr><th>#</th><th>Meter</th><th>Tid:</th><th>Watt</th>';
         html += '</tr></thead><tbody>';

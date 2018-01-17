@@ -13,10 +13,14 @@
 </head>
 <body>
 <div class="container">
-    <header class="header clearfix">
-        <h3 class="text-muted">Waterrower A1</h3>
-    </header>
 
+    <div class="row">
+        <div class="col">
+            <header class="header clearfix">
+                <h3 class="text-muted">Waterrower A1</h3>
+            </header>
+        </div>
+    </div>
     <div class="row">
       <div class="col">
             <button id="startRow" type="button" class="btn btn-lg btn-primary">Start row</button>
@@ -26,13 +30,12 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col">
             <h2>Row stats</h2>
-            <div class="row" id ="table-content"></div>
-        </div>
-        <div class="col-md-6">
-            <h2>Row Result</h2>
-            <div class="row" id ="table-result"></div>
+            <div class="row">
+                <div class ="col" id ="table-content">
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -1,14 +1,17 @@
 
 var LatLon = require('geodesy').LatLonVectors;
 var fs = require('fs');
+var path = require("path");
 var builder = require('xmlbuilder');
 var RowSession = require('../models/rowSession');
+var Route = require('../models/route');
 
 const METER_RATION = (100 / 4.805);
 
 function GpxFile(rowSession) {
     this.rowSession = rowSession;
     this.start = new LatLon(59.884932, 10.760809);
+    this.route = new Route();
 }
 
 GpxFile.prototype.createFile = function() {
@@ -24,7 +27,7 @@ GpxFile.prototype.createFile = function() {
     };
 
     var trackPoints = [];
-    var p = this.start;
+    var p = null;
     var skip = 5;
     if (this.rowSession.raw.length < 30) {
         skip = 1;
@@ -32,22 +35,23 @@ GpxFile.prototype.createFile = function() {
     for (var i = 0; i < this.rowSession.raw.length; i = i + skip) {
         var rawTime = new Date(this.rowSession.raw[i]);
         var distance = RowSession.prototype.getLengthInMetersByClicks(skip * 6); //6 click per raw.
-        p = p.destinationPoint(distance.toFixed(4), 0, 6362170);
+        p = this.route.nextPoint(p, distance.toFixed(4));//p.destinationPoint(distance.toFixed(4), 0, 6362170);
         var trackPoint = {
             '@lat': p.lat.toFixed(7),
             '@lon': p.lon.toFixed(7),
             ele: 0,
-            time: rawTime.toISOString(),
+            time: rawTime.toISOString()
         };
         trackPoints.push(trackPoint);
     }
 
     object.trk.trkseg.trkpt = trackPoints;
-
-
     root.ele(object);
     //console.log(root.end(({ pretty: true})));
-    this.writeFile(__dirname +'/../public/sessions/' + object.trk.name +".gpx", root.end(({ pretty: true})));
+    var filePath = path.sep +'..' + path.sep +'public' + path.sep +
+        'sessions'+ path.sep + object.trk.name +".gpx";
+    this.writeFile(__dirname + filePath , root.end(({ pretty: true})));
+    return object.trk.name +".gpx";
 };
 
 GpxFile.prototype.writeFile = function (path, data) {
