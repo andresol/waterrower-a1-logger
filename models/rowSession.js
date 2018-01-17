@@ -1,15 +1,13 @@
-
 var Gpio = require('onoff').Gpio;
 var dateFormat = require('dateformat');
 var debounce = require('debounce');
 var createGpx = require('gps-to-gpx');
-var LatLon = require('geodesy').LatLonVectors
 
 const RATION = 100 / 4.805; // 100 cm is 4.805 clicks. About 20.81 cm.
 const PID = 4;
-const DEBOUCE_TIME = 5; // 5ms
+const DEBOUNCE_TIME = 5; // 5ms
 const SAMPLE_SIZE = 6;
-const WATT_RATION = 2.80
+const WATT_RATION = 2.80;
 
 var sensor;
 var runSimulator = false;
@@ -42,7 +40,7 @@ RowSession.prototype.simulate = function() {
 };
 
 RowSession.prototype.increase = function() {
-    debounce(this.increment(), DEBOUCE_TIME);
+    debounce(this.increment(), DEBOUNCE_TIME);
 };
 
 RowSession.prototype.totalLaps = function () {
@@ -66,6 +64,7 @@ RowSession.prototype.laps = function () {
         var wattValue = watt(seconds/lapSize);
         laps.push({start: dateFormat(startTime, "isoDateTime"), end: dateFormat(endTime, "isoDateTime"), meters: lapSize, seconds: seconds, watt: wattValue});
     }
+
     return laps;
 }
 
@@ -93,15 +92,23 @@ RowSession.prototype.stop = function() {
     if (sensor) {
         sensor.unexport();
     }
-
     if (runSimulator) {
         runSimulator = false;
     }
-}
+
+};
 
 RowSession.prototype.getTotalLength = function() {
     return this.counter * RATION;
-}
+};
+
+RowSession.prototype.getLengthByClicks = function(clicks) {
+    return clicks * RATION;
+};
+
+RowSession.prototype.getLengthInMetersByClicks = function(clicks) {
+    return this.getLengthByClicks(clicks) / 100;
+};
 
 RowSession.prototype.stats = function() {
     var stats = {};
