@@ -86,7 +86,7 @@ RowSession.prototype.startRow = function() {
         if (err) {
             throw err;
         }
-        console.log("Registered event. " + value);
+        //console.log("Registered event. " + value);
         that.increase()
     });
 };
