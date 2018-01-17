@@ -1,6 +1,6 @@
 $(document).ready(function(){
     get_rowInfo();
-    const UPDATE_FREQ = 5000;
+    const UPDATE_FREQ = 1000;
     var intervallId;
     var timeOut;
     $('#startRow').click(function (e) {
