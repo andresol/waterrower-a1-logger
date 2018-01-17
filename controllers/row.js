@@ -15,27 +15,33 @@ router.get('/', function(req, res) {
 
 router.get('/start', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    session = new RowSession("ROWING");
-    session.startRow();
+    if (session === NOT_ROWING) {
+        session = new RowSession("ROWING");
+        session.startRow();
+    }
     res.send(JSON.stringify(session, null, 3));
 })
 
 router.get('/simulate', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    session = new RowSession("ROWING");
-    session.simulate();
+    if (session === NOT_ROWING) {
+        session = new RowSession("ROWING");
+        session.simulate();
+    }
     res.send(JSON.stringify(session, null, 3));
 })
 
 router.get('/stop', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    session.stop();
-    var gpxFile = new GpxFile(session);
-    var fileName = gpxFile.createFile();
-    var stats = session.stats();
-    stats.fileName = fileName;
-    res.send(JSON.stringify(stats, null, 3));
-    session = NOT_ROWING;
+    if (session !== NOT_ROWING) {
+        session.stop();
+        var gpxFile = new GpxFile(session);
+        var fileName = gpxFile.createFile();
+        var stats = session.stats();
+        stats.fileName = fileName;
+        res.send(JSON.stringify(stats, null, 3));
+        session = NOT_ROWING;
+    }
 })
 
 router.get('/stop/strava', function(req, res) {
