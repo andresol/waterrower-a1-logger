@@ -20,7 +20,8 @@
     "express": "^4.16.2",
     "geodesy": "^1.1.2",
     "gps-to-gpx": "^1.1.0",
-    "onoff": "^1.1.9"
+    "onoff": "^1.1.9",
+    "xmlbuilder": "^9.0.4"
   },
   "devDependencies": {
     "pi-gpio": "0.0.8"

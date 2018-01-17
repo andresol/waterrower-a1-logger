@@ -1,8 +1,10 @@
 var express = require('express'),
     router = express.Router(),
-    RowSession = require('../models/rowSession')
+    RowSession = require('../models/rowSession'),
+    GpxFile = require('../helpers/gpxFile')
+    TcxFile = require('../helpers/tcxFile');
 
-const NOT_ROWING = new RowSession("NOT_ROWING")
+const NOT_ROWING = new RowSession("NOT_ROWING");
 
 var session = NOT_ROWING;
 
@@ -28,6 +30,8 @@ router.get('/simulate', function(req, res) {
 router.get('/stop', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     session.stop();
+    var gpxFile = new GpxFile(session);
+    gpxFile.createFile();
     res.send(JSON.stringify(session.stats(), null, 3));
     session = NOT_ROWING;
 })
@@ -39,4 +43,4 @@ router.get('/stop/strava', function(req, res) {
     session = NOT_ROWING;
 })
 
-module.exports = router
+module.exports = router;
