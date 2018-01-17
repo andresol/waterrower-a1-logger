@@ -1,5 +1,10 @@
 $(document).ready(function(){
     get_rowInfo();
+    //ugly ulgy
+    var test = getUrlParameter("test");
+    if (test) {
+        $('#startSimulator').removeClass("invisible");
+    }
     const UPDATE_FREQ = 1000;
     var intervallId;
     var timeOut;
@@ -74,5 +79,19 @@ function getHtml(label, json) {
         html += "</tbody></table></div>"
     }
     return html + "</div>"
-
 }
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
