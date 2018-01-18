@@ -4,14 +4,13 @@ var fs = require('fs');
 var path = require("path");
 var builder = require('xmlbuilder');
 var RowSession = require('../models/rowSession');
-var Route = require('../models/route');
+var sanitize = require("sanitize-filename");
 
 const METER_RATION = (100 / 4.805);
 
-function GpxFile(rowSession) {
+function GpxFile(rowSession, route ) {
     this.rowSession = rowSession;
-    this.start = new LatLon(59.884932, 10.760809);
-    this.route = new Route();
+    this.route = route;
 }
 
 GpxFile.prototype.createFile = function() {
@@ -48,11 +47,12 @@ GpxFile.prototype.createFile = function() {
     object.trk.trkseg.trkpt = trackPoints;
     root.ele(object);
     //console.log(root.end(({ pretty: true})));
-    var filePath = path.sep +'..' + path.sep +'public' + path.sep +
-        'sessions'+ path.sep + object.trk.name +".gpx";
-    this.writeFile(__dirname + filePath , root.end(({ pretty: true})));
-    return object.trk.name +".gpx";
+    var filePath = path.sep + '..' + path.sep + 'public' + path.sep +
+        'sessions' + path.sep + sanitize(object.trk.name) +".gpx";
+    this.writeFile(__dirname  + filePath , root.end(({ pretty: true})));
+    return sanitize(object.trk.name +".gpx");
 };
+
 
 GpxFile.prototype.writeFile = function (path, data) {
     fs.writeFile(path, data, function(err) {

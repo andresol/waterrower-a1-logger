@@ -55,7 +55,7 @@ function getHtml(label, json) {
     if (parseInt(json.meters) === 0) {
         return ;//"<div class='col'><div class='row'><h2>NOT ROWING</h2></div></div>";
     }
-    var html = "<div class='col'><div class='row'><h2>" + label +"</h2></div>";
+    var html = "<div class='container'><div class='row'><h2>" + label +"</h2></div>";
     html += '<div class="row">Start: ' + json.start +'</div>';
     html += '<div class="row">Tid: ' + fmtMSS(parseInt(json.seconds)) +'</div>';
     html += '<div class="row">Lengde: ' + parseInt(json.meters) +' m</div>';
@@ -67,7 +67,7 @@ function getHtml(label, json) {
         html += '<div class="row"><a href="/sessions/' + json.fileName + '">' + json.fileName+ '</a></div>';
     }
     if (parseInt(json.totalLaps) > 0) {
-        html += '<div class="table-responsive"> <table class="table"><thead><tr><th>#</th><th>Meter</th><th>Tid:</th><th>Watt</th>';
+        html += '<div class="row"><div class="table-responsive"> <table class="table"><thead><tr><th>#</th><th>Meter</th><th>Tid:</th><th>Watt</th>';
         html += '</tr></thead><tbody>';
         var lapNum = 1;
         json.laps.forEach(function (value) {
@@ -76,7 +76,7 @@ function getHtml(label, json) {
             lapNum++;
             }
         );
-        html += "</tbody></table></div>"
+        html += "</tbody></table></div></div>"
     }
     return html + "</div>"
 }
