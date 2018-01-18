@@ -4,7 +4,7 @@ pace, lenght, time and laps.
 
 It now supports gpx. After a rowing session one can import the gpx file into
 e.g strava.
-![strava](https://raw.githubusercontent.com/andresol/waterrower-a1-logger/master/strava.png)
+![strava](https://raw.githubusercontent.com/andresol/waterrower-a1-logger/raw/master/strava.png)
 
 ##Getting Started
 Obviously the WaterRower A1 is needed. I also recommend a 2 EL Wire Splitter Cable and a rasberry pi. Please 
@@ -26,7 +26,7 @@ node app.js
 After starting the app one can go to the web page..
 Start so a activity. 
 
-![web-gui](https://raw.githubusercontent.com/andresol/waterrower-a1-logger/master/web-gui.png)
+![web-gui](https://raw.githubusercontent.com/andresol/waterrower-a1-logger/raw/master/web-gui.png)
 
 ##TODO
 A lot of GUI. Automatic import into strava, live map.
