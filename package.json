@@ -22,6 +22,7 @@
     "gps-to-gpx": "^1.1.0",
     "level": "^2.1.1",
     "onoff": "^1.1.9",
+    "sanitize-filename": "^1.6.1",
     "xmlbuilder": "^9.0.4"
   },
   "devDependencies": {
