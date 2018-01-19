@@ -13,7 +13,12 @@ var session = NOT_ROWING;
 router.get('/', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(session.stats(), null, 3));
-})
+});
+
+router.get('/routes', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(Routes.routes, null, 3));
+});
 
 router.get('/start', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
@@ -22,7 +27,7 @@ router.get('/start', function(req, res) {
         session.startRow();
     }
     res.send(JSON.stringify(session, null, 3));
-})
+});
 
 router.get('/simulate', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
@@ -31,26 +36,31 @@ router.get('/simulate', function(req, res) {
         session.simulate();
     }
     res.send(JSON.stringify(session, null, 3));
-})
+});
 
 router.get('/stop', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
+    var routeParam = req.query.routes;
+    if (isNaN(routeParam)) {
+        routeParam = 1;
+    }
     if (session !== NOT_ROWING) {
         session.stop();
-        var gpxFile = new GpxFile(session, new Route(Routes.OSLO_ROUND));
+        var r = Routes.routes[routeParam];
+        var gpxFile = new GpxFile(session, new Route(r.gps));
         var fileName = gpxFile.createFile();
         var stats = session.stats();
         stats.fileName = sanitize(fileName);
         res.send(JSON.stringify(stats, null, 3));
         session = NOT_ROWING;
     }
-})
+});
 
 router.get('/stop/strava', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     session.stop();
     res.send(JSON.stringify(session.stats(), null, 3));
     session = NOT_ROWING;
-})
+});
 
 module.exports = router;

@@ -9,11 +9,15 @@
           rel="stylesheet"/>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/icons/res/mipmap-hdpi/ic-waterrower.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/icons/res/mipmap-mdpi/ic-waterrower.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/icons/res/mipmap-xhdpi/ic-waterrower.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/icons/res/mipmap-xxhdpi/ic-waterrower.png" />
+    <link rel="shortcut icon" href="/icons/web_hi_res_512.png" />
 
 </head>
 <body>
 <div class="container">
-
     <div class="row">
         <div class="col">
             <header class="header clearfix">
@@ -22,10 +26,24 @@
         </div>
     </div>
     <div class="row">
-      <div class="col">
-          <button id="startRow" type="button" class="btn btn-lg btn-primary">Start row</button>
-          <button id="stopRow" type="button" class="btn btn-lg btn-secondary">Stop row</button>
-          <button id="startSimulator" type="button" class="btn btn-lg btn-info invisible">Start simulator</button>
+        <div class="col">
+            <button id="startRow" type="button" class="btn btn-lg btn-primary">Start row</button>
+            <button id="stopRow" type="button" class="btn btn-lg btn-secondary">Stop row</button>
+            <button id="startSimulator" type="button" class="btn btn-lg btn-info invisible">Start simulator</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h3>Route</h3>
+            <form>
+                <div class="form-group row">
+                    <div class="col-sm">
+                        <label for="routes">Routes</label>
+                        <select class="form-control" id="routes">
+                        </select>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 

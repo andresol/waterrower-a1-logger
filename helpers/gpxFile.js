@@ -1,4 +1,3 @@
-
 var LatLon = require('geodesy').LatLonVectors;
 var fs = require('fs');
 var path = require("path");
@@ -34,7 +33,7 @@ GpxFile.prototype.createFile = function() {
     for (var i = 0; i < this.rowSession.raw.length; i = i + skip) {
         var rawTime = new Date(this.rowSession.raw[i]);
         var distance = RowSession.prototype.getLengthInMetersByClicks(skip * 6); //6 click per raw.
-        p = this.route.nextPoint(p, distance.toFixed(4));//p.destinationPoint(distance.toFixed(4), 0, 6362170);
+        p = this.route.nextPoint(p, distance.toFixed(4));
         var trackPoint = {
             '@lat': p.lat.toFixed(7),
             '@lon': p.lon.toFixed(7),
@@ -46,10 +45,10 @@ GpxFile.prototype.createFile = function() {
 
     object.trk.trkseg.trkpt = trackPoints;
     root.ele(object);
-    //console.log(root.end(({ pretty: true})));
     var filePath = path.sep + '..' + path.sep + 'public' + path.sep +
         'sessions' + path.sep + sanitize(object.trk.name) +".gpx";
     this.writeFile(__dirname  + filePath , root.end(({ pretty: true})));
+
     return sanitize(object.trk.name +".gpx");
 };
 
