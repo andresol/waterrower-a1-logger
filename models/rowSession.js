@@ -6,6 +6,7 @@ var Gpio = require('onoff').Gpio;
 var dateFormat = require('dateformat');
 var debounce = require('debounce');
 var createGpx = require('gps-to-gpx');
+var sanitize = require("sanitize-filename");
 
 const RATION = 100 / 4.805; // 100 cm is 4.805 clicks. About 20.81 cm.
 const PID = 4;
@@ -22,6 +23,7 @@ function RowSession(status) {
     this.counter = 0;
     this.start = Date.now();
     this.raw = [];
+    this.name = sanitize(new Date().toISOString());
 }
 
 RowSession.prototype.stroke = function() {
@@ -29,6 +31,7 @@ RowSession.prototype.stroke = function() {
 };
 
 RowSession.prototype.simulate = function() {
+    this.sim = true; //mark this as sim
     console.log("Starting RowSession simulator");
     runSimulator = true;
     var that = this;
@@ -99,7 +102,7 @@ RowSession.prototype.stop = function() {
     if (runSimulator) {
         runSimulator = false;
     }
-
+    this.endStats = this.stats();
 };
 
 RowSession.prototype.getTotalLength = function() {

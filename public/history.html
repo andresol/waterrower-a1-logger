@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Waterrower A1</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="apple-mobile-web-app-title" content="WaterRower A1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/css/main.css"
           rel="stylesheet"/>
@@ -13,53 +14,51 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/icons/res/mipmap-mdpi/ic-waterrower.png" />
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/icons/res/mipmap-xhdpi/ic-waterrower.png" />
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/icons/res/mipmap-xxhdpi/ic-waterrower.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/res/mipmap-xxhdpi/ic-waterrower.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/res/mipmap-xxhdpi/ic-waterrower.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/icons/res/mipmap-xxhdpi/ic-waterrower.png">
+    <link rel="apple-touch-startup-image" href="/icons/res/mipmap-xxhdpi/ic-waterrower.png">
     <link rel="shortcut icon" href="/icons/web_hi_res_512.png" />
-
 </head>
 <body>
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <header class="header clearfix">
-                <h1 class="text-muted">Waterrower A1</h1>
-            </header>
-        </div>
+<!-- Nav -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Waterrower A1</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home </a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/history">History <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        <!--
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        -->
     </div>
+</nav>
+
+<!-- Main content -->
+
+<div id = "history" class="container mt-3">
     <div class="row">
         <div class="col">
             <h2>Last 3 sessions</h2>
-            <div class="row">
-                <div class="card col-sm" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">2018-12-12</h5>
-                        <p class="card-text">Tid: 2018-12-12, speed: 15 km/t, length: 500m</p>
-                        <a href="#" class="btn btn-primary">upload to strava</a>
-                    </div>
-                </div>
-                <div class="card col-sm" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">2018-12-12</h5>
-                        <p class="card-text">Tid: 2018-12-12, speed: 15 km/t, length: 500m</p>
-                        <a href="#" class="btn btn-primary">upload to strava</a>
-                    </div>
-                </div>
-                <div class="card col-sm" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">2018-12-12</h5>
-                        <p class="card-text">Tid: 2018-12-12, speed: 15 km/t, length: 500m</p>
-                        <a href="#" class="btn btn-primary">upload to strava</a>
-                    </div>
-                </div>
-
+            <div id="cards" class="row">
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col">
+    <div class="row mt-2">
+        <div id="history-table" class="col">
             <h2>All sessions</h2>
             <table class="table">
                 <thead>
@@ -70,13 +69,7 @@
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>2018-12-12</td>
-                    <td><a id="" href="">download</td>
-                    <td><a id="strava" href="">upload strava</a></td>
-                </tr>
+                <tbody id="histor-table-body">
                 </tbody>
             </table>
         </div>

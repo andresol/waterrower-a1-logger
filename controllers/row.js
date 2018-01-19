@@ -4,6 +4,7 @@ var express = require('express'),
     GpxFile = require('../helpers/gpxFile'),
     Route = require('../models/route'),
     Routes = require('../models/routes'),
+    sessionService = require('../service/sessionService'),
     sanitize = require("sanitize-filename");
 
 const NOT_ROWING = new RowSession("NOT_ROWING");
@@ -24,7 +25,13 @@ router.get('/start', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (session === NOT_ROWING) {
         session = new RowSession("ROWING");
-        session.startRow();
+        try {
+            session.startRow();
+        } catch (e) {
+            session = NOT_ROWING;
+            console.log("Cannot start row. Look at error" + e);
+        }
+
     }
     res.send(JSON.stringify(session, null, 3));
 });
@@ -32,7 +39,7 @@ router.get('/start', function(req, res) {
 router.get('/simulate', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (session === NOT_ROWING) {
-        session = new RowSession("ROWING");
+        session = new RowSession("SIMLATE");
         session.simulate();
     }
     res.send(JSON.stringify(session, null, 3));
@@ -45,7 +52,9 @@ router.get('/stop', function(req, res) {
         routeParam = 1;
     }
     if (session !== NOT_ROWING) {
+        session.route = routeParam;
         session.stop();
+        sessionService.addSession(session);
         var r = Routes.routes[routeParam];
         var gpxFile = new GpxFile(session, new Route(r.gps));
         var fileName = gpxFile.createFile();

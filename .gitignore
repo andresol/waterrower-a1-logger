@@ -126,3 +126,8 @@ fabric.properties
 
 # End of https://www.gitignore.io/api/webstorm
 
+# Ignore db
+db/waterrower_sessions/
+db/waterrower_route/
+
+*.gpx

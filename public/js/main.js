@@ -1,26 +1,27 @@
 const UPDATE_FREQ = 1000;
 var timeOut;
-var run = true;
+var run = false;
 
 $(document).ready(function(){
     //ugly ulgy
+    get_rowInfo(false,"");
+
     var test = getUrlParameter("test");
     if (test) {
         $('#startSimulator').removeClass("invisible");
     }
 
-
     $('#startRow').click(function (e) {
         e.preventDefault();
         $.get( "/row/start", function() {
-           get_rowInfo();
+           get_rowInfo(true, "Rowing");
         });
     });
 
     $('#startSimulator').click(function (e) {
         e.preventDefault();
         $.get("/row/simulate", function() {
-            get_rowInfo();
+            get_rowInfo(true, "Simulate");
         });
     });
 
@@ -36,27 +37,55 @@ $(document).ready(function(){
         });
     });
 
+    $('#history').each(function () {
+        $.get("/session", function(data) {
+            var htmlCards = '';
+            var htmlTable = '';
+            var index = 0;
+            data.forEach(function (session) {
+                if (index < 3) {
+                    htmlCards += '<div class="card col-sm" style="width: 18rem;">';
+                    htmlCards += '<div class="card-body">';
+                    htmlCards += '<h5 class="card-title">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</h5>';
+                    htmlCards += '<p class="card-text">Lenght: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
+                    htmlCards += '<a href="#" class="btn btn-primary">Upload to strava</a>';
+                    htmlCards += '</div>';
+                    htmlCards += '</div>';
+                }
+                htmlTable += '<tr>';
+                htmlTable += '<th scope="row">'+ (index + 1) + '</th>';
+                htmlTable += '<td>' + session.name + '</td>';
+                htmlTable += '<td><a id="" href="/sessions/' + session.name + '.gpx">Download</td>';
+                htmlTable += '<td><a id="strava" href="">Upload to strava</a></td>';
+                htmlTable += '</tr>';
+                index++;
+            });
+            $('#cards').html(htmlCards);
+            $('#histor-table-body').html(htmlTable);
+        });
+    });
+
     $('#stopRow').click(function (e) {
         e.preventDefault();
         clearTimeout(timeOut);
         run = false;
         var routes = $('#routes').val();
         $.get( "/row/stop", { routes: routes }, function(data) {
-            $('#table-content').html(getHtml("STOPPED", data));
+            $('#table-content').html(getHtml("Stopped", data));
         });
     })
 });
-20118000
-function get_rowInfo(){
-    run = true;
+
+function get_rowInfo(continues, title){
+    run = continues;
     $.get( "/row", function(data) {
-        var html = getHtml("ROWING", data);
+        var html = getHtml(title, data);
         if (html) {
             $('#table-content').html(html);
         }
     }).done(function(){
         if (run) {
-            timeOut = setTimeout(function(){get_rowInfo();}, UPDATE_FREQ);
+            timeOut = setTimeout(function(){get_rowInfo(true, title);}, UPDATE_FREQ);
         }
     });
 }
