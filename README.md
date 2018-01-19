@@ -1,5 +1,6 @@
 # waterrower-a1-logger
-Rasberry pi project for logging rowing on a WaterRower A1. It will track watt,
+
+Rasberry Pi 3 project for logging rowing on a WaterRower A1. It will track watt,
 pace, lenght, time and laps. 
 
 It now supports gpx. After a rowing session one can import the gpx file into
@@ -14,6 +15,13 @@ to the GPID 4 and ground.
 ## Prerequisites
 A Raspberry Pi running with nodejs. I use nodejs 9.4. Recommend also use of
 yarn. 
+
+Install as service. 
+```
+sudo npm install -g forever
+sudo npm install -g forever-service
+sudo forever-service install  
+```
 
 ## Installing
 ```
@@ -31,3 +39,7 @@ Start so a activity.
 ## TODO
 A lot of GUI. Automatic import into strava, live map.
 ....
+
+## Errors
+Please make sure that GPIO is not shared.
+First gen of Rasberry Pi is to slow. Please use v3.
