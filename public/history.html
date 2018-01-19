@@ -27,33 +27,58 @@
     </div>
     <div class="row">
         <div class="col">
-            <button id="startRow" type="button" class="btn btn-lg btn-primary">Start row</button>
-            <button id="stopRow" type="button" class="btn btn-lg btn-secondary">Stop row</button>
-            <button id="startSimulator" type="button" class="btn btn-lg btn-info invisible">Start simulator</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <h3>Route</h3>
-            <form>
-                <div class="form-group row">
-                    <div class="col-sm">
-                        <label for="routes">Routes</label>
-                        <select class="form-control" id="routes">
-                        </select>
+            <h2>Last 3 sessions</h2>
+            <div class="row">
+                <div class="card col-sm" style="width: 18rem;">
+                    <img class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">2018-12-12</h5>
+                        <p class="card-text">Tid: 2018-12-12, speed: 15 km/t, length: 500m</p>
+                        <a href="#" class="btn btn-primary">upload to strava</a>
                     </div>
                 </div>
-            </form>
+                <div class="card col-sm" style="width: 18rem;">
+                    <img class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">2018-12-12</h5>
+                        <p class="card-text">Tid: 2018-12-12, speed: 15 km/t, length: 500m</p>
+                        <a href="#" class="btn btn-primary">upload to strava</a>
+                    </div>
+                </div>
+                <div class="card col-sm" style="width: 18rem;">
+                    <img class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">2018-12-12</h5>
+                        <p class="card-text">Tid: 2018-12-12, speed: 15 km/t, length: 500m</p>
+                        <a href="#" class="btn btn-primary">upload to strava</a>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
     <div class="row">
-        <div id ="table-content" class="col">
-            <h2>Row stats</h2>
-            <div class="row">
-                <div class ="col" >
-                </div>
-            </div>
+        <div class="col">
+            <h2>All sessions</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">File</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>2018-12-12</td>
+                    <td><a id="" href="">download</td>
+                    <td><a id="strava" href="">upload strava</a></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

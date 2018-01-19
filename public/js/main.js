@@ -46,7 +46,7 @@ $(document).ready(function(){
         });
     })
 });
-
+20118000
 function get_rowInfo(){
     run = true;
     $.get( "/row", function(data) {
