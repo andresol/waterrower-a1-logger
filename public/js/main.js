@@ -7,6 +7,7 @@ $(document).ready(function(){
     get_rowInfo(false,"");
 
     var test = getUrlParameter("test");
+
     if (test) {
         $('#startSimulator').removeClass("invisible");
     }
@@ -17,36 +18,7 @@ $(document).ready(function(){
            get_rowInfo(true, "Rowing");
         });
     });
-    $('#gpx-track').each(function () {
-        $.ajax({
-            type: "GET",
-            url: "/",
-            success: function(xml) {
-                var points = [];
-                var bounds = new google.maps.LatLngBounds ();
-                $(xml).find("trkpt").each(function() {
-                    var lat = $(this).attr("lat");
-                    var lon = $(this).attr("lon");
-                    var p = new google.maps.LatLng(lat, lon);
-                    points.push(p);
-                    bounds.extend(p);
-                });
 
-                var poly = new google.maps.Polyline({
-                    // use your own style here
-                    path: points,
-                    strokeColor: "#FF00AA",
-                    strokeOpacity: .7,
-                    strokeWeight: 4
-                });
-
-                poly.setMap(map);
-
-                // fit bounds to track
-                map.fitBounds(bounds);
-            }
-        });
-    });
 
     $('#startSimulator').click(function (e) {
         e.preventDefault();
@@ -74,8 +46,9 @@ $(document).ready(function(){
             var index = 0;
             data.forEach(function (session) {
                 if (index < 3) {
-                    htmlCards += '<div class="card col-sm" style="width: 18rem;">';
+                    htmlCards += '<div class="card col-sm gpx-track" data-name="' + session.name + '" style="width: 18rem;">';
                     htmlCards += '<div class="card-body">';
+                    htmlCards += '<div class="card-map-top "></div> ';
                     htmlCards += '<h5 class="card-title">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</h5>';
                     htmlCards += '<p class="card-text">Lenght: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
                     htmlCards += '<a href="/strava/upload/' + session.name +'" class="btn btn-primary">Upload to strava</a>';
@@ -92,6 +65,47 @@ $(document).ready(function(){
             });
             $('#cards').html(htmlCards);
             $('#histor-table-body').html(htmlTable);
+
+            $('.gpx-track').each(function () {
+                var name = $(this).data('name');
+                var element = $(this).find('.card-map-top');
+                if (name) {
+                    $.ajax({
+                        type: "GET",
+                        url: '/sessions/' + name + '.gpx',
+                        success: function (xml) {
+                            var points = [];
+                            var map = new google.maps.Map(element[0], {
+                                zoom: 16
+                            });
+                            var styles = [{"featureType": "landscape", "stylers": [{"saturation": -100}, {"lightness": 65}, {"visibility": "on"}]}, {"featureType": "poi", "stylers": [{"saturation": -100}, {"lightness": 51}, {"visibility": "simplified"}]}, {"featureType": "road.highway", "stylers": [{"saturation": -100}, {"visibility": "simplified"}]}, {"featureType": "road.arterial", "stylers": [{"saturation": -100}, {"lightness": 30}, {"visibility": "on"}]}, {"featureType": "road.local", "stylers": [{"saturation": -100}, {"lightness": 40}, {"visibility": "on"}]}, {"featureType": "transit", "stylers": [{"saturation": -100}, {"visibility": "simplified"}]}, {"featureType": "administrative.province", "stylers": [{"visibility": "off"}]}, {"featureType": "water", "elementType": "labels", "stylers": [{"visibility": "on"}, {"lightness": -25}, {"saturation": -100}]}, {"featureType": "water", "elementType": "geometry", "stylers": [{"hue": "#ffff00"}, {"lightness": -25}, {"saturation": -97}]}];
+
+                            map.set('styles', styles);
+                            var bounds = new google.maps.LatLngBounds();
+                            $(xml).find("trkpt").each(function () {
+                                var lat = $(this).attr("lat");
+                                var lon = $(this).attr("lon");
+                                var p = new google.maps.LatLng(lat, lon);
+                                points.push(p);
+                                bounds.extend(p);
+                            });
+
+                            var poly = new google.maps.Polyline({
+                                // use your own style here
+                                path: points,
+                                strokeColor: "#FF00AA",
+                                strokeOpacity: .7,
+                                strokeWeight: 4
+                            });
+
+                            poly.setMap(map);
+
+                            // fit bounds to track
+                            map.fitBounds(bounds);
+                        }
+                    });
+                }
+            });
         });
     });
 
