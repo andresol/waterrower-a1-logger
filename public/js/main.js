@@ -17,6 +17,36 @@ $(document).ready(function(){
            get_rowInfo(true, "Rowing");
         });
     });
+    $('#gpx-track').each(function () {
+        $.ajax({
+            type: "GET",
+            url: "/",
+            success: function(xml) {
+                var points = [];
+                var bounds = new google.maps.LatLngBounds ();
+                $(xml).find("trkpt").each(function() {
+                    var lat = $(this).attr("lat");
+                    var lon = $(this).attr("lon");
+                    var p = new google.maps.LatLng(lat, lon);
+                    points.push(p);
+                    bounds.extend(p);
+                });
+
+                var poly = new google.maps.Polyline({
+                    // use your own style here
+                    path: points,
+                    strokeColor: "#FF00AA",
+                    strokeOpacity: .7,
+                    strokeWeight: 4
+                });
+
+                poly.setMap(map);
+
+                // fit bounds to track
+                map.fitBounds(bounds);
+            }
+        });
+    });
 
     $('#startSimulator').click(function (e) {
         e.preventDefault();
@@ -48,7 +78,7 @@ $(document).ready(function(){
                     htmlCards += '<div class="card-body">';
                     htmlCards += '<h5 class="card-title">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</h5>';
                     htmlCards += '<p class="card-text">Lenght: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
-                    htmlCards += '<a href="#" class="btn btn-primary">Upload to strava</a>';
+                    htmlCards += '<a href="/strava/upload/' + session.name +'" class="btn btn-primary">Upload to strava</a>';
                     htmlCards += '</div>';
                     htmlCards += '</div>';
                 }
@@ -56,7 +86,7 @@ $(document).ready(function(){
                 htmlTable += '<th scope="row">'+ (index + 1) + '</th>';
                 htmlTable += '<td>' + session.name + '</td>';
                 htmlTable += '<td><a id="" href="/sessions/' + session.name + '.gpx">Download</td>';
-                htmlTable += '<td><a id="strava" href="">Upload to strava</a></td>';
+                htmlTable += '<td><a id="strava" href="/strava/upload/' + session.name +'">Upload to strava</a></td>';
                 htmlTable += '</tr>';
                 index++;
             });

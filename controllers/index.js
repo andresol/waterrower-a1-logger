@@ -3,6 +3,7 @@ var express = require('express')
 
 router.use('/row', require('./row'));
 router.use('/session', require('./session'));
+router.use('/strava', require('./strava'));
 
 router.get('/', function(req, res) {
     res.sendFile('index.html', {root: './public'});
