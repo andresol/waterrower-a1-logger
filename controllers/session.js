@@ -28,4 +28,13 @@ router.get('/', function(req, res) {
     });
 });
 
+router.get('/del/:id', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    var id = req.params.id;
+    if (id) {
+        sessionService.del(id);
+    }
+    res.send(JSON.stringify({status: "deleted"}, null, 3));
+});
+
 module.exports = router;

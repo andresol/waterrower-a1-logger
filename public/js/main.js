@@ -51,7 +51,7 @@ $(document).ready(function(){
                     htmlCards += '<div class="card-map-top "></div> ';
                     htmlCards += '<h5 class="card-title">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</h5>';
                     htmlCards += '<p class="card-text">Lenght: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
-                    htmlCards += '<a href="/strava/upload/' + session.name +'" class="btn btn-primary">Upload to strava</a>';
+                    htmlCards += '<a href="/strava/upload/' + session.name +'" class="btn btn-primary strava">Upload to strava</a>';
                     htmlCards += '</div>';
                     htmlCards += '</div>';
                 }
@@ -59,7 +59,7 @@ $(document).ready(function(){
                 htmlTable += '<th scope="row">'+ (index + 1) + '</th>';
                 htmlTable += '<td>' + session.name + '</td>';
                 htmlTable += '<td><a id="" href="/sessions/' + session.name + '.gpx">Download</td>';
-                htmlTable += '<td><a id="strava" href="/strava/upload/' + session.name +'">Upload to strava</a></td>';
+                htmlTable += '<td><a class="strava" href="/strava/upload/' + session.name +'"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name +'"><i aria-hidden="true" title="Delete session local" class="material-icons">delete</i></a></td>';
                 htmlTable += '</tr>';
                 index++;
             });
@@ -78,6 +78,7 @@ $(document).ready(function(){
                             var map = new google.maps.Map(element[0], {
                                 zoom: 16
                             });
+
                             var styles = [{"featureType": "landscape", "stylers": [{"saturation": -100}, {"lightness": 65}, {"visibility": "on"}]}, {"featureType": "poi", "stylers": [{"saturation": -100}, {"lightness": 51}, {"visibility": "simplified"}]}, {"featureType": "road.highway", "stylers": [{"saturation": -100}, {"visibility": "simplified"}]}, {"featureType": "road.arterial", "stylers": [{"saturation": -100}, {"lightness": 30}, {"visibility": "on"}]}, {"featureType": "road.local", "stylers": [{"saturation": -100}, {"lightness": 40}, {"visibility": "on"}]}, {"featureType": "transit", "stylers": [{"saturation": -100}, {"visibility": "simplified"}]}, {"featureType": "administrative.province", "stylers": [{"visibility": "off"}]}, {"featureType": "water", "elementType": "labels", "stylers": [{"visibility": "on"}, {"lightness": -25}, {"saturation": -100}]}, {"featureType": "water", "elementType": "geometry", "stylers": [{"hue": "#ffff00"}, {"lightness": -25}, {"saturation": -97}]}];
 
                             map.set('styles', styles);
@@ -107,6 +108,27 @@ $(document).ready(function(){
                 }
             });
         });
+    });
+
+    $(document).on("click", '.strava', function(e) {
+        e.preventDefault();
+        var href = $(this).attr('href');
+        $.get( href, function( data ) {
+            console.log(data);
+            alert( "Uploaded to strava!" );
+        });
+    });
+
+    $(document).on("click", '.del-session', function(e) {
+        e.preventDefault();
+        var name = $(this).data('name');
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+            $.get( '/session/del/' + name, function( data ) {
+                alert( "Session deleted" );
+                location.reload();
+            });
+        }
     });
 
     $('#stopRow').click(function (e) {
