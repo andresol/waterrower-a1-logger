@@ -130,4 +130,6 @@ fabric.properties
 db/waterrower_sessions/
 db/waterrower_route/
 
+data
+
 *.gpx
