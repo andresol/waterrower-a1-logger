@@ -1,6 +1,21 @@
 const UPDATE_FREQ = 1000;
 var timeOut;
 var run = false;
+var liveMap;
+var liveBounds;
+var livePoints = [];
+
+function initMap() {
+    liveMap = new google.maps.Map(document.getElementById('live-map'), {
+        //center: {lat: 59.88458761, lng: 10.76115131},
+        zoom: 8,
+        maxZoom: 16
+    });
+    var styles = [{"featureType": "landscape", "stylers": [{"saturation": -100}, {"lightness": 65}, {"visibility": "on"}]}, {"featureType": "poi", "stylers": [{"saturation": -100}, {"lightness": 51}, {"visibility": "simplified"}]}, {"featureType": "road.highway", "stylers": [{"saturation": -100}, {"visibility": "simplified"}]}, {"featureType": "road.arterial", "stylers": [{"saturation": -100}, {"lightness": 30}, {"visibility": "on"}]}, {"featureType": "road.local", "stylers": [{"saturation": -100}, {"lightness": 40}, {"visibility": "on"}]}, {"featureType": "transit", "stylers": [{"saturation": -100}, {"visibility": "simplified"}]}, {"featureType": "administrative.province", "stylers": [{"visibility": "off"}]}, {"featureType": "water", "elementType": "labels", "stylers": [{"visibility": "on"}, {"lightness": -25}, {"saturation": -100}]}, {"featureType": "water", "elementType": "geometry", "stylers": [{"hue": "#ffff00"}, {"lightness": -25}, {"saturation": -97}]}];
+    liveBounds = new google.maps.LatLngBounds();
+    liveMap.set('styles', styles);
+
+}
 
 $(document).ready(function(){
     //ugly ulgy
@@ -16,6 +31,20 @@ $(document).ready(function(){
         e.preventDefault();
         $.get( "/row/start", function() {
            get_rowInfo(true, "Rowing");
+           initMap();
+            livePoints = [];
+            var poly = new google.maps.Polyline({
+                // use your own style here
+                path: livePoints,
+                strokeColor: "#FF00AA",
+                strokeOpacity: .7,
+                strokeWeight: 4
+            });
+
+            poly.setMap(liveMap);
+
+            // fit bounds to track
+            liveMap.fitBounds(liveBounds);
             $("#startSimulator").attr('disabled','disabled');
             $(this).attr('disabled','disabled');
         });
@@ -26,6 +55,21 @@ $(document).ready(function(){
         e.preventDefault();
         $.get("/row/simulate", function() {
             get_rowInfo(true, "Simulate");
+            initMap();
+            livePoints = [];
+            var poly = new google.maps.Polyline({
+                // use your own style here
+                path: livePoints,
+                strokeColor: "#FF00AA",
+                strokeOpacity: .7,
+                strokeWeight: 4
+            });
+
+            poly.setMap(liveMap);
+
+            // fit bounds to track
+            liveMap.fitBounds(liveBounds);
+
             $("#startRow").attr('disabled','disabled');
             $(this).attr('disabled','disabled');
         });
@@ -154,6 +198,24 @@ function get_rowInfo(continues, title){
         var html = getHtml(title, data);
         if (html) {
             $('#table-content').html(html);
+            $('#laps').html(getLapHtml(title, data));
+                var lat = data.gps.lat;
+                var lon = data.gps.lon;
+                var p = new google.maps.LatLng(lat, lon);
+                livePoints.push(p);
+                liveBounds.extend(p);
+            var poly = new google.maps.Polyline({
+                // use your own style here
+                path: livePoints,
+                strokeColor: "#FF00AA",
+                strokeOpacity: .7,
+                strokeWeight: 4
+            });
+
+            poly.setMap(liveMap);
+
+            // fit bounds to track
+            liveMap.fitBounds(liveBounds);
         }
     }).done(function(){
         if (run) {
@@ -181,8 +243,13 @@ function getHtml(label, json) {
     html += '<div class="row">2k(p): ' + fmtMSS(parseInt(json.towKPace)) +'</div>';
     html += '<div class="row">Avg. watt: ' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div>';
     if(json.fileName) {
-        html += 'Actions: <div class="row"><a id="" href="/sessions/' + json.fileName + '"><i class="material-icons">file_download</i> <a class="strava" href="/strava/upload/' + json.name +'"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a></div>';
+        html += '<div class="row">Actions: <a id="" href="/sessions/' + json.fileName + '"><i class="material-icons">file_download</i> <a class="strava" href="/strava/upload/' + json.name +'"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a></div>';
     }
+    return html + "</div>"
+}
+
+function getLapHtml(label, json) {
+    var html = '';
     if (parseInt(json.totalLaps) > 0) {
         html += '<div class="row"><div class="table-responsive"> <table class="table"><thead><tr><th>#</th><th>Meters</th><th>Time</th><th>Watt</th>';
         html += '</tr></thead><tbody>';
@@ -195,7 +262,7 @@ function getHtml(label, json) {
         );
         html += "</tbody></table></div></div>"
     }
-    return html + "</div>"
+    return html;
 }
 
 var getUrlParameter = function getUrlParameter(sParam) {

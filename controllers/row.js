@@ -7,7 +7,7 @@ var express = require('express'),
     sessionService = require('../service/sessionService'),
     sanitize = require("sanitize-filename");
 
-const NOT_ROWING = new RowSession("NOT_ROWING");
+const NOT_ROWING = new RowSession("NOT_ROWING", new Route(Routes.routes[0].gps));
 
 var session = NOT_ROWING;
 
@@ -24,14 +24,19 @@ router.get('/routes', function(req, res) {
 router.get('/start', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (session === NOT_ROWING) {
-        session = new RowSession("ROWING");
+        var routeParam = req.query.routes;
+        if (isNaN(routeParam)) {
+            routeParam = 1;
+        }
+        var r = Routes.routes[routeParam];
+        session = new RowSession("ROWING", new Route(r.gps));
         try {
             session.startRow();
+            session.route = routeParam;
         } catch (e) {
             session = NOT_ROWING;
             console.log("Cannot start row. Look at error" + e);
         }
-
     }
     res.send(JSON.stringify(session, null, 3));
 });
@@ -39,7 +44,13 @@ router.get('/start', function(req, res) {
 router.get('/simulate', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (session === NOT_ROWING) {
-        session = new RowSession("SIMLATE");
+        var routeParam = req.query.routes;
+        if (isNaN(routeParam)) {
+            routeParam = 1;
+        }
+        var r = Routes.routes[routeParam];
+        session = new RowSession("SIMLATE", new Route(r.gps));
+        session.route = routeParam;
         session.simulate();
     }
     res.send(JSON.stringify(session, null, 3));

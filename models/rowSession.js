@@ -17,13 +17,15 @@ const WATT_RATION = 2.80;
 var sensor;
 var runSimulator = false;
 
-function RowSession(status) {
+function RowSession(status, route) {
     this.status = status;
     this.stroke = 0;
     this.counter = 0;
     this.start = Date.now();
     this.raw = [];
+    this.p = null;
     this.name = sanitize(new Date().toISOString());
+    this.routeObject = route;
 }
 
 RowSession.prototype.stroke = function() {
@@ -37,7 +39,7 @@ RowSession.prototype.simulate = function() {
     var that = this;
     (function loop() {
         if(runSimulator) {
-            var rand = getRandomRowerSpeed((that.totalInMeters() % 1000) <= 500)
+            var rand = getRandomRowerSpeed((that.totalInMeters() % 1000) <= 500);
             setTimeout(function () {
                 that.increase();
                 loop();
@@ -52,7 +54,7 @@ RowSession.prototype.increase = function() {
 
 RowSession.prototype.totalLaps = function () {
     return (this.totalInMeters() / 500)|0;
-}
+};
 
 RowSession.prototype.laps = function () {
     var laps = [], totalLaps = this.totalLaps();
@@ -73,12 +75,22 @@ RowSession.prototype.laps = function () {
     }
 
     return laps;
-}
+};
 
 RowSession.prototype.increment = function() {
     this.counter = this.counter + 1;
     if (this.counter % SAMPLE_SIZE === 1) { //Total length
-        this.raw.push(Date.now())
+        this.raw.push(Date.now());
+        var rawTime = new Date(Date.now());
+        var distance = this.getLengthInMetersByClicks(6); //6 click per raw.
+            this.p = this.routeObject.nextPoint(this.p, distance.toFixed(4));
+            this.trackPoint = {
+                'lat': this.p.lat.toFixed(7),
+                'lon': this.p.lon.toFixed(7),
+                ele: 0,
+                time: rawTime.toISOString()
+            }
+
     }
 };
 
@@ -90,7 +102,7 @@ RowSession.prototype.startRow = function() {
             throw err;
         }
         //console.log("Registered event. " + value);
-        that.increase()
+        that.increase();
     });
 };
 
@@ -128,61 +140,52 @@ RowSession.prototype.stats = function() {
     stats.towKPace = this.twoKPace();
     stats.totalLaps = this.totalLaps();
     stats.laps = this.laps();
+    stats.gps = this.trackPoint;
     stats.watt = watt(this.totalTimeInSec() / this.totalInMeters());
     return stats;
-}
+};
 
 RowSession.prototype.totalInMeters = function () {
     return this.getTotalLength() / 100
-}
+};
 
 RowSession.prototype.totalTimeInSec = function () {
     return this.totalTime() / 1000
-}
+};
 
 RowSession.prototype.totalTime = function () {
     return Date.now() - this.start
-}
+};
 
 RowSession.prototype.meterPerSeconds = function () {
     return this.totalInMeters() / this.totalTimeInSec()
-}
+};
 
 RowSession.prototype.fiveHundrePace = function () {
     return 500 / this.meterPerSeconds();
-}
+};
 
 RowSession.prototype.twoKPace = function () {
     return 2000 / this.meterPerSeconds();
-}
+};
 
-RowSession.prototype.gpxFile = function () {
-    var wayPoints = [];
-    for (var i = 0; i < this.raw.length; i++) {
-
-    }
-    return createGpx(waypoints, {
-        activityName: "ROWING",
-        startTime: this.start,
-    });
-}
 
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
-}
+};
 
 function getRandomRowerSpeed(fast) {
     return getRandomArbitrary(10, 120) * ( fast ? 0.7 : 1)
-}
+};
 
 function getClicksByMeters(meters) {
     var cm = meters * 100;
     return Math.floor(cm / RATION);
-}
+};
 
 function watt(pace) {
     return WATT_RATION / Math.pow(pace, 3);
-}
+};
 
 // export the class
 module.exports = RowSession;
