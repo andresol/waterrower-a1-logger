@@ -69,7 +69,7 @@ GpxFile.prototype.getMetaData = function () {
             time: new Date(this.rowSession.start).toISOString()
         }
     }
-}
+};
 
 GpxFile.prototype.getRootObject = function () {
     return {

@@ -2,3 +2,12 @@
     height: 150px;
     width: 100%;
 }
+
+#live-map {
+    height: 300px;
+    width: 100%;
+}
+
+#table-content {
+    height: 300px;
+}
