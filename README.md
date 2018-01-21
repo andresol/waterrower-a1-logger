@@ -15,13 +15,15 @@ to the GPID 4 and ground.
 ![setup](setup.JPG "Setup")
 
 ## Prerequisites
-A Raspberry Pi running with nodejs. I use nodejs 9.4. Recommend also use of
+A Raspberry Pi 3 with wifi and running with nodejs. I use nodejs 9.4. Recommend also use of
 yarn. 
 
 ## Installing
 ```
-git clone https://github.com/andresol/waterrower-a1-logger.git
-yarn install
+mkdir /opt/waterrower
+chown pi:pi waterrower
+git clone https://github.com/andresol/waterrower-a1-logger.git waterrower
+npm install
 node app.js
 ``` 
 
