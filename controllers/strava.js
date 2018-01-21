@@ -28,8 +28,6 @@ router.get('/upload/:id', function(req, res) {
                     }
                 },function(err,payload,limits) {
                     console.log(err);
-                    console.log(payload);
-                    console.log(limits);
                 });
 
             }

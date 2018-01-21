@@ -9,13 +9,15 @@ $(document).ready(function(){
     var test = getUrlParameter("test");
 
     if (test) {
-        $('#startSimulator').removeClass("invisible");
+        $('#startSimulator').removeClass("sr-only");
     }
 
     $('#startRow').click(function (e) {
         e.preventDefault();
         $.get( "/row/start", function() {
            get_rowInfo(true, "Rowing");
+            $("#startSimulator").attr('disabled','disabled');
+            $(this).attr('disabled','disabled');
         });
     });
 
@@ -24,6 +26,8 @@ $(document).ready(function(){
         e.preventDefault();
         $.get("/row/simulate", function() {
             get_rowInfo(true, "Simulate");
+            $("#startRow").attr('disabled','disabled');
+            $(this).attr('disabled','disabled');
         });
     });
 
@@ -49,17 +53,17 @@ $(document).ready(function(){
                     htmlCards += '<div class="card col-sm gpx-track" data-name="' + session.name + '" style="width: 18rem;">';
                     htmlCards += '<div class="card-body">';
                     htmlCards += '<div class="card-map-top "></div> ';
-                    htmlCards += '<h5 class="card-title">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</h5>';
+                    htmlCards += '<h5 class="card-title mt-2">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</h5>';
                     htmlCards += '<p class="card-text">Lenght: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
-                    htmlCards += '<a href="/strava/upload/' + session.name +'" class="btn btn-primary strava">Upload to strava</a>';
+                    htmlCards += '<a href="/strava/upload/' + session.name +'" class="btn btn-primary strava btn-block">Upload to strava</a>';
                     htmlCards += '</div>';
                     htmlCards += '</div>';
                 }
                 htmlTable += '<tr>';
                 htmlTable += '<th scope="row">'+ (index + 1) + '</th>';
                 htmlTable += '<td>' + session.name + '</td>';
-                htmlTable += '<td><a id="" href="/sessions/' + session.name + '.gpx">Download</td>';
-                htmlTable += '<td><a class="strava" href="/strava/upload/' + session.name +'"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name +'"><i aria-hidden="true" title="Delete session local" class="material-icons">delete</i></a></td>';
+                htmlTable += '<td>Lenght: ' + parseInt(session.endStats.meters) + 'm</td>';
+                htmlTable += '<td> <a id="" href="/sessions/' + session.name + '.gpx"><i class="material-icons">file_download</i> <a class="strava" href="/strava/upload/' + session.name +'"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name +'"><i aria-hidden="true" title="Delete session local" class="material-icons">delete</i></a></td>';
                 htmlTable += '</tr>';
                 index++;
             });
@@ -138,6 +142,8 @@ $(document).ready(function(){
         var routes = $('#routes').val();
         $.get( "/row/stop", { routes: routes }, function(data) {
             $('#table-content').html(getHtml("Stopped", data));
+            $("#startRow").removeAttr('disabled');
+            $("#startSimulator").removeAttr('disabled');
         });
     })
 });

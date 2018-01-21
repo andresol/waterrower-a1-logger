@@ -9,8 +9,10 @@ e.g strava.
 
 ## Getting Started
 Obviously the WaterRower A1 is needed. I also recommend a 2 EL Wire Splitter Cable and a rasberry pi. Please 
-connect the WaterRower A1 sensor to the Raspberry Pi. Default this EL Wire Splitter is
+connect the WaterRower A1 sensor to the Raspberry Pi 3. Default this EL Wire Splitter is
 to the GPID 4 and ground.  
+
+![setup](setup.JPG "Setup")
 
 ## Prerequisites
 A Raspberry Pi running with nodejs. I use nodejs 9.4. Recommend also use of
@@ -34,12 +36,13 @@ node app.js
 After starting the app one can go to the web page..
 Start so a activity. 
 
-![web-gui](web-gui.png "gui")
+![web-gui](web-gui.png "Main Gui")
+![web-gui](web-gui-history.png "gui")
 
 ## TODO
-A lot of GUI. Automatic import into strava, live map.
+More routes, better route handling, support for multipe users.
 ....
 
 ## Errors
 Please make sure that GPIO is not shared.
-First gen of Rasberry Pi is to slow. Please use v3.
+First gen of Rasberry Pi is to slow. Please use v3 because of speed and wifi.
