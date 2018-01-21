@@ -42,6 +42,11 @@ Start so a activity.
 ![web-gui](web-gui.png "Main Gui")
 ![web-gui](web-gui-history.png "gui")
 
+##Strava
+This is in a beta stage, but look at https://www.npmjs.com/package/strava-v3
+Basic you need to do the quick start guide. After that you need to
+create get a writeable access_token. Look at the "Running the tests" section.
+
 ## TODO
 More routes, better route handling, support for multipe users.
 ....
