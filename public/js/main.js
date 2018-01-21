@@ -181,7 +181,7 @@ function getHtml(label, json) {
     html += '<div class="row">2k(p): ' + fmtMSS(parseInt(json.towKPace)) +'</div>';
     html += '<div class="row">Avg. watt: ' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div>';
     if(json.fileName) {
-        html += '<div class="row"><a href="/sessions/' + json.fileName + '">' + json.fileName+ '</a></div>';
+        html += 'Actions: <div class="row"><a id="" href="/sessions/' + json.fileName + '"><i class="material-icons">file_download</i> <a class="strava" href="/strava/upload/' + json.name +'"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a></div>';
     }
     if (parseInt(json.totalLaps) > 0) {
         html += '<div class="row"><div class="table-responsive"> <table class="table"><thead><tr><th>#</th><th>Meters</th><th>Time</th><th>Watt</th>';

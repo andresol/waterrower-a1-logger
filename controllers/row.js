@@ -59,6 +59,7 @@ router.get('/stop', function(req, res) {
         var gpxFile = new GpxFile(session, new Route(r.gps));
         var fileName = gpxFile.createFile();
         var stats = session.stats();
+        stats.name = sanitize(stats.start);
         stats.fileName = sanitize(fileName);
         res.send(JSON.stringify(stats, null, 3));
         session = NOT_ROWING;
