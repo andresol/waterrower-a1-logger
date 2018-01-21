@@ -54,7 +54,7 @@ $(document).ready(function(){
                     htmlCards += '<div class="card-body">';
                     htmlCards += '<div class="card-map-top "></div> ';
                     htmlCards += '<h5 class="card-title mt-2">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</h5>';
-                    htmlCards += '<p class="card-text">Lenght: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
+                    htmlCards += '<p class="card-text">Length: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
                     htmlCards += '<a href="/strava/upload/' + session.name +'" class="btn btn-primary strava btn-block">Upload to strava</a>';
                     htmlCards += '</div>';
                     htmlCards += '</div>';
@@ -62,7 +62,7 @@ $(document).ready(function(){
                 htmlTable += '<tr>';
                 htmlTable += '<th scope="row">'+ (index + 1) + '</th>';
                 htmlTable += '<td>' + session.name + '</td>';
-                htmlTable += '<td>Lenght: ' + parseInt(session.endStats.meters) + 'm</td>';
+                htmlTable += '<td>Length: ' + parseInt(session.endStats.meters) + 'm</td>';
                 htmlTable += '<td> <a id="" href="/sessions/' + session.name + '.gpx"><i class="material-icons">file_download</i> <a class="strava" href="/strava/upload/' + session.name +'"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name +'"><i aria-hidden="true" title="Delete session local" class="material-icons">delete</i></a></td>';
                 htmlTable += '</tr>';
                 index++;
