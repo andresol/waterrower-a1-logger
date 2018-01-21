@@ -28,8 +28,9 @@ $(document).ready(function(){
     }
 
     $('#startRow').click(function (e) {
-        e.preventDefault();
-        $.get( "/row/start", function() {
+        e.preventDefault()
+        var routes = $('#routes').val();
+        $.get( "/row/start",{ routes: routes }, function() {
            get_rowInfo(true, "Rowing");
            initMap();
             livePoints = [];
@@ -53,7 +54,8 @@ $(document).ready(function(){
 
     $('#startSimulator').click(function (e) {
         e.preventDefault();
-        $.get("/row/simulate", function() {
+        var routes = $('#routes').val();
+        $.get("/row/simulate", { routes: routes }, function() {
             get_rowInfo(true, "Simulate");
             initMap();
             livePoints = [];
