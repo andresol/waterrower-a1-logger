@@ -80,8 +80,8 @@ router.get('/stop', function(req, res) {
 router.get('/stop/strava', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     session.stop();
-    res.send(JSON.stringify(session.stats(), null, 3));
     session = NOT_ROWING;
+    res.send(JSON.stringify(session.stats(), null, 3));
 });
 
 module.exports = router;
