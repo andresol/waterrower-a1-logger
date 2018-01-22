@@ -6,6 +6,7 @@ var RowSession = require('../models/rowSession');
 var sanitize = require("sanitize-filename");
 
 const METER_RATION = (100 / 4.805);
+const SEGMENT_LENGTH = 500; //meters
 
 function GpxFile(rowSession, route ) {
     this.rowSession = rowSession;
@@ -20,18 +21,44 @@ GpxFile.prototype.createFile = function() {
     var object = {
         trk: {
             name: new Date(this.rowSession.start).toISOString(),
-            trkseg: {}
+            trkseg: []
         }
     };
 
-    var trackPoints = [];
+
     var p = null;
     var skip = 5;
     if (this.rowSession.raw.length < 30) {
         skip = 1;
     }
-    for (var i = 0; i < this.rowSession.raw.length; i = i + skip) {
+    var trksegs = [];
+    var trkseg = {};
+    var trackPoints = [];
+    var length = 0.0;
+    var i = 0;
+    for (; i < this.rowSession.raw.length; i = i + skip) {
         var rawTime = new Date(this.rowSession.raw[i]);
+        var distance = RowSession.prototype.getLengthInMetersByClicks(skip * 6); //6 click per raw.
+        p = this.route.nextPoint(p, distance.toFixed(4));
+        length += distance;
+        var trackPoint = {
+            '@lat': p.lat.toFixed(7),
+            '@lon': p.lon.toFixed(7),
+            ele: 0,
+            time: rawTime.toISOString()
+        };
+        trackPoints.push(trackPoint);
+        if (length >= SEGMENT_LENGTH) {
+            trkseg.trkpt = trackPoints;
+            trksegs.push(trkseg);
+            trkseg = {};
+            trackPoints = [];
+            length = 0.0;
+        }
+    }
+    //add last point.
+    if (i !== (this.rowSession.raw.length - 1)) {
+        var rawTime = new Date(this.rowSession.raw[this.rowSession.raw.length - 1]);
         var distance = RowSession.prototype.getLengthInMetersByClicks(skip * 6); //6 click per raw.
         p = this.route.nextPoint(p, distance.toFixed(4));
         var trackPoint = {
@@ -42,8 +69,12 @@ GpxFile.prototype.createFile = function() {
         };
         trackPoints.push(trackPoint);
     }
+    //
 
-    object.trk.trkseg.trkpt = trackPoints;
+    trkseg.trkpt = trackPoints;
+    trksegs.push(trkseg);//Make sure also recorded.
+
+    object.trk.trkseg = trksegs;
     root.ele(object);
     var filePath = path.sep + '..' + path.sep + 'public' + path.sep +
         'sessions' + path.sep + sanitize(object.trk.name) +".gpx";

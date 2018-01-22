@@ -49,7 +49,7 @@ router.get('/simulate', function(req, res) {
             routeParam = 1;
         }
         var r = Routes.routes[routeParam];
-        session = new RowSession("SIMLATE", new Route(r.gps));
+        session = new RowSession("SIMULATE", new Route(r.gps));
         session.route = routeParam;
         session.simulate();
     }
@@ -70,7 +70,7 @@ router.get('/stop', function(req, res) {
         var gpxFile = new GpxFile(session, new Route(r.gps));
         var fileName = gpxFile.createFile();
         var stats = session.stats();
-        stats.name = sanitize(stats.start);
+        stats.name = session.name;
         stats.fileName = sanitize(fileName);
         res.send(JSON.stringify(stats, null, 3));
         session = NOT_ROWING;

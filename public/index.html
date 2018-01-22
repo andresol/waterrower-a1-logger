@@ -80,12 +80,37 @@
 
     <div class="row">
         <div id="table-content" class="col">
+            <div class="container">
+                <div class="row">
+                    <h2>Not Rowing</h2>
+                </div><div class="row"></div>
+                <div class="row">Time: 00:00:00</div>
+                <div class="row">Length: 0 m</div>
+                <div class="row">Pace: 0 km/t</div>
+                <div class="row">500m(p): 00:00:00</div>
+                <div class="row">2k(p): 00:00:00</div>
+                <div class="row">Avg. watt: 0.0w</div>
+                <div class="row">Actions: </div>
+            </div>
         </div>
+
         <div id="live-map" class="col">
         </div>
     </div>
     <div class="row">
         <div id="laps" class="col mt-4">
+            <div class="row">
+                <div class="table-responsive col">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Lap #</th><th>Meters</th><th>Time</th><th>Watt</th></tr>
+                        </thead>
+                        <!--get_rowInfo() -->
+                        <tbody id="laps-body">
+                        </tbody>
+                     </table>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -23,8 +23,12 @@ router.get('/upload/:id', function(req, res) {
                     , 'name': name
                     , 'activity_type': 'rowing'
                     , 'statusCallback': function(err,payload) {
-                        console.log(err);
-                        console.log(payload);
+                        if (payload.status === 'Your activity is ready.' || err) {
+                            var result = {};
+                            result.payload = payload;
+                            result.error = err;
+                            res.send(JSON.stringify(result, null, 3));
+                        }
                     }
                 },function(err,payload,limits) {
                     console.log(err);
@@ -33,7 +37,7 @@ router.get('/upload/:id', function(req, res) {
             }
         }, function (reason) { console.log(reason) });
     }
-    res.send(JSON.stringify({status: "Uploading!!"}, null, 3));
+
 });
 
 router.get('/test', function(req, res) {
