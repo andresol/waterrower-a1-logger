@@ -61,7 +61,7 @@ $(document).ready(function(){
                     html+= '<optgroup label="' + value.country + '">';
                     group = value.country;
                 }
-                html+= '<option value="'+ index + '">'+ value.name + ' (' + value.meters + 'm)</option>';
+                html+= '<option value="'+ value.index + '">'+ value.name + ' (' + value.meters + 'm)</option>';
                 index++;
             });
             $('#routes').html(html)
