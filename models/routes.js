@@ -7,6 +7,7 @@
 const OSLO_ROUND = {
     name: "Gressholmen",
     meters: '7000',
+    country: 'Norway',
     gps: [
     { lat: 59.88458761, lon: 10.76115131, el: 4.0 },
     { lat: 59.88493213, lon: 10.75711727, el: 1.0 },
@@ -65,6 +66,7 @@ const OSLO_ROUND = {
 // Short round in Oslo
 const OSLO_SMALL = {
     name: "Ormsundet",
+    country: 'Norway',
     meters: '600',
     gps: [
         {lat: 59.88458761, lon: 10.76097965, el: 3.0},
@@ -109,6 +111,7 @@ const OSLO_SMALL = {
 //Ildjernet
 const ILDJERNET = {
     name: "Ildjernet",
+    country: 'Norway',
     meters: '20610',
     gps: [
         {lat: 59.88463068, lon: 10.76067924, el: 2.0},
@@ -206,6 +209,7 @@ const ILDJERNET = {
 
 const BLEIKOYA = {
     name: "Bleikoya",
+    country: 'Norway',
     meters: '4050',
     gps: [
         { lat: 59.88598040, lon: 10.75883380, el: 4.0 },
@@ -257,6 +261,7 @@ const BLEIKOYA = {
 
 const NYSTULVATN = {
     name: "Nystulvatn",
+    country: 'Norway',
     meters: '2550',
     gps: [
         { lat: 59.56154930, lon: 9.038808340, el: 303.0 },
@@ -306,6 +311,7 @@ const NYSTULVATN = {
 
 const THAMES = {
     name: 'River Thames',
+    country: 'England',
     meters: 6910,
     gps: [
         { lat: 51.50604460, lon: -0.07379293, el: 8.0 },
@@ -363,6 +369,7 @@ const THAMES = {
 
 const ALCATRAZ = {
     name: "Alcatraz",
+    country: 'USA',
     meters: 5350,
     gps: [
         { lat: 37.80744440, lon: -122.422778, el: 1.0 },
@@ -410,6 +417,7 @@ const ALCATRAZ = {
 
 const NEW_YORK = {
     name: "New York",
+    country: 'USA',
     meters: 7000,
     gps: [{ lat: 40.70034920, lon: -74.0132671, el: 1.0 },
         { lat: 40.69979610, lon: -74.0134602, el: 1.0 },
@@ -456,6 +464,7 @@ const NEW_YORK = {
 
 const THE_ENGLISH_CHANNEL = {
     name: "The English Channel",
+    country: 'England',
     meters: 81920,
     gps: [{ lat: 51.12329690, lon: 1.330075260, el: 1.0 },
         { lat: 51.12060330, lon: 1.336426730, el: 1.0 },
@@ -527,8 +536,8 @@ module.exports = {
     ALCATRAZ: ALCATRAZ,
     NEW_YORK: NEW_YORK,
     THE_ENGLISH_CHANNEL: THE_ENGLISH_CHANNEL,
-    routes: [OSLO_ROUND, OSLO_SMALL, ILDJERNET, BLEIKOYA, NYSTULVATN, THAMES, ALCATRAZ,
-        NEW_YORK, THE_ENGLISH_CHANNEL]
+    routes: [OSLO_ROUND, OSLO_SMALL, ILDJERNET, BLEIKOYA, NYSTULVATN, ALCATRAZ,
+        NEW_YORK, THAMES, THE_ENGLISH_CHANNEL]
 
 };
 
