@@ -47,7 +47,7 @@ RowSession.prototype.simulate = function() {
 };
 
 RowSession.prototype.increase = function() {
-    debounce(this.increment(), DEBOUNCE_TIME);
+    this.increment(); //TODO: Debunce?
 };
 
 RowSession.prototype.totalLaps = function () {
@@ -71,7 +71,6 @@ RowSession.prototype.laps = function () {
         var wattValue = watt(seconds/lapSize);
         laps.push({start: dateFormat(startTime, "isoDateTime"), end: dateFormat(endTime, "isoDateTime"), meters: lapSize, seconds: seconds, watt: wattValue});
     }
-
     return laps;
 };
 
@@ -91,19 +90,14 @@ RowSession.prototype.increment = function() {
         };
 
         if (this.raw.length > 2) {
-            var length = this.raw.length -1 ;
+            var length = this.raw.length - 1 ;
             var diffFirst = this.raw[length-1] - this.raw[length-2];
             var diffSecond = this.raw[length] - this.raw[length-1];
-            if ((diffFirst - diffSecond) >= 0) {
-                var add = RowSession.prototype.addStroke.bind(this);
-                debounce(add(), 500);
+            if ((diffFirst - diffSecond) > 0) {
+                addStrokeDebouce(this.stroke, this.raw[length])
             }
         }
     }
-};
-
-RowSession.prototype.addStroke = function() {
-    this.stroke.push(this.raw[this.raw.length - 1]);
 };
 
 RowSession.prototype.startRow = function() {
@@ -135,7 +129,7 @@ RowSession.prototype.getTotalLength = function() {
 
 RowSession.prototype.getStrokeRate = function() {
     if (this.stroke.length > 1) {
-        var length = this.stroke.length -1 ;
+        var length = this.stroke.length -1;
         return MILLIS_MIN / (this.stroke[length] - this.stroke[length-1]);
     } else {
         return 0;
@@ -207,6 +201,12 @@ function getClicksByMeters(meters) {
 function watt(pace) {
     return WATT_RATION / Math.pow(pace, 3);
 };
+
+function addStroke(stroke, val) {
+    stroke.push(val);
+}
+
+const addStrokeDebouce = debounce(addStroke, 750);
 
 // export the class
 module.exports = RowSession;

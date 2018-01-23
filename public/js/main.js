@@ -37,7 +37,6 @@ $(document).ready(function(){
         });
     });
 
-
     $('#startSimulator').click(function (e) {
         e.preventDefault();
         var routes = $('#routes').val();
@@ -146,7 +145,7 @@ function get_rowInfo(continues, title){
         var html = getHtml(title, data);
         if (html) {
             $('#table-content').html(html);
-            $('#laps-body').html(getLapHtml(title, data));
+            $('#laps-body').html(getLapHtml(title, data, true));
             var lat = data.gps.lat;
             var lon = data.gps.lon;
             var p = new google.maps.LatLng(lat, lon);
@@ -190,14 +189,23 @@ function getHtml(label, json) {
     return html + "</div>"
 }
 
-function getLapHtml(label, json) {
+function getLapHtml(label, json, reverse) {
     var html = '';
     if (parseInt(json.totalLaps) > 0) {
         var lapNum = 1;
-        json.laps.forEach(function (value) {
+        var laps = json.laps;
+        if (reverse) {
+            laps.reverse();
+            lapNum = laps.length;
+        }
+        laps.forEach(function (value) {
                 html += '<tr><th scope="row">' + lapNum + '</th><td>'+ parseInt(value.meters)+ '</td><td>'+ fmtMSS(parseInt(value.seconds)) +'</td>';
                 html += '<td>' + Math.round( parseFloat(value.watt)* 10) / 10 +'w</td></tr>';
-                lapNum++;
+                if (reverse) {
+                    lapNum--;
+                } else {
+                    lapNum++;
+                }
             }
         );
     }
