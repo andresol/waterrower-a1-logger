@@ -71,7 +71,7 @@ $(document).ready(function(){
         var key = getLastPart();
         var title = "History";
         $.get("/session/" + key, function(data) {
-            var html = getHtml(title, data.endStats);
+            var html = getHtml(title, data.endStats, true);
             $('#routes').val(data.routeObject.index);
             if (html) {
                 $('#table-content').html(html);
@@ -132,7 +132,7 @@ $(document).ready(function(){
         run = false;
         var routes = $('#routes').val();
         $.get( "/row/stop", { routes: routes }, function(data) {
-            $('#table-content').html(getHtml("Stopped", data));
+            $('#table-content').html(getHtml("Stopped", data, false));
             $("#startRow").removeAttr('disabled');
             $("#startSimulator").removeAttr('disabled');
         });
@@ -148,7 +148,6 @@ function get_rowInfo(continues, title){
             $('#laps-body').html(getLapHtml(title, data, true));
             var lat = data.gps.lat;
             var lon = data.gps.lon;
-            console.log(data.stroke);
             var p = new google.maps.LatLng(lat, lon);
             livePoints.push(p);
             liveBounds.extend(p);
@@ -169,12 +168,14 @@ function fmtMSS(s){
     return date.toISOString().substr(11, 8);
 }
 
-function getHtml(label, json) {
+function getHtml(label, json, day) {
     if (parseInt(json.meters) === 0) {
         return ;
     }
     var html = '<div class="container">';
-    html += '<div class="row"><span class="label">Day:</span> ' + json.start.substr(0, json.start.lastIndexOf('T')) +'</div>';
+    if (day) {
+        html += '<div class="row"><span class="label">Day:</span> ' + json.start.substr(0, json.start.lastIndexOf('T')) +'</div>';
+    }
     html += '<div class="row"><span class="label">Start:</span> ' + json.start.substr(json.start.lastIndexOf('T') + 1, 8) +'</div>';
     html += '<div class="row"><span class="label">Time:</span> ' + fmtMSS(parseInt(json.seconds)) +'</div>';
     html += '<div class="row"><span class="label">Length:</span> ' + parseInt(json.meters) +' m</div>';
@@ -182,6 +183,7 @@ function getHtml(label, json) {
     html += '<div class="row"><span class="label">500m(p):</span> ' + fmtMSS(parseInt(json.lapPace)) +'</div>';
     html += '<div class="row"><span class="label">2k(p):</span> ' + fmtMSS(parseInt(json.towKPace)) +'</div>';
     html += '<div class="row"><span class="label">Avg. watt:</span> ' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div>';
+    html += '<div class="row"><span class="label">Strokerate:</span> ' + Math.round( parseFloat(json.stroke)* 10) / 10 +'</div>';
     if(json.fileName) {
         html += '<div class="row"><span class="label">Actions:</span> <a id="" href="/sessions/' + json.fileName;
         html += '"><i class="material-icons">file_download</i> <a class="strava" href="/strava/upload/' + json.name;
