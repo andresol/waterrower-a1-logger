@@ -175,7 +175,7 @@ function getHtml(label, json) {
     }
     var html = '<div class="container">';
     html += '<div class="row"><span class="label">Day:</span> ' + json.start.substr(0, json.start.lastIndexOf('T')) +'</div>';
-    html += '<div class="row"><span class="label">Start:</span> ' + json.start.substr(json.start.lastIndexOf('T') + 1,json.start.lastIndexOf('+')) +'</div>';
+    html += '<div class="row"><span class="label">Start:</span> ' + json.start.substr(json.start.lastIndexOf('T') + 1, 8) +'</div>';
     html += '<div class="row"><span class="label">Time:</span> ' + fmtMSS(parseInt(json.seconds)) +'</div>';
     html += '<div class="row"><span class="label">Length:</span> ' + parseInt(json.meters) +' m</div>';
     html += '<div class="row"><span class="label">Pace:</span> ' + Math.round( parseFloat(json.pace) * 3.6 * 10) / 10 +' km/t</div>';
