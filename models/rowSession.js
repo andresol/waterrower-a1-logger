@@ -93,7 +93,7 @@ RowSession.prototype.increment = function() {
             var length = this.raw.length - 1 ;
             var diffFirst = this.raw[length-1] - this.raw[length-2];
             var diffSecond = this.raw[length] - this.raw[length-1];
-            if ((diffFirst - diffSecond) > 100) {
+            if ((diffFirst - diffSecond) >= 0) {
                 addStrokeDebouce(this.stroke, this.raw[length])
             }
         }
@@ -206,7 +206,7 @@ function addStroke(stroke, val) {
     stroke.push(val);
 }
 
-const addStrokeDebouce = debounce(addStroke, 1150);
+const addStrokeDebouce = debounce(addStroke, 1250);
 
 // export the class
 module.exports = RowSession;
