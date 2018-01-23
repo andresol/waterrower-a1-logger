@@ -148,6 +148,7 @@ function get_rowInfo(continues, title){
             $('#laps-body').html(getLapHtml(title, data, true));
             var lat = data.gps.lat;
             var lon = data.gps.lon;
+            console.log(data.stroke);
             var p = new google.maps.LatLng(lat, lon);
             livePoints.push(p);
             liveBounds.extend(p);

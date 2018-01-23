@@ -206,7 +206,7 @@ function addStroke(stroke, val) {
     stroke.push(val);
 }
 
-const addStrokeDebouce = debounce(addStroke, 750);
+const addStrokeDebouce = debounce(addStroke, 1150);
 
 // export the class
 module.exports = RowSession;
