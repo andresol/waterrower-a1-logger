@@ -93,7 +93,7 @@ RowSession.prototype.increment = function() {
             var length = this.raw.length - 1 ;
             var diffFirst = this.raw[length-1] - this.raw[length-2];
             var diffSecond = this.raw[length] - this.raw[length-1];
-            if ((diffFirst - diffSecond) > 0) {
+            if ((diffFirst - diffSecond) > 100) {
                 addStrokeDebouce(this.stroke, this.raw[length])
             }
         }
