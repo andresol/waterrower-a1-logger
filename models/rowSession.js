@@ -1,5 +1,5 @@
 try {
-var Gpio = require('onoff').Gpio;
+    var Gpio = require('onoff').Gpio;
 } catch (e) {
     console.log("GPIO not supported.")
 }
@@ -7,19 +7,21 @@ var dateFormat = require('dateformat');
 var debounce = require('debounce');
 var createGpx = require('gps-to-gpx');
 var sanitize = require("sanitize-filename");
+var DateDiff = require('date-diff');
 
 const RATION = 100 / 4.805; // 100 cm is 4.805 clicks. About 20.81 cm.
 const PID = 4;
 const DEBOUNCE_TIME = 5; // 5ms
 const SAMPLE_SIZE = 6;
 const WATT_RATION = 2.80;
+const MILLIS_MIN = 60 * 1000;
 
 var sensor;
 var runSimulator = false;
 
 function RowSession(status, route) {
     this.status = status;
-    this.stroke = 0;
+    this.stroke = [];
     this.counter = 0;
     this.start = Date.now();
     this.raw = [];
@@ -27,10 +29,6 @@ function RowSession(status, route) {
     this.name = sanitize(new Date(this.start).toISOString());
     this.routeObject = route;
 }
-
-RowSession.prototype.stroke = function() {
-
-};
 
 RowSession.prototype.simulate = function() {
     this.sim = true; //mark this as sim
@@ -80,18 +78,32 @@ RowSession.prototype.laps = function () {
 RowSession.prototype.increment = function() {
     this.counter = this.counter + 1;
     if (this.counter % SAMPLE_SIZE === 1) { //Total length
-        this.raw.push(Date.now());
-        var rawTime = new Date(Date.now());
+        var time = Date.now();
+        this.raw.push(time);
+        var rawTime = new Date(time);
         var distance = this.getLengthInMetersByClicks(6); //6 click per raw.
-            this.p = this.routeObject.nextPoint(this.p, distance.toFixed(4));
-            this.trackPoint = {
-                'lat': this.p.lat.toFixed(7),
-                'lon': this.p.lon.toFixed(7),
-                ele: 0,
-                time: rawTime.toISOString()
-            }
+        this.p = this.routeObject.nextPoint(this.p, distance.toFixed(4));
+        this.trackPoint = {
+            'lat': this.p.lat.toFixed(7),
+            'lon': this.p.lon.toFixed(7),
+            ele: 0,
+            time: rawTime.toISOString()
+        };
 
+        if (this.raw.length > 2) {
+            var length = this.raw.length -1 ;
+            var diffFirst = this.raw[length-1] - this.raw[length-2];
+            var diffSecond = this.raw[length] - this.raw[length-1];
+            if ((diffFirst - diffSecond) >= 0) {
+                var add = RowSession.prototype.addStroke.bind(this);
+                debounce(add(), 500);
+            }
+        }
     }
+};
+
+RowSession.prototype.addStroke = function() {
+    this.stroke.push(this.raw[this.raw.length - 1]);
 };
 
 RowSession.prototype.startRow = function() {
@@ -121,6 +133,17 @@ RowSession.prototype.getTotalLength = function() {
     return this.counter * RATION;
 };
 
+RowSession.prototype.getStrokeRate = function() {
+    if (this.stroke.length > 1) {
+        var length = this.stroke.length -1 ;
+        console.log("Stroke 1:" + this.stroke[length]);
+        console.log("Stroke 2:" + this.stroke[length - 1]);
+        return MILLIS_MIN / (this.stroke[length] - this.stroke[length-1]);
+    } else {
+        return 0;
+    }
+};
+
 RowSession.prototype.getLengthByClicks = function(clicks) {
     return clicks * RATION;
 };
@@ -141,6 +164,7 @@ RowSession.prototype.stats = function() {
     stats.totalLaps = this.totalLaps();
     stats.laps = this.laps();
     stats.gps = this.trackPoint;
+    stats.stroke = this.getStrokeRate();
     stats.watt = watt(this.totalTimeInSec() / this.totalInMeters());
     return stats;
 };
@@ -168,7 +192,6 @@ RowSession.prototype.fiveHundrePace = function () {
 RowSession.prototype.twoKPace = function () {
     return 2000 / this.meterPerSeconds();
 };
-
 
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
