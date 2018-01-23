@@ -136,8 +136,6 @@ RowSession.prototype.getTotalLength = function() {
 RowSession.prototype.getStrokeRate = function() {
     if (this.stroke.length > 1) {
         var length = this.stroke.length -1 ;
-        console.log("Stroke 1:" + this.stroke[length]);
-        console.log("Stroke 2:" + this.stroke[length - 1]);
         return MILLIS_MIN / (this.stroke[length] - this.stroke[length-1]);
     } else {
         return 0;
