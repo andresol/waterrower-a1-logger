@@ -1,4 +1,4 @@
-const UPDATE_FREQ = 500;
+const UPDATE_FREQ = 1000;
 var timeOut;
 var run = false;
 var liveMap;
@@ -61,6 +61,19 @@ $(document).ready(function(){
         });
     });
 
+    $('#history-session').each(function () {
+        var key = getLastPart();
+        var title = "History";
+        $.get("/session/" + key, function(data) {
+            var html = getHtml(title, data.endStats);
+            if (html) {
+                $('#table-content').html(html);
+                $('#laps-body').html(getLapHtml(title, data.endStats));
+                addGpxTrackToMap(key, $("#live-map"));
+            }
+        });
+    });
+
     $('#history').each(function () {
         $.get("/session", function(data) {
             var htmlCards = '';
@@ -78,7 +91,9 @@ $(document).ready(function(){
             $('#histor-table-body').html(htmlTable);
 
             $('.gpx-track').each(function () {
-                addGpxTrackToMap.call(this);
+                var name = $(this).data('name');
+                var element = $(this).find('.card-map-top');
+                addGpxTrackToMap(name, element);
             });
         });
     });
@@ -150,16 +165,17 @@ function getHtml(label, json) {
     if (parseInt(json.meters) === 0) {
         return ;
     }
-    var html = "<div class='container'><div class='row'><h2>" + label +"</h2></div>";
-    html += '<div class="row">Start: ' + json.start +'</div>';
-    html += '<div class="row">Time: ' + fmtMSS(parseInt(json.seconds)) +'</div>';
-    html += '<div class="row">Length: ' + parseInt(json.meters) +' m</div>';
-    html += '<div class="row">Pace: ' + Math.round( parseFloat(json.pace) * 3.6 * 10) / 10 +' km/t</div>';
-    html += '<div class="row">500m(p): ' + fmtMSS(parseInt(json.lapPace)) +'</div>';
-    html += '<div class="row">2k(p): ' + fmtMSS(parseInt(json.towKPace)) +'</div>';
-    html += '<div class="row">Avg. watt: ' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div>';
+    var html = '<div class="container">';
+    html += '<div class="row"><span class="label">Day:</span> ' + json.start.substr(0, json.start.lastIndexOf('T')) +'</div>';
+    html += '<div class="row"><span class="label">Start:</span> ' + json.start.substr(json.start.lastIndexOf('T') + 1,json.start.lastIndexOf('+')) +'</div>';
+    html += '<div class="row"><span class="label">Time:</span> ' + fmtMSS(parseInt(json.seconds)) +'</div>';
+    html += '<div class="row"><span class="label">Length:</span> ' + parseInt(json.meters) +' m</div>';
+    html += '<div class="row"><span class="label">Pace:</span> ' + Math.round( parseFloat(json.pace) * 3.6 * 10) / 10 +' km/t</div>';
+    html += '<div class="row"><span class="label">500m(p):</span> ' + fmtMSS(parseInt(json.lapPace)) +'</div>';
+    html += '<div class="row"><span class="label">2k(p):</span> ' + fmtMSS(parseInt(json.towKPace)) +'</div>';
+    html += '<div class="row"><span class="label">Avg. watt:</span> ' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div>';
     if(json.fileName) {
-        html += '<div class="row">Actions: <a id="" href="/sessions/' + json.fileName;
+        html += '<div class="row"><span class="label">Actions:</span> <a id="" href="/sessions/' + json.fileName;
         html += '"><i class="material-icons">file_download</i> <a class="strava" href="/strava/upload/' + json.name;
         html += '"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a></div>';
     }
@@ -195,6 +211,10 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
+function getLastPart() {
+    return window.location.href.substr(window.location.href.lastIndexOf('/') + 1)
+}
+
 function cleanMap() {
     initMap();
     livePoints = [];
@@ -219,7 +239,7 @@ var createCard = function (htmlCards, session) {
     htmlCards += '<div class="card col-sm gpx-track" data-name="' + session.name + '" style="width: 18rem;">';
     htmlCards += '<div class="card-body">';
     htmlCards += '<div class="card-map-top "></div>';
-    htmlCards += '<h5 class="card-title mt-2">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</h5>';
+    htmlCards += '<h5 class="card-title mt-2"><a href="/history/' + session.name +'">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></h5>';
     htmlCards += '<p class="card-text">Length: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
     htmlCards += '<a href="/strava/upload/' + session.name + '" class="btn btn-primary strava btn-block">Upload to Strava</a>';
     htmlCards += '</div>';
@@ -240,15 +260,13 @@ function initMap() {
 var createLapTableRecord = function (htmlTable, index, session) {
     htmlTable += '<tr>';
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
-    htmlTable += '<td>' + session.name + '</td>';
+    htmlTable += '<td><a href="/history/' + session.name +'">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></td>';
     htmlTable += '<td>Length: ' + parseInt(session.endStats.meters) + 'm</td>';
     htmlTable += '<td> <a id="" href="/sessions/' + session.name + '.gpx"><i class="material-icons">file_download</i><a class="strava" href="/strava/upload/' + session.name + '"><i aria-hidden="true" title="Upload to Strava" class="material-icons">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name + '"><i aria-hidden="true" title="Delete session local" class="material-icons">delete</i></a></td>';
     htmlTable += '</tr>';
     return htmlTable;
 };
-var addGpxTrackToMap = function () {
-    var name = $(this).data('name');
-    var element = $(this).find('.card-map-top');
+var addGpxTrackToMap = function (name, element) {
     if (name) {
         $.ajax({
             type: "GET",

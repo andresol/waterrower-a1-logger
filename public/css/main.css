@@ -10,4 +10,9 @@
 
 #table-content {
     height: 300px;
+    font-size: 1.5rem;
+}
+
+span.label {
+    width: 150px;
 }
