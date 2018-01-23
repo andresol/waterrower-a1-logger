@@ -53,8 +53,15 @@ $(document).ready(function(){
         $.get("/row/routes", function(data) {
             var html = '';
             var index = 0;
+            var group = '';
+            data.sort(function(a,b) {return (a.country > b.country) ? 1 : ((b.country > a.country) ? -1 : 0);} );
+
             data.forEach(function (value) {
-                html+= '<option value="'+ index + '">'+ value.name + ' (' + value.meters + 'm)</option>';
+                if (value.country !== group) {
+                    html+= '<optgroup label="' + value.country + '">';
+                    group = value.country;
+                }
+                html+= '<option value="'+ value.index + '">'+ value.name + ' (' + value.meters + 'm)</option>';
                 index++;
             });
             $('#routes').html(html)

@@ -24,7 +24,7 @@ function RowSession(status, route) {
     this.start = Date.now();
     this.raw = [];
     this.p = null;
-    this.name = sanitize(new Date().toISOString());
+    this.name = sanitize(new Date(this.start).toISOString());
     this.routeObject = route;
 }
 
