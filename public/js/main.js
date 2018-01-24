@@ -105,6 +105,25 @@ $(document).ready(function(){
         });
     });
 
+    $( "#save-user" ).on( "click", function( event ) {
+        event.preventDefault();
+        var form =  $("#addUserForm");
+        var firstName = form.find('#firstName').val();
+        var lastName = form.find('#lastName').val();
+        var id = form.find('#userId').val();
+        var user = {};
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.id = id;
+        $.ajax({
+            type: 'PUT',
+            contentType: 'application/json',
+            dataType: 'json',
+            url: "/users/add",
+            data: JSON.stringify(user)
+        });
+    });
+
     $(document).on("click", '.strava', function(e) {
         e.preventDefault();
         var href = $(this).attr('href');

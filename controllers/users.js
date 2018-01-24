@@ -1,23 +1,44 @@
 var express = require('express'),
     router = express.Router(),
-    strava = require('strava-v3');
+    strava = require('strava-v3'),
+    userService = require('../service/userService'),
+    bodyParser = require('body-parser');
 
-router.put('/add/user', function(req, res) {
+// create application/json parser
+var jsonParser = bodyParser.json();
+
+router.put('/add', jsonParser, function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({}, null, 3));
+    if (!req.body) return res.sendStatus(400);
+    res.send(JSON.stringify(req.body, null, 3));
 });
 
-router.post('/modify/user', function(req, res) {
+router.get('/', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({}, null, 3));
+
+    var array = [];
+    userService.getAll(50, true).on('data', function (data) {
+        array.push(JSON.parse(data.value));
+    }).on('error', function (err) {
+        console.log('Oh my!', err)
+    }).on('end', function () {
+        res.send(JSON.stringify(array, null, 3));
+    });
 });
 
-router.get('/user/:id', function(req, res) {
+router.get(':id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({}), null, 3);
+    var id = req.params.id;
+    if (id) {
+        userService.get(id).then(function (value) {
+            res.send(value);
+        }).catch(function (err) { console.error(err) });
+    } else{
+        res.status(404).send('Cannot find session');
+    }
 });
 
-router.get('/user/:id/code', function(req, res) {
+router.get(':id/code', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     //get auth url
     //strava.oauth.getRequestAccessURL({scope:"view_private,write"};
@@ -27,9 +48,13 @@ router.get('/user/:id/code', function(req, res) {
     res.send(JSON.stringify({}), null, 3);
 });
 
-router.delete('/user/:id', function(req, res) {
+router.delete(':id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({}, null, 3));
+    var id = req.params.id;
+    if (id) {
+        userService.del(id);
+    }
+    res.send(JSON.stringify({status: "deleted"}, null, 3));
 });
 
 module.exports = router;

@@ -18,4 +18,8 @@ router.get('/history/:id', function(req, res) {
     res.sendFile('session.html', {root: './public'});
 });
 
+router.get('/user/', function(req, res) {
+    res.sendFile('user.html', {root: './public'});
+});
+
 module.exports = router;

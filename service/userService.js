@@ -2,7 +2,8 @@ var cuid = require('cuid');
 var db = require('../db/db');
 
 function addUser(user) {
-    db.users.put(user.id, user);
+    user.id = cuid();
+    db.users.put(user.id, JSON.stringify(user, null, 3));
 }
 
 function getUser(id) {
@@ -24,5 +25,8 @@ function getAllUsers() {
 }
 
 module.exports =  {
-    add: addUser
+    add: addUser,
+    get: getUser,
+    del: delUser,
+    all: getAllUsers
 };
