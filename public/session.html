@@ -5,9 +5,8 @@
     <title>Waterrower A1</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="apple-mobile-web-app-title" content="WaterRower A1">
-    <meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name=apple-mobile-web-app-capable content=yes>
-    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="/css/main.css" rel="stylesheet"/>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -42,41 +41,64 @@
     </div>
 </nav>
 
-<!-- Main content -->
-
-<div id = "history" class="container mt-3">
-    <div class="row">
+<!-- Main -->
+<div id="history-session" class="container mt-4">
+    <div class="row mt-3">
         <div class="col">
-            <h2>Last 3 sessions</h2>
-            <div id="cards" class="row">
+            <h2>Route</h2>
+            <form>
+                <div class="form-group row">
+                    <div class="col-sm">
+                        <select class="form-control" id="routes">
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div id="table-content" class="col">
+            <div class="container">
+                <div class="row"><span class="label">Day</span></div>
+                <div class="row"><span class="label">Time:</span>00:00:00</div>
+                <div class="row"><span class="label">Length:</span>0 m</div>
+                <div class="row"><span class="label">Pace:</span> 0 km/t</div>
+                <div class="row"><span class="label">500m(p):</span> 00:00:00</div>
+                <div class="row"><span class="label">2k(p):</span>00:00:00</div>
+                <div class="row"><span class="label">Avg. watt:</span>0.0w</div>
+                <div class="row"><span class="label">Actions:</span></div>
+            </div>
+        </div>
+
+        <div id="live-map" class="col-8">
+        </div>
+    </div>
+    <div class="row">
+        <div id="laps" class="col mt-5">
+            <div class="row">
+                <div class="table-responsive col">
+                    <table class="table">
+                        <thead>
+                        <tr><th>Lap #</th><th>Meters</th><th>Time</th><th>Watt</th></tr>
+                        </thead>
+                        <!--get_rowInfo() -->
+                        <tbody id="laps-body">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-2">
-        <div id="history-table" class="col">
-            <h2>All sessions</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Length</th>
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                <tbody id="histor-table-body">
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <!--My map key. IP restricted -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPq6S4y5IOi2huNGa_4WhAPU5Hd_EW_dI"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPq6S4y5IOi2huNGa_4WhAPU5Hd_EW_dI&callback=initMap"
+        async defer></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="/js/main.js"></script>
 </body>

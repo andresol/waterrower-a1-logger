@@ -7,6 +7,8 @@
 const OSLO_ROUND = {
     name: "Gressholmen",
     meters: '7000',
+    country: 'Norway',
+    index: 0,
     gps: [
     { lat: 59.88458761, lon: 10.76115131, el: 4.0 },
     { lat: 59.88493213, lon: 10.75711727, el: 1.0 },
@@ -65,6 +67,8 @@ const OSLO_ROUND = {
 // Short round in Oslo
 const OSLO_SMALL = {
     name: "Ormsundet",
+    country: 'Norway',
+    index: 1,
     meters: '600',
     gps: [
         {lat: 59.88458761, lon: 10.76097965, el: 3.0},
@@ -109,6 +113,8 @@ const OSLO_SMALL = {
 //Ildjernet
 const ILDJERNET = {
     name: "Ildjernet",
+    country: 'Norway',
+    index: 2,
     meters: '20610',
     gps: [
         {lat: 59.88463068, lon: 10.76067924, el: 2.0},
@@ -206,6 +212,8 @@ const ILDJERNET = {
 
 const BLEIKOYA = {
     name: "Bleikoya",
+    country: 'Norway',
+    index: 3,
     meters: '4050',
     gps: [
         { lat: 59.88598040, lon: 10.75883380, el: 4.0 },
@@ -257,6 +265,8 @@ const BLEIKOYA = {
 
 const NYSTULVATN = {
     name: "Nystulvatn",
+    country: 'Norway',
+    index: 4,
     meters: '2550',
     gps: [
         { lat: 59.56154930, lon: 9.038808340, el: 303.0 },
@@ -306,6 +316,8 @@ const NYSTULVATN = {
 
 const THAMES = {
     name: 'River Thames',
+    country: 'England',
+    index: 7,
     meters: 6910,
     gps: [
         { lat: 51.50604460, lon: -0.07379293, el: 8.0 },
@@ -363,6 +375,8 @@ const THAMES = {
 
 const ALCATRAZ = {
     name: "Alcatraz",
+    country: 'USA',
+    index: 5,
     meters: 5350,
     gps: [
         { lat: 37.80744440, lon: -122.422778, el: 1.0 },
@@ -408,6 +422,119 @@ const ALCATRAZ = {
     ]
 };
 
+const NEW_YORK = {
+    name: "New York",
+    country: 'USA',
+    index: 6,
+    meters: 7000,
+    gps: [{ lat: 40.70034920, lon: -74.0132671, el: 1.0 },
+        { lat: 40.69979610, lon: -74.0134602, el: 1.0 },
+        { lat: 40.69961720, lon: -74.0139323, el: 1.0 },
+        { lat: 40.69956840, lon: -74.0142434, el: 1.0 },
+        { lat: 40.69938130, lon: -74.0151447, el: 1.0 },
+        { lat: 40.69924300, lon: -74.0158957, el: 1.0 },
+        { lat: 40.69909660, lon: -74.0167325, el: 1.0 },
+        { lat: 40.69896650, lon: -74.0176767, el: 1.0 },
+        { lat: 40.69873060, lon: -74.0201711, el: 1.0 },
+        { lat: 40.69801480, lon: -74.0222311, el: 1.0 },
+        { lat: 40.69697360, lon: -74.0252351, el: 1.0 },
+        { lat: 40.69638790, lon: -74.0272092, el: 1.0 },
+        { lat: 40.69599750, lon: -74.0299558, el: 1.0 },
+        { lat: 40.69534670, lon: -74.0331315, el: 1.0 },
+        { lat: 40.69443560, lon: -74.0361356, el: 1.0 },
+        { lat: 40.69332930, lon: -74.0402555, el: 1.0 },
+        { lat: 40.69293890, lon: -74.0430021, el: 1.0 },
+        { lat: 40.69287380, lon: -74.0451478, el: 1.0 },
+        { lat: 40.69202780, lon: -74.0478944, el: 1.0 },
+        { lat: 40.69098650, lon: -74.0487527, el: 1.0 },
+        { lat: 40.68968490, lon: -74.0488386, el: 1.0 },
+        { lat: 40.68844830, lon: -74.0481519, el: 1.0 },
+        { lat: 40.68740700, lon: -74.0458345, el: 1.0 },
+        { lat: 40.68747210, lon: -74.0436029, el: 1.0 },
+        { lat: 40.68844830, lon: -74.0416288, el: 1.0 },
+        { lat: 40.68877370, lon: -74.0399980, el: 1.0 },
+        { lat: 40.68942460, lon: -74.0376806, el: 1.0 },
+        { lat: 40.69124680, lon: -74.0343332, el: 1.0 },
+        { lat: 40.69144210, lon: -74.0310716, el: 1.0 },
+        { lat: 40.69280870, lon: -74.0282392, el: 1.0 },
+        { lat: 40.69339440, lon: -74.0249776, el: 1.0 },
+        { lat: 40.69463090, lon: -74.0229177, el: 1.0 },
+        { lat: 40.69593240, lon: -74.0190553, el: 1.0 },
+        { lat: 40.69690850, lon: -74.0165662, el: 1.0 },
+        { lat: 40.69749420, lon: -74.0145063, el: 1.0 },
+        { lat: 40.69777070, lon: -74.0140450, el: 1.0 },
+        { lat: 40.69812860, lon: -74.0136802, el: 1.0 },
+        { lat: 40.69869800, lon: -74.0133798, el: 1.0 },
+        { lat: 40.69923490, lon: -74.0132939, el: 1.0 },
+        { lat: 40.69990190, lon: -74.0131866, el: 1.0 }
+    ]
+};
+
+const THE_ENGLISH_CHANNEL = {
+    name: "The English Channel",
+    country: 'England',
+    index: 8,
+    meters: 81920,
+    gps: [{ lat: 51.12329690, lon: 1.330075260, el: 1.0 },
+        { lat: 51.12060330, lon: 1.336426730, el: 1.0 },
+        { lat: 51.12076490, lon: 1.343851080, el: 1.0 },
+        { lat: 51.11904090, lon: 1.351919170, el: 1.0 },
+        { lat: 51.11634700, lon: 1.356725690, el: 1.0 },
+        { lat: 51.11332960, lon: 1.368055340, el: 1.0 },
+        { lat: 51.11085090, lon: 1.388912200, el: 1.0 },
+        { lat: 51.10632430, lon: 1.402645110, el: 1.0 },
+        { lat: 51.10201280, lon: 1.419124600, el: 1.0 },
+        { lat: 51.09554480, lon: 1.436977380, el: 1.0 },
+        { lat: 51.08778210, lon: 1.457576750, el: 1.0 },
+        { lat: 51.07980230, lon: 1.477832790, el: 1.0 },
+        { lat: 51.07419400, lon: 1.492595670, el: 1.0 },
+        { lat: 51.06491740, lon: 1.515598290, el: 1.0 },
+        { lat: 51.05952310, lon: 1.532077780, el: 1.0 },
+        { lat: 51.05348080, lon: 1.548213950, el: 1.0 },
+        { lat: 51.02930370, lon: 1.602630610, el: 1.0 },
+        { lat: 51.00857040, lon: 1.643829340, el: 1.0 },
+        { lat: 50.99992880, lon: 1.682281490, el: 1.0 },
+        { lat: 50.99063730, lon: 1.711635580, el: 1.0 },
+        { lat: 50.98804400, lon: 1.726741790, el: 1.0 },
+        { lat: 50.98307300, lon: 1.745624540, el: 1.0 },
+        { lat: 50.98047930, lon: 1.763477320, el: 1.0 },
+        { lat: 50.97658840, lon: 1.787853240, el: 1.0 },
+        { lat: 50.97377810, lon: 1.808109280, el: 1.0 },
+        { lat: 50.97204860, lon: 1.825618740, el: 1.0 },
+        { lat: 50.97183250, lon: 1.835918420, el: 1.0 },
+        { lat: 50.97118390, lon: 1.844844810, el: 1.0 },
+        { lat: 50.96858950, lon: 1.853084560, el: 1.0 },
+        { lat: 50.96837330, lon: 1.845531460, el: 1.0 },
+        { lat: 50.97377810, lon: 1.835918420, el: 1.0 },
+        { lat: 50.97723690, lon: 1.819438930, el: 1.0 },
+        { lat: 50.98393760, lon: 1.782360070, el: 1.0 },
+        { lat: 50.99171780, lon: 1.749401090, el: 1.0 },
+        { lat: 50.99992880, lon: 1.714725490, el: 1.0 },
+        { lat: 51.00684220, lon: 1.692409510, el: 1.0 },
+        { lat: 51.01310660, lon: 1.673870080, el: 1.0 },
+        { lat: 51.02260960, lon: 1.648807520, el: 1.0 },
+        { lat: 51.02800810, lon: 1.631984710, el: 1.0 },
+        { lat: 51.04312080, lon: 1.600742340, el: 1.0 },
+        { lat: 51.05844420, lon: 1.564693450, el: 1.0 },
+        { lat: 51.07138970, lon: 1.534824370, el: 1.0 },
+        { lat: 51.08648810, lon: 1.496372220, el: 1.0 },
+        { lat: 51.09144800, lon: 1.474056240, el: 1.0 },
+        { lat: 51.09640730, lon: 1.453456870, el: 1.0 },
+        { lat: 51.10481530, lon: 1.429424280, el: 1.0 },
+        { lat: 51.10869550, lon: 1.410198210, el: 1.0 },
+        { lat: 51.11149760, lon: 1.397151940, el: 1.0 },
+        { lat: 51.11602370, lon: 1.384449000, el: 1.0 },
+        { lat: 51.12033390, lon: 1.363849630, el: 1.0 },
+        { lat: 51.12162690, lon: 1.351490020, el: 1.0 },
+        { lat: 51.12130360, lon: 1.346983900, el: 1.0 },
+        { lat: 51.12130360, lon: 1.343464850, el: 1.0 },
+        { lat: 51.12141140, lon: 1.340632430, el: 1.0 },
+        { lat: 51.12221950, lon: 1.337800020, el: 1.0 },
+        { lat: 51.12211170, lon: 1.335053440, el: 1.0 },
+        { lat: 51.12372790, lon: 1.331276890, el: 1.0 }
+    ]
+};
+
 module.exports = {
     OSLO_ROUND : OSLO_ROUND,
     OSLO_SMALL : OSLO_SMALL,
@@ -416,7 +543,10 @@ module.exports = {
     NYSTULVATN: NYSTULVATN,
     THAMES: THAMES,
     ALCATRAZ: ALCATRAZ,
-    routes: [OSLO_ROUND, OSLO_SMALL, ILDJERNET, BLEIKOYA, NYSTULVATN, THAMES, ALCATRAZ]
+    NEW_YORK: NEW_YORK,
+    THE_ENGLISH_CHANNEL: THE_ENGLISH_CHANNEL,
+    routes: [OSLO_ROUND, OSLO_SMALL, ILDJERNET, BLEIKOYA, NYSTULVATN, ALCATRAZ,
+        NEW_YORK, THAMES, THE_ENGLISH_CHANNEL]
 
 };
 

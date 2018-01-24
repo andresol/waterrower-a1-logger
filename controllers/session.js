@@ -28,6 +28,18 @@ router.get('/', function(req, res) {
     });
 });
 
+router.get('/:id', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    var id = req.params.id;
+    if (id) {
+        sessionService.get(id).then(function (value) {
+            res.send(value);
+        }).catch(function (err) { console.error(err) });
+    } else{
+        res.status(404).send('Cannot find session');
+    }
+});
+
 router.get('/del/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var id = req.params.id;

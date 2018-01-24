@@ -31,7 +31,7 @@ GpxFile.prototype.createFile = function() {
     if (this.rowSession.raw.length < 30) {
         skip = 1;
     }
-    var trksegs = [];
+    //var trksegs = [];
     var trkseg = {};
     var trackPoints = [];
     var length = 0.0;
@@ -48,13 +48,6 @@ GpxFile.prototype.createFile = function() {
             time: rawTime.toISOString()
         };
         trackPoints.push(trackPoint);
-        if (length >= SEGMENT_LENGTH) {
-            trkseg.trkpt = trackPoints;
-            trksegs.push(trkseg);
-            trkseg = {};
-            trackPoints = [];
-            length = 0.0;
-        }
     }
     //add last point.
     if (i !== (this.rowSession.raw.length - 1)) {
@@ -72,9 +65,8 @@ GpxFile.prototype.createFile = function() {
     //
 
     trkseg.trkpt = trackPoints;
-    trksegs.push(trkseg);//Make sure also recorded.
 
-    object.trk.trkseg = trksegs;
+    object.trk.trkseg = trkseg;
     root.ele(object);
     var filePath = path.sep + '..' + path.sep + 'public' + path.sep +
         'sessions' + path.sep + sanitize(object.trk.name) +".gpx";
