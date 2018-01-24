@@ -10,6 +10,7 @@ var jsonParser = bodyParser.json();
 router.put('/add', jsonParser, function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (!req.body) return res.sendStatus(400);
+    userService.add(req.body);
     res.send(JSON.stringify(req.body, null, 3));
 });
 
@@ -17,7 +18,7 @@ router.get('/', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
 
     var array = [];
-    userService.getAll(50, true).on('data', function (data) {
+    userService.all(50, true).on('data', function (data) {
         array.push(JSON.parse(data.value));
     }).on('error', function (err) {
         console.log('Oh my!', err)
@@ -26,7 +27,7 @@ router.get('/', function(req, res) {
     });
 });
 
-router.get(':id', function(req, res) {
+router.get('/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var id = req.params.id;
     if (id) {
@@ -38,17 +39,27 @@ router.get(':id', function(req, res) {
     }
 });
 
-router.get(':id/code', function(req, res) {
+router.get('/strava/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    //get auth url
-    //strava.oauth.getRequestAccessURL({scope:"view_private,write"};
-    strava.oauth.getToken(code,function(err,payload,limits) {
-        console.log(payload); //access_token
-    });
-    res.send(JSON.stringify({}), null, 3);
+    var id = req.params.id;
+    var code = req.query.code;
+    if (id && code) {
+        userService.get(id).then(function (user) {
+            strava.oauth.getToken(code,function(err,payload,limits) {
+                var user = JSON.parse(user);
+                user.stravaKey = payload.access_token;
+                userService.add(user);
+                res.send(user);
+            });
+
+        }).catch(function (err) { console.error(err) });
+    } else{
+        res.status(404).send('Cannot find user');
+    }
 });
 
-router.delete(':id', function(req, res) {
+
+router.delete('/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var id = req.params.id;
     if (id) {

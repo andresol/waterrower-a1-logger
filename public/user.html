@@ -60,7 +60,7 @@
         <div id="users" class="col table-responsive  mt-5">
             <table class="table">
                 <thead>
-                <tr><th>User #</th><th>First</th><th>Last Name</th></tr>
+                <tr><th>User #</th><th>First</th><th>Last Name</th><th>Actions</th></tr>
                 </thead>
                 <!--get_rowInfo() -->
                 <tbody id="users-body">
@@ -94,7 +94,9 @@
                             <label for="lastName">First name</label>
                             <input type="text" class="form-control" id="lastName" name="lastName" value="" placeholder="Sollie">
                         </div>
-
+                        <div class="form-group strava-connect sr-only">
+                            <a class="strava-url" href="#" >Connect to strava</a>
+                        </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

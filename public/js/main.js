@@ -27,7 +27,7 @@ $(document).ready(function(){
     }
 
     $('#startRow').click(function (e) {
-        e.preventDefault()
+        e.preventDefault();
         var routes = $('#routes').val();
         $.get( "/row/start",{ routes: routes }, function() {
             get_rowInfo(true, "Rowing");
@@ -36,6 +36,22 @@ $(document).ready(function(){
             $(this).attr('disabled','disabled');
         });
     });
+
+    $('#users-body').each(function () {
+        //html(getLapHtml(title, data.endStats));
+        var that = this;
+        $.get( "/users/", function(data) {
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                var user = data[i];
+                html += '<tr><td><a href="#" data-id="'+ user.id +'">' + (i + 1) + '</a></td><td>'+user.firstName +'</td><td>'+ user.lastName +'</td>';
+                html +=  '<td><a class="edit-user" href="#" data-id="'+ user.id +'"><i class="material-icons">create</i></a><a class="del-user" href="#" data-id="' + user.id + '"><i aria-hidden="true" title="Delete user" class="material-icons">delete</i></a></td>'+'</tr>'
+            }
+            $(that).html(html);
+        });
+
+    });
+
 
     $('#startSimulator').click(function (e) {
         e.preventDefault();
@@ -120,8 +136,13 @@ $(document).ready(function(){
             contentType: 'application/json',
             dataType: 'json',
             url: "/users/add",
-            data: JSON.stringify(user)
+            data: JSON.stringify(user),
+            success: function () {
+                $('#addUserModal').modal('hide');
+                location.reload();
+            }
         });
+
     });
 
     $(document).on("click", '.strava', function(e) {
@@ -143,6 +164,43 @@ $(document).ready(function(){
                 location.reload();
             });
         }
+    });
+
+    $(document).on("click", '.del-user', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+            $.ajax({
+                url: '/users/' + id,
+                type: 'DELETE',
+                success: function(result) {
+                    location.reload();
+                }
+            });
+        }
+    });
+
+    $(document).on("click", '.edit-user', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+            $.ajax({
+                url: '/users/' + id,
+                type: 'GET',
+                success: function(result) {
+                    var form = $("#addUserForm");
+                    form.find('#firstName').val(result.firstName);
+                    form.find('#lastName').val(result.lastName);
+                    form.find('#userId').val(result.id);
+                    $.get( '/strava/url', function( data ) {
+                        var url = data.url.replace("%24", result.id);
+                        $('.strava-url').attr('href', url);
+                    });
+                    var connect = $(".strava-connect");
+                    connect.removeClass("sr-only");
+                    $('#addUserModal').modal('show');
+                }
+            });
     });
 
     $('#stopRow').click(function (e) {

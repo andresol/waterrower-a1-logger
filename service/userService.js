@@ -2,7 +2,9 @@ var cuid = require('cuid');
 var db = require('../db/db');
 
 function addUser(user) {
-    user.id = cuid();
+    if (!user.id) {
+        user.id = cuid();
+    }
     db.users.put(user.id, JSON.stringify(user, null, 3));
 }
 
@@ -14,14 +16,8 @@ function delUser(id) {
     return db.users.del(id);
 }
 
-function getAllUsers() {
-    var values = [];
-    db.users.createReadStream()
-        .on('data', function (data) {
-            //console.log(data.key, '=', data.value)
-            values.push(data);
-        });
-    return values;
+function getAllUsers(limit, reverse) {
+    return db.users.createReadStream({limit: limit, reverse: reverse});
 }
 
 module.exports =  {
