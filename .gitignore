@@ -129,6 +129,7 @@ fabric.properties
 # Ignore db
 db/waterrower_sessions/
 db/waterrower_route/
+db/waterrower_users/
 
 data
 

@@ -25,13 +25,12 @@ GpxFile.prototype.createFile = function() {
         }
     };
 
-
     var p = null;
     var skip = 5;
     if (this.rowSession.raw.length < 30) {
         skip = 1;
     }
-    //var trksegs = [];
+
     var trkseg = {};
     var trackPoints = [];
     var length = 0.0;

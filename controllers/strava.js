@@ -40,10 +40,9 @@ router.get('/upload/:id', function(req, res) {
 
 });
 
-router.get('/test', function(req, res) {
+router.get('/url', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    console.log( strava.oauth.getRequestAccessURL({scope:"view_private,write"}))
-    res.send(JSON.stringify({status: "Uploading!!"}, null, 3));
+    res.send(JSON.stringify({url: strava.oauth.getRequestAccessURL({scope:"view_private,write"})}, null, 3));
 });
 
 module.exports = router;

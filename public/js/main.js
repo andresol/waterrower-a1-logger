@@ -15,9 +15,8 @@ const styles = [{"featureType": "landscape", "stylers": [{"saturation": -100}, {
     {"featureType": "water", "elementType": "labels", "stylers": [{"visibility": "on"}, {"lightness": -25}, {"saturation": -100}]},
     {"featureType": "water", "elementType": "geometry", "stylers": [{"hue": "#ffff00"}, {"lightness": -25}, {"saturation": -97}]}];
 
-
-$(document).ready(function(){
-    //ugly ulgy
+$(function() {
+    /** Init shared */
     get_rowInfo(false,"");
 
     var test = getUrlParameter("test");
@@ -26,29 +25,50 @@ $(document).ready(function(){
         $('#startSimulator').removeClass("sr-only");
     }
 
-    $('#startRow').click(function (e) {
-        e.preventDefault()
+    /** index.html */
+    $(document).on("click",'#startRow', function (e) {
+        e.preventDefault();
         var routes = $('#routes').val();
         $.get( "/row/start",{ routes: routes }, function() {
             get_rowInfo(true, "Rowing");
             cleanMap();
+            $('#routes').attr('disabled', 'disabled');
+            $('#session-user').attr('disabled', 'disabled');
             $("#startSimulator").attr('disabled','disabled');
             $(this).attr('disabled','disabled');
         });
     });
 
-    $('#startSimulator').click(function (e) {
+    $(document).on("click", '#stopRow', function(e) {
+        e.preventDefault();
+        clearTimeout(timeOut);
+        run = false;
+        var routes = $('#routes').val();
+        var user = $('#session-user').val();
+        $.get( "/row/stop", { routes: routes, user: user }, function(data) {
+            $('#table-content').html(getHtml("Stopped", data, false));
+            $("#startRow").removeAttr('disabled');
+            $('#routes').removeAttr('disabled');
+            $('#session-user').removeAttr('disabled');
+            $("#startSimulator").removeAttr('disabled');
+        });
+    });
+
+    $(document).on("click", '#startSimulator', function(e) {
         e.preventDefault();
         var routes = $('#routes').val();
         $.get("/row/simulate", { routes: routes }, function() {
             get_rowInfo(true, "Simulate");
             cleanMap();
+            $('#routes').attr('disabled', 'disabled');
+            $('#session-user').attr('disabled', 'disabled');
             $("#startRow").attr('disabled','disabled');
             $(this).attr('disabled','disabled');
         });
     });
 
     $('#routes').each(function () {
+        var that = this;
         $.get("/row/routes", function(data) {
             var html = '';
             var index = 0;
@@ -63,24 +83,22 @@ $(document).ready(function(){
                 html+= '<option value="'+ value.index + '">'+ value.name + ' (' + value.meters + 'm)</option>';
                 index++;
             });
-            $('#routes').html(html)
+            $(that).html(html)
         });
     });
 
-    $('#history-session').each(function () {
-        var key = getLastPart();
-        var title = "History";
-        $.get("/session/" + key, function(data) {
-            var html = getHtml(title, data.endStats, true);
-            $('#routes').val(data.route);
-            if (html) {
-                $('#table-content').html(html);
-                $('#laps-body').html(getLapHtml(title, data.endStats));
-                addGpxTrackToMap(key, $("#live-map"));
-            }
+    $('#session-user').each(function () {
+        var that = this;
+        $.get("/users", function(data) {
+            var html = '';
+            data.forEach(function (value) {
+                html += '<option value="' + value.id + '">' + value.firstName + ' ' + value.lastName +'</option>'
+            });
+            $(that).html(html)
         });
     });
 
+    /** history.html */
     $('#history').each(function () {
         $.get("/session", function(data) {
             var htmlCards = '';
@@ -105,6 +123,22 @@ $(document).ready(function(){
         });
     });
 
+    $('#history-session').each(function () {
+        var key = getLastPart();
+        var title = "History";
+        $.get("/session/" + key, function(data) {
+            var html = getHtml(title, data.endStats, true);
+            $('#routes').val(data.route);
+            if (html) {
+                $('#table-content').html(html);
+                $('#laps-body').html(getLapHtml(title, data.endStats));
+                addGpxTrackToMap(key, $("#live-map"));
+            }
+        });
+    });
+
+
+    /** session.html */
     $(document).on("click", '.strava', function(e) {
         e.preventDefault();
         var href = $(this).attr('href');
@@ -126,17 +160,81 @@ $(document).ready(function(){
         }
     });
 
-    $('#stopRow').click(function (e) {
+    /** users.html */
+    $(document).on("click", '.edit-user', function(e) {
         e.preventDefault();
-        clearTimeout(timeOut);
-        run = false;
-        var routes = $('#routes').val();
-        $.get( "/row/stop", { routes: routes }, function(data) {
-            $('#table-content').html(getHtml("Stopped", data, false));
-            $("#startRow").removeAttr('disabled');
-            $("#startSimulator").removeAttr('disabled');
+        var id = $(this).data('id');
+        $.ajax({
+            url: '/users/' + id,
+            type: 'GET',
+            success: function(result) {
+                var form = $("#addUserForm");
+                form.find('#firstName').val(result.firstName);
+                form.find('#lastName').val(result.lastName);
+                form.find('#userId').val(result.id);
+                $.get( '/strava/url', function( data ) {
+                    var url = data.url.replace("%24", result.id);
+                    $('.strava-url').attr('href', url);
+                });
+                var connect = $(".strava-connect");
+                connect.removeClass("sr-only");
+                $('#addUserModal').modal('show');
+            }
         });
-    })
+    });
+
+    $('#users-body').each(function () {
+        var that = this;
+        $.get( "/users/", function(data) {
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                var user = data[i];
+                html += '<tr><td><a href="#" data-id="'+ user.id +'">' + (i + 1) + '</a></td><td>'+user.firstName +'</td><td>'+ user.lastName +'</td>';
+                html +=  '<td><a class="edit-user" href="#" data-id="'+ user.id +'"><i class="material-icons">create</i></a><a class="del-user" href="#" data-id="' + user.id + '"><i aria-hidden="true" title="Delete user" class="material-icons">delete</i></a></td>'+'</tr>'
+            }
+            $(that).html(html);
+        });
+    });
+
+    $( "#save-user" ).on( "click", function( event ) {
+        event.preventDefault();
+        var form =  $("#addUserForm");
+        var firstName = form.find('#firstName').val();
+        var lastName = form.find('#lastName').val();
+        var id = form.find('#userId').val();
+        var user = {};
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.id = id;
+        $.ajax({
+            type: 'PUT',
+            contentType: 'application/json',
+            dataType: 'json',
+            url: "/users/add",
+            data: JSON.stringify(user),
+            success: function () {
+                $('#addUserModal').modal('hide');
+                location.reload();
+            }
+        });
+
+    });
+
+    $(document).on("click", '.del-user', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+            $.ajax({
+                url: '/users/' + id,
+                type: 'DELETE',
+                success: function(result) {
+                    location.reload();
+                }
+            });
+        }
+    });
+
 });
 
 function get_rowInfo(continues, title){
@@ -174,20 +272,20 @@ function getHtml(label, json, day) {
     }
     var html = '<div class="container">';
     if (day) {
-        html += '<div class="row"><span class="label">Day:</span> ' + json.start.substr(0, json.start.lastIndexOf('T')) +'</div>';
+        html += '<div class="row"><div class="col">Day</div><div class="col">' + json.start.substr(0, json.start.lastIndexOf('T')) +'</div></div>';
     }
-    html += '<div class="row"><span class="label">Start:</span> ' + json.start.substr(json.start.lastIndexOf('T') + 1, 8) +'</div>';
-    html += '<div class="row"><span class="label">Time:</span> ' + fmtMSS(parseInt(json.seconds)) +'</div>';
-    html += '<div class="row"><span class="label">Length:</span> ' + parseInt(json.meters) +' m</div>';
-    html += '<div class="row"><span class="label">Pace:</span> ' + Math.round( parseFloat(json.pace) * 3.6 * 10) / 10 +' km/t</div>';
-    html += '<div class="row"><span class="label">500m(p):</span> ' + fmtMSS(parseInt(json.lapPace)) +'</div>';
-    html += '<div class="row"><span class="label">2k(p):</span> ' + fmtMSS(parseInt(json.towKPace)) +'</div>';
-    html += '<div class="row"><span class="label">Avg. watt:</span> ' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div>';
-    html += '<div class="row"><span class="label">Strokerate:</span> ' + Math.round( parseFloat(json.stroke)* 10) / 10 +'</div>';
+    html += '<div class="row"><div class="col">Start:</div><div class="col">' + json.start.substr(json.start.lastIndexOf('T') + 1, 8) +'</div></div>';
+    html += '<div class="row"><div class="col">Time:</div><div class="col">' + fmtMSS(parseInt(json.seconds)) +'</div></div>';
+    html += '<div class="row"><div class="col">Length:</div><div class="col">' + parseInt(json.meters) +' m</div></div>';
+    html += '<div class="row"><div class="col">Pace:</div><div class="col">' + Math.round( parseFloat(json.pace) * 3.6 * 10) / 10 +' km/t</div></div>';
+    html += '<div class="row"><div class="col">500m(p):</div><div class="col">' + fmtMSS(parseInt(json.lapPace)) +'</div></div>';
+    html += '<div class="row"><div class="col">2k(p):</div><div class="col">' + fmtMSS(parseInt(json.towKPace)) +'</div></div>';
+    html += '<div class="row"><div class="col">Avg. watt:</div><div class="col">' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div></div>';
+    html += '<div class="row"><div class="col">Strokerate:</div><div class="col">' + Math.round( parseFloat(json.stroke)* 10) / 10 +'</div></div>';
     if(json.fileName) {
-        html += '<div class="row"><span class="label">Actions:</span> <a id="" href="/sessions/' + json.fileName;
+        html += '<div class="row"><div class="col">Actions:</div><div class="col"><a id="" href="/sessions/' + json.fileName;
         html += '"><i class="material-icons">file_download</i> <a class="strava" href="/strava/upload/' + json.name;
-        html += '"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a></div>';
+        html += '"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a></div></div>';
     }
     return html + "</div>"
 }

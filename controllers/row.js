@@ -62,8 +62,10 @@ router.get('/stop', function(req, res) {
     if (isNaN(routeParam)) {
         routeParam = 1;
     }
+    var user = req.query.user;
     if (session !== NOT_ROWING) {
         session.route = routeParam;
+        session.user = user;
         session.stop();
         sessionService.addSession(session);
         var r = Routes.routes[routeParam];
@@ -80,8 +82,8 @@ router.get('/stop', function(req, res) {
 router.get('/stop/strava', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     session.stop();
-    res.send(JSON.stringify(session.stats(), null, 3));
     session = NOT_ROWING;
+    res.send(JSON.stringify(session.stats(), null, 3));
 });
 
 module.exports = router;
