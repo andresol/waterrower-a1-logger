@@ -4,7 +4,6 @@ var express = require('express'),
     userService = require('../service/userService'),
     bodyParser = require('body-parser');
 
-// create application/json parser
 var jsonParser = bodyParser.json();
 
 router.put('/add', jsonParser, function(req, res) {
@@ -44,12 +43,16 @@ router.get('/strava/:id', function(req, res) {
     var id = req.params.id;
     var code = req.query.code;
     if (id && code) {
-        userService.get(id).then(function (user) {
-            strava.oauth.getToken(code,function(err,payload,limits) {
-                var user = JSON.parse(user);
-                user.stravaKey = payload.access_token;
-                userService.add(user);
-                res.send(user);
+        userService.get(id).then(function (value) {
+            strava.oauth.getToken(code, function(err,payload,limits) {
+                if (value) {
+                    var user = JSON.parse(value);
+                    user.stravaKey = payload.access_token;
+                    userService.add(user);
+                    res.redirect('/user');
+                } else {
+                    res.status(404).send('Cannot find user');
+                }
             });
 
         }).catch(function (err) { console.error(err) });

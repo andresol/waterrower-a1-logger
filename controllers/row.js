@@ -62,8 +62,10 @@ router.get('/stop', function(req, res) {
     if (isNaN(routeParam)) {
         routeParam = 1;
     }
+    var user = req.query.user;
     if (session !== NOT_ROWING) {
         session.route = routeParam;
+        session.user = user;
         session.stop();
         sessionService.addSession(session);
         var r = Routes.routes[routeParam];

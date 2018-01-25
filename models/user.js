@@ -4,7 +4,7 @@ function User(firstName, lastName) {
 }
 
 User.prototype.getStravaAuthToken = function () {
-    return "";
+    return this.stravaKey;
 };
 // export the class
 module.exports = User;
