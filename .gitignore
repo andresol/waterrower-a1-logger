@@ -134,3 +134,5 @@ db/waterrower_users/
 data
 
 *.gpx
+.idea/azureSettings.xml
+.idea/inspectionProfiles/
