@@ -129,6 +129,7 @@ $(function() {
         $.get("/session/" + key, function(data) {
             var html = getHtml(title, data.endStats, true);
             $('#routes').val(data.route);
+            $('#session-user').val(data.user);
             if (html) {
                 $('#table-content').html(html);
                 $('#laps-body').html(getLapHtml(title, data.endStats));
