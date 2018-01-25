@@ -112,7 +112,7 @@ $(function() {
                 index++;
             });
 
-            $('#cards').html(htmlCards);
+            $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards +'</div></div>');
             $('#histor-table-body').html(htmlTable);
 
             $('.gpx-track').each(function () {
@@ -353,7 +353,7 @@ function createPolyLine(points) {
 }
 
 var createCard = function (htmlCards, session) {
-    htmlCards += '<div class="card col-sm gpx-track" data-name="' + session.name + '" style="width: 18rem;">';
+    htmlCards += '<div class="card gpx-track" data-name="' + session.name + '"">';
     htmlCards += '<div class="card-body">';
     htmlCards += '<div class="card-map-top "></div>';
     htmlCards += '<h5 class="card-title mt-2"><a href="/history/' + session.name +'">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></h5>';
