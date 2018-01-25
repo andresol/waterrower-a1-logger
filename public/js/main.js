@@ -270,7 +270,7 @@ function getHtml(label, json, day) {
     if (parseInt(json.meters) === 0) {
         return ;
     }
-    var html = '<div class="container">';
+    var html = '';
     if (day) {
         html += '<div class="row"><div class="col">Day</div><div class="col">' + json.start.substr(0, json.start.lastIndexOf('T')) +'</div></div>';
     }
@@ -287,7 +287,7 @@ function getHtml(label, json, day) {
         html += '"><i class="material-icons">file_download</i> <a class="strava" href="/strava/upload/' + json.name;
         html += '"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a></div></div>';
     }
-    return html + "</div>"
+    return html + "";
 }
 
 function getLapHtml(label, json, reverse) {
