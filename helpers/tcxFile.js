@@ -1,14 +1,18 @@
 
 var LatLon = require('geodesy').LatLonVectors;
 var fs = require('fs');
+var path = require("path");
 var builder = require('xmlbuilder');
 var RowSession = require('../models/rowSession');
+var DateDiff = require('date-diff');
+var sanitize = require("sanitize-filename");
+
 //MISSING SPEED OSV
 const METER_RATION = (100 / 4.805);
 
-function TcxFile(rowSession) {
+function TcxFile(rowSession, route) {
     this.rowSession = rowSession;
-    this.start = new LatLon(59.884932, 10.760809);
+    this.route = route;
 }
 
 TcxFile.prototype.createFile = function() {
@@ -20,25 +24,25 @@ TcxFile.prototype.createFile = function() {
             Activity: {
                 '@Sport': 'other',
                 Id: new Date(this.rowSession.start).toISOString(),
-                Lap: {
-                    '@StartTime': new Date(this.rowSession.start).toISOString(),
-                    TotalTimeSeconds: this.rowSession.totalTimeInSec(),
-                    DistanceMeters: this.rowSession.totalInMeters()
-                }
             }
         }
     };
 
     var trackPoints = [];
-    var p = this.start;
+    var p = null;
     var skip = 5;
     if (this.rowSession.raw.length < 30) {
         skip = 1;
     }
-    for (var i = 0; i < this.rowSession.raw.length; i = i + skip) {
+    var laps = [];
+    var start = 0;
+    var lapLength = 0;
+    var i = 0;
+    for (; i < this.rowSession.raw.length; i++) {
         var rawTime = new Date(this.rowSession.raw[i]);
-        var distance = RowSession.prototype.getLengthInMetersByClicks(skip * 6); //6 click per raw.
-        p = p.destinationPoint(distance.toFixed(4), 0, 6362170);
+        var distance = RowSession.prototype.getLengthInMetersByClicks(6); //6 click per raw.
+        p = this.route.nextPoint(p, distance.toFixed(4));
+        lapLength += distance;
         var trackPoint = {
             Time: rawTime.toISOString(),
             Position: {
@@ -49,34 +53,44 @@ TcxFile.prototype.createFile = function() {
             DistanceMeters: distance.toFixed(4)
         };
         trackPoints.push(trackPoint);
+
+        if (lapLength >= 500 || i === (this.rowSession.raw.length -1) ) {
+            var date1 = this.rowSession.raw[start];
+
+            var diff = new DateDiff(rawTime, date1);
+
+            var lap = {
+                '@StartTime': new Date(this.rowSession.start).toISOString(),
+                TotalTimeSeconds: diff.seconds(),
+                DistanceMeters: lapLength,
+                Intensity: 'Active',
+                TriggerMethod: 'Manual',
+                track: {
+                    Trackpoint: trackPoints
+                }
+            };
+            laps.push(lap);
+            lapLength = 0;
+            trackPoints = [];
+            this.start = i;
+        }
     }
 
 
-    var track = {};
-    track.Trackpoint = trackPoints;
 
-    object.Activities.Activity.Lap.Track = track;
-
-//     <Extensions>
-//     <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
-//         <Speed>0.0</Speed>
-//         </TPX>
-//         </Extensions>
-//         </Trackpoint>
-
-    // for (var i = 0; i < this.raw.length; i++) {
-    //
-    //     var p1 = p1
-    //     console.log(p1)
-    // }
+    object.Activities.Activity.lap = laps;
 
     root.ele(object);
     console.log(root.end(({ pretty: true})));
-    this.writeFile('', root.end(({ pretty: true})));
+    var filePath = path.sep + '..' + path.sep + 'public' + path.sep +
+        'sessions' + path.sep + sanitize(object.Activities.Activity.Id) +".tcx";
+    this.writeFile(__dirname  + filePath , root.end(({ pretty: true})));
+
+    return sanitize(object.Activities.Activity.Id +".tcx");
 };
 
 TcxFile.prototype.writeFile = function (path, data) {
-    fs.writeFile("/tmp/test.tcx", data, function(err) {
+    fs.writeFile(path, data, function(err) {
         if(err) {
             return console.log(err);
         }

@@ -2,6 +2,7 @@ var express = require('express'),
     router = express.Router(),
     RowSession = require('../models/rowSession'),
     GpxFile = require('../helpers/gpxFile'),
+    TcxFile = require('../helpers/tcxFile'),
     Route = require('../models/route'),
     Routes = require('../models/routes'),
     sessionService = require('../service/sessionService'),
@@ -70,10 +71,13 @@ router.get('/stop', function(req, res) {
         sessionService.addSession(session);
         var r = Routes.routes[routeParam];
         var gpxFile = new GpxFile(session, new Route(r.gps));
+        var tcxFile = new TcxFile(session, new Route(r.gps));
+        var fileNameTcx = tcxFile.createFile();
         var fileName = gpxFile.createFile();
         var stats = session.stats();
         stats.name = session.name;
         stats.fileName = sanitize(fileName);
+        stats.tcxFileName = sanitize(fileNameTcx);
         res.send(JSON.stringify(stats, null, 3));
         session = NOT_ROWING;
     }
