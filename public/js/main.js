@@ -36,6 +36,7 @@ $(function() {
             $('#session-user').attr('disabled', 'disabled');
             $("#startSimulator").attr('disabled','disabled');
             $(this).attr('disabled','disabled');
+            $(this).html('Rowing...');
         });
     });
 
@@ -47,7 +48,9 @@ $(function() {
         var user = $('#session-user').val();
         $.get( "/row/stop", { routes: routes, user: user }, function(data) {
             $('#table-content').html(getHtml("Stopped", data, false));
-            $("#startRow").removeAttr('disabled');
+            var startRow = $("#startRow");
+            startRow.removeAttr('disabled');
+            startRow.html('Start row');
             $('#routes').removeAttr('disabled');
             $('#session-user').removeAttr('disabled');
             $("#startSimulator").removeAttr('disabled');
@@ -62,7 +65,9 @@ $(function() {
             cleanMap();
             $('#routes').attr('disabled', 'disabled');
             $('#session-user').attr('disabled', 'disabled');
-            $("#startRow").attr('disabled','disabled');
+            var startRow = $("#startRow");
+            startRow.attr('disabled','disabled');
+            startRow.html('Rowing...');
             $(this).attr('disabled','disabled');
         });
     });
