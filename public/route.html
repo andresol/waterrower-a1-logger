@@ -5,8 +5,9 @@
     <title>Waterrower A1</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="apple-mobile-web-app-title" content="WaterRower A1">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
     <link href="/css/main.css" rel="stylesheet"/>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -22,11 +23,9 @@
     <link rel="shortcut icon" href="/icons/web_hi_res_512.png" />
 </head>
 <body>
-
 <!-- Nav -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Waterrower A1</a>
-
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -36,80 +35,36 @@
             <li class="nav-item">
                 <a class="nav-link" href="/">Home </a>
             </li>
-            <li class="nav-item ">
+            <li class="nav-item">
                 <a class="nav-link" href="/history">History <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="/user">Users</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/route">Routes</a>
             </li>
         </ul>
     </div>
 </nav>
 
-<!-- Main -->
-<div id="users-main" class="container mt-4">
-    <div class="row mt-3">
-        <div class="col">
-            <button id="add-user" data-toggle="modal" data-target="#addUserModal" type="button" class="btn btn-lg btn-primary btn-block">Add user</button>
-        </div>
-    </div>
+<!-- Main content -->
 
+<div id = "history" class="container mt-3">
     <div class="row">
-        <div id="users" class="col table-responsive  mt-5">
-            <table class="table">
-                <thead>
-                <tr><th>User #</th><th>First</th><th>Last Name</th><th>Actions</th></tr>
-                </thead>
-                <!--get_rowInfo() -->
-                <tbody id="users-body">
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
-    <form id="addUserForm">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                        <input type="hidden" class="form-control" id="userId" name="userId" value="">
-                        <div class="form-group">
-                            <label for="firstName">First name</label>
-                            <input type="text" class="form-control" id="firstName" name="firstName" value="" placeholder="Andre">
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">First name</label>
-                            <input type="text" class="form-control" id="lastName" name="lastName" value="" placeholder="Sollie">
-                        </div>
-                        <div class="form-group strava-connect sr-only">
-                            <a class="strava-url" href="#" >Connect to strava</a>
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="save-user" type="button" class="btn btn-primary">Save changes</button>
-                </div>
+        <div class="col">
+            <h2>All routes</h2>
+            <div id="cards" class="row">
             </div>
         </div>
-    </form>
+    </div>
 </div>
-
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <!--My map key. IP restricted -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPq6S4y5IOi2huNGa_4WhAPU5Hd_EW_dI"></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="/js/main.js"></script>
 </body>

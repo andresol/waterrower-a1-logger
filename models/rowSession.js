@@ -3,6 +3,11 @@ try {
 } catch (e) {
     console.log("GPIO not supported.")
 }
+try {
+    var Ant = require('ant-plus');
+}catch (e) {
+    console.log("Ant plus not supported.")
+}
 var dateFormat = require('dateformat');
 var debounce = require('debounce');
 var createGpx = require('gps-to-gpx');
@@ -28,6 +33,49 @@ function RowSession(status, route) {
     this.p = null;
     this.name = sanitize(new Date(this.start).toISOString());
     this.routeObject = route;
+
+}
+
+RowSession.prototype.heartRate = function () {
+    openStick(new Ant.GarminStick2(), 1);
+};
+
+function openStick(stick, stickid) {
+    var scanner = new Ant.HeartRateScanner(stick);
+
+    scanner.on('hbdata', function(data) {
+        console.log(stickid, 'scanner: ', data.DeviceID, data.ComputedHeartRate, data.Rssi, data);
+    });
+
+    scanner.on('attached', function() { console.log(stickid, 'scanner attached'); });
+    scanner.on('detached', function() { console.log(stickid, 'scanner detached'); });
+
+    stick.on('startup', function() {
+        console.log(stickid, 'startup');
+        console.log(stickid, 'Max channels:', stick.maxChannels);
+        scanner.scan();
+    });
+
+    stick.on('shutdown', function() { console.log(stickid, 'shutdown'); });
+
+    function tryOpen(stick) {
+
+        var token = stick.openAsync(function(err){
+            token = null;
+        if (err) {
+            console.error(stickid, err);
+        } else {
+            console.log(stickid, 'Stick found');
+            //setTimeout(function() { stick.close(); }, 10000);
+        }
+    });
+        setTimeout(function() { token && token.cancel(); }, 60000);
+
+        return token;
+    }
+
+
+    tryOpen(stick);
 }
 
 RowSession.prototype.simulate = function() {
@@ -210,3 +258,16 @@ const addStrokeDebouce = debounce(addStroke, 1250);
 
 // export the class
 module.exports = RowSession;
+
+//'scanner: ' 23652 61 undefined HeartRateScannerState {
+//    DeviceID: 23652,
+//       BeatTime: 22004,
+//       BeatCount: 91,
+//       ComputedHeartRate: 61,
+//       PreviousBeat: 21093,
+//       HwVersion: 4,
+//       SwVersion: 4,
+//       ModelNum: 5,
+//        OperatingTime: 178,
+//        ManId: 1,
+//        SerialNumber: 65536 }
