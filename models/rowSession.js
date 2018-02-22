@@ -30,6 +30,9 @@ function RowSession(status, route) {
     this.counter = 0;
     this.start = Date.now();
     this.raw = [];
+    this.rawHr = [];
+    this.hr = -1;
+    this.usingHr = false,
     this.p = null;
     this.name = sanitize(new Date(this.start).toISOString());
     this.routeObject = route;
@@ -40,14 +43,27 @@ RowSession.prototype.heartRate = function () {
     openStick(new Ant.GarminStick2(), 1);
 };
 
+//'scanner: ' 23652 61 undefined HeartRateScannerState {
+//    DeviceID: 23652,
+//       BeatTime: 22004,
+//       BeatCount: 91,
+//       ComputedHeartRate: 61,
+//       PreviousBeat: 21093,
+//       HwVersion: 4,
+//       SwVersion: 4,
+//       ModelNum: 5,
+//        OperatingTime: 178,
+//        ManId: 1,
+//        SerialNumber: 65536 }
 function openStick(stick, stickid) {
     var scanner = new Ant.HeartRateScanner(stick);
+    var that = this;
 
     scanner.on('hbdata', function(data) {
-        console.log(stickid, 'scanner: ', data.DeviceID, data.ComputedHeartRate, data.Rssi, data);
+        that.hr = data.ComputedHeartRate;
     });
 
-    scanner.on('attached', function() { console.log(stickid, 'scanner attached'); });
+    scanner.on('attached', function() { console.log(stickid, 'scanner attached'); that.usingHr = true; });
     scanner.on('detached', function() { console.log(stickid, 'scanner detached'); });
 
     stick.on('startup', function() {
@@ -66,7 +82,7 @@ function openStick(stick, stickid) {
             console.error(stickid, err);
         } else {
             console.log(stickid, 'Stick found');
-            //setTimeout(function() { stick.close(); }, 10000);
+            setTimeout(function() { stick.close(); }, 10000);
         }
     });
         setTimeout(function() { token && token.cancel(); }, 60000);
@@ -127,6 +143,7 @@ RowSession.prototype.increment = function() {
     if (this.counter % SAMPLE_SIZE === 1) { //Total length
         var time = Date.now();
         this.raw.push(time);
+        this.rawHr.push(this.hr);
         var rawTime = new Date(time);
         var distance = this.getLengthInMetersByClicks(6); //6 click per raw.
         this.p = this.routeObject.nextPoint(this.p, distance.toFixed(4));
@@ -259,15 +276,3 @@ const addStrokeDebouce = debounce(addStroke, 1250);
 // export the class
 module.exports = RowSession;
 
-//'scanner: ' 23652 61 undefined HeartRateScannerState {
-//    DeviceID: 23652,
-//       BeatTime: 22004,
-//       BeatCount: 91,
-//       ComputedHeartRate: 61,
-//       PreviousBeat: 21093,
-//       HwVersion: 4,
-//       SwVersion: 4,
-//       ModelNum: 5,
-//        OperatingTime: 178,
-//        ManId: 1,
-//        SerialNumber: 65536 }
