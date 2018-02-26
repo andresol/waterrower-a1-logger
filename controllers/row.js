@@ -50,6 +50,7 @@ router.get('/simulate', function(req, res) {
         }
         var r = Routes.routes[routeParam];
         session = new RowSession("SIMULATE", new Route(r.gps));
+        session.heartRate();
         session.route = routeParam;
         session.simulate();
     }

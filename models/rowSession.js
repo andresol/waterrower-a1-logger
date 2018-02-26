@@ -3,6 +3,11 @@ try {
 } catch (e) {
     console.log("GPIO not supported.")
 }
+try {
+    var Ant = require('ant-plus');
+}catch (e) {
+    console.log("Ant plus not supported.")
+}
 var dateFormat = require('dateformat');
 var debounce = require('debounce');
 var createGpx = require('gps-to-gpx');
@@ -25,9 +30,68 @@ function RowSession(status, route) {
     this.counter = 0;
     this.start = Date.now();
     this.raw = [];
+    this.rawHr = [];
+    this.hr = -1;
+    this.usingHr = false;
     this.p = null;
     this.name = sanitize(new Date(this.start).toISOString());
     this.routeObject = route;
+
+}
+
+RowSession.prototype.heartRate = function () {
+    openStick.bind(this)(new Ant.GarminStick2(), 1);
+};
+
+//'scanner: ' 23652 61 undefined HeartRateScannerState {
+//    DeviceID: 23652,
+//       BeatTime: 22004,
+//       BeatCount: 91,
+//       ComputedHeartRate: 61,
+//       PreviousBeat: 21093,
+//       HwVersion: 4,
+//       SwVersion: 4,
+//       ModelNum: 5,
+//        OperatingTime: 178,
+//        ManId: 1,
+//        SerialNumber: 65536 }
+function openStick(stick, stickid) {
+    var scanner = new Ant.HeartRateScanner(stick);
+    var that = this;
+
+    scanner.on('hbdata', function(data) {
+        that.hr = data.ComputedHeartRate;
+    });
+
+    scanner.on('attached', function() { console.log(stickid, 'scanner attached'); that.usingHr = true; });
+    scanner.on('detached', function() { console.log(stickid, 'scanner detached'); });
+
+    stick.on('startup', function() {
+        console.log(stickid, 'startup');
+        console.log(stickid, 'Max channels:', stick.maxChannels);
+        scanner.scan();
+    });
+
+    stick.on('shutdown', function() { console.log(stickid, 'shutdown'); });
+
+    function tryOpen(stick) {
+
+        var token = stick.openAsync(function(err){
+            token = null;
+        if (err) {
+            console.error(stickid, err);
+        } else {
+            console.log(stickid, 'Stick found');
+           // setTimeout(function() { stick.close(); }, 10000);
+        }
+    });
+        setTimeout(function() { token && token.cancel(); }, 60000);
+
+        return token;
+    }
+
+
+    tryOpen(stick);
 }
 
 RowSession.prototype.simulate = function() {
@@ -79,6 +143,7 @@ RowSession.prototype.increment = function() {
     if (this.counter % SAMPLE_SIZE === 1) { //Total length
         var time = Date.now();
         this.raw.push(time);
+        this.rawHr.push(this.hr);
         var rawTime = new Date(time);
         var distance = this.getLengthInMetersByClicks(6); //6 click per raw.
         this.p = this.routeObject.nextPoint(this.p, distance.toFixed(4));
@@ -157,6 +222,7 @@ RowSession.prototype.stats = function() {
     stats.laps = this.laps();
     stats.gps = this.trackPoint;
     stats.stroke = this.getStrokeRate();
+    stats.hr = this.hr;
     stats.watt = watt(this.totalTimeInSec() / this.totalInMeters());
     return stats;
 };
@@ -210,3 +276,4 @@ const addStrokeDebouce = debounce(addStroke, 1250);
 
 // export the class
 module.exports = RowSession;
+
