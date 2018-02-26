@@ -46,6 +46,14 @@ GpxFile.prototype.createFile = function() {
             ele: 0,
             time: rawTime.toISOString()
         };
+        if (this.rowSession.usingHr) {
+            trackPoint.extensions = {
+                'gpxtpx:TrackPointExtension': {
+                    'gpxtpx:hr': this.rowSession.rawHr[i]
+                }
+            }
+        }
+
         trackPoints.push(trackPoint);
     }
     //add last point.
