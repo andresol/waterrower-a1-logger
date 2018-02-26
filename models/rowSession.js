@@ -32,7 +32,7 @@ function RowSession(status, route) {
     this.raw = [];
     this.rawHr = [];
     this.hr = -1;
-    this.usingHr = false,
+    this.usingHr = false;
     this.p = null;
     this.name = sanitize(new Date(this.start).toISOString());
     this.routeObject = route;
@@ -40,7 +40,7 @@ function RowSession(status, route) {
 }
 
 RowSession.prototype.heartRate = function () {
-    openStick(new Ant.GarminStick2(), 1);
+    openStick.bind(this)(new Ant.GarminStick2(), 1);
 };
 
 //'scanner: ' 23652 61 undefined HeartRateScannerState {
@@ -82,7 +82,7 @@ function openStick(stick, stickid) {
             console.error(stickid, err);
         } else {
             console.log(stickid, 'Stick found');
-            setTimeout(function() { stick.close(); }, 10000);
+           // setTimeout(function() { stick.close(); }, 10000);
         }
     });
         setTimeout(function() { token && token.cancel(); }, 60000);
@@ -222,6 +222,7 @@ RowSession.prototype.stats = function() {
     stats.laps = this.laps();
     stats.gps = this.trackPoint;
     stats.stroke = this.getStrokeRate();
+    stats.hr = this.hr;
     stats.watt = watt(this.totalTimeInSec() / this.totalInMeters());
     return stats;
 };

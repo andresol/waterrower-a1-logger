@@ -288,6 +288,9 @@ function getHtml(label, json, day) {
     html += '<div class="row"><div class="col">2k(p):</div><div class="col">' + fmtMSS(parseInt(json.towKPace)) +'</div></div>';
     html += '<div class="row"><div class="col">Avg. watt:</div><div class="col">' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div></div>';
     html += '<div class="row"><div class="col">Strokerate:</div><div class="col">' + Math.round( parseFloat(json.stroke)* 10) / 10 +'</div></div>';
+    if (parseInt(json.hr) > 0) {
+        html += '<div class="row"><div class="col">HR:</div><div class="col">' + parseInt(json.hr) +'</div></div>';
+    }
     if(json.fileName) {
         html += '<div class="row"><div class="col">Actions:</div><div class="col"><a id="" href="/sessions/' + json.fileName;
         html += '"><i class="material-icons">file_download</i> <a class="strava" href="/strava/upload/' + json.name;
