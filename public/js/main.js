@@ -4,6 +4,7 @@ var run = false;
 var liveMap;
 var liveBounds;
 var livePoints = [];
+const RATION = (100 / 4.805) * 6;
 
 const styles = [{"featureType": "landscape", "stylers": [{"saturation": -100}, {"lightness": 65},
         {"visibility": "on"}]}, {"featureType": "poi", "stylers": [{"saturation": -100}, {"lightness": 51},
@@ -30,6 +31,7 @@ $(function() {
         e.preventDefault();
         var routes = $('#routes').val();
         $.get( "/row/start",{ routes: routes }, function() {
+            $(window).scrollTop($('#table-content').offset().top); //Scroll
             get_rowInfo(true, "Rowing");
             cleanMap();
             $('#routes').attr('disabled', 'disabled');
@@ -61,6 +63,7 @@ $(function() {
         e.preventDefault();
         var routes = $('#routes').val();
         $.get("/row/simulate", { routes: routes }, function() {
+            $(window).scrollTop($('#table-content').offset().top); //Scroll
             get_rowInfo(true, "Simulate");
             cleanMap();
             $('#routes').attr('disabled', 'disabled');
@@ -140,6 +143,7 @@ $(function() {
                 $('#laps-body').html(getLapHtml(title, data.endStats));
                 addGpxTrackToMap(key, $("#live-map"));
             }
+            addGraph(data.raw, data.rawHr, parseInt(data.start));
         });
     });
 
@@ -289,7 +293,7 @@ function getHtml(label, json, day) {
     html += '<div class="row"><div class="col">Avg.W:</div><div class="col">' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div></div>';
     html += '<div class="row"><div class="col">Strokerate:</div><div class="col">' + Math.round( parseFloat(json.stroke)* 10) / 10 +'</div></div>';
     if (parseInt(json.hr) > 0) {
-        html += '<div class="row"><div class="col">HR:</div><div class="col">' + parseInt(json.hr) +'</div></div>';
+        html += '<div class="row"><div class="col">HR:</div><div class="col '+ getHeartRateColor(parseInt(json.hr)) +'">' + parseInt(json.hr) +'</div></div>';
     }
     if(json.fileName) {
         html += '<div class="row"><div class="col">Actions:</div><div class="col"><a id="" href="/sessions/' + json.fileName;
@@ -426,3 +430,73 @@ var addGpxTrackToMap = function (name, element) {
         });
     }
 };
+
+
+function addGraph(time,hr, start) {
+    var speed = [];
+    var labels = [];
+    for (var i = 1; i < time.length; i++) {
+        var sec = ((parseInt(time[i]) - start) / 1000);
+        speed.push((( (RATION / 100) / sec) ) * 3.6);
+        labels.push(new Date(time[i]).toISOString().substr(new Date(time[i]).toISOString().lastIndexOf('T') + 1, 8));
+        start = parseInt(time[i]);
+    }
+
+    var ctx = $('#hr-graph');
+    var lineChartData = {
+        labels: labels,
+        datasets: [{
+            label: 'Heart rate (bpm)',
+            borderColor: '#dc3545',
+            backgroundColor: '#dc3545',
+            fill: false,
+            data: hr,
+            yAxisID: 'y-axis-1'
+        }, {
+            label: 'Speed (km/t)',
+            borderColor: '#007bff',
+            backgroundColor: '#007bff',
+            fill: false,
+            data: speed,
+            yAxisID: 'y-axis-2'
+        }]
+    };
+    var myLineChart = Chart.Line(ctx, {
+        data: lineChartData,
+        options: {
+            responsive: true,
+            hoverMode: 'index',
+            stacked: false,
+            scales: {
+                yAxes: [{
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'left',
+                    id: 'y-axis-1'
+                }, {
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'right',
+                    id: 'y-axis-2',
+
+                    // grid line settings
+                    gridLines: {
+                        drawOnChartArea: false // only want the grid lines for one axis to show up
+                    }
+                }]
+            }
+        }
+    });
+}
+
+function getHeartRateColor(hr) {
+    if (hr < 125) {
+        return 'text-success'
+    } else if (hr < 150) {
+        return 'text-primary'
+    } else if (hr < 175) {
+        return 'text-warning';
+    } else {
+        return 'text-danger';
+    }
+}

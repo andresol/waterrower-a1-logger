@@ -104,6 +104,7 @@ RowSession.prototype.simulate = function() {
             var rand = getRandomRowerSpeed((that.totalInMeters() % 1000) <= 500);
             setTimeout(function () {
                 that.increase();
+                that.hr = getRandomArbitrary(76, 220);
                 loop();
             }, rand);
         }
