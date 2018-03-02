@@ -433,8 +433,10 @@ var addGpxTrackToMap = function (name, element) {
 
 
 function addGraph(time,hr, start) {
+    if (!hr) {
+        hr = [];
+    }
     var speed = [];
-    var labels = [];
     for (var i = 1; i < time.length; i++) {
         var sec = ((parseInt(time[i]) - start) / 1000);
         speed.push((( (RATION / 100) / sec) ) * 3.6);
