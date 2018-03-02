@@ -286,7 +286,7 @@ function getHtml(label, json, day) {
     html += '<div class="row"><div class="col">Pace:</div><div class="col">' + Math.round( parseFloat(json.pace) * 3.6 * 10) / 10 +' km/t</div></div>';
     html += '<div class="row"><div class="col">500m(p):</div><div class="col">' + fmtMSS(parseInt(json.lapPace)) +'</div></div>';
     html += '<div class="row"><div class="col">2k(p):</div><div class="col">' + fmtMSS(parseInt(json.towKPace)) +'</div></div>';
-    html += '<div class="row"><div class="col">Avg. watt:</div><div class="col">' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div></div>';
+    html += '<div class="row"><div class="col">Avg.W:</div><div class="col">' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div></div>';
     html += '<div class="row"><div class="col">Strokerate:</div><div class="col">' + Math.round( parseFloat(json.stroke)* 10) / 10 +'</div></div>';
     if (parseInt(json.hr) > 0) {
         html += '<div class="row"><div class="col">HR:</div><div class="col">' + parseInt(json.hr) +'</div></div>';
@@ -389,7 +389,7 @@ var createLapTableRecord = function (htmlTable, index, session) {
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
     htmlTable += '<td><a href="/history/' + session.name +'">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></td>';
     htmlTable += '<td>Length: ' + parseInt(session.endStats.meters) + 'm</td>';
-    htmlTable += '<td> <a id="" href="/sessions/' + session.name + '.gpx"><i class="material-icons">file_download</i><a class="strava" href="/strava/upload/' + session.name + '"><i aria-hidden="true" title="Upload to Strava" class="material-icons">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name + '"><i aria-hidden="true" title="Delete session local" class="material-icons">delete</i></a></td>';
+    htmlTable += '<td> <a id="" href="/sessions/' + session.name + '.gpx"><i class="material-icons md-36">file_download</i><a class="strava" href="/strava/upload/' + session.name + '"><i aria-hidden="true" title="Upload to Strava" class="material-icons md-36">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name + '"><i aria-hidden="true" title="Delete session local" class="material-icons md-36">delete</i></a></td>';
     htmlTable += '</tr>';
     return htmlTable;
 };
