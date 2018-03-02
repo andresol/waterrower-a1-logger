@@ -28,6 +28,14 @@ npm install
 node app.js
 ``` 
 
+### Ant plus
+This program supports heart rate by usb ant+ stick. Please install drivers with
+```
+ sudo apt-get install build-essential libudev-dev
+```
+
+
+
 Install as service. 
 ```
 sudo npm install -g forever
@@ -41,7 +49,8 @@ After starting the app one can go to the web page. IP:3000.
 Start so a activity. 
 
 ![web-gui](web-gui.png "Main Gui")
-![web-gui](web-gui-history.png "gui")
+![web-gui-history](web-gui-history.png "gui")
+![web-gui-ipad](Ipad.JPG "ipad")
 
 ## Strava
 This is in a beta stage, but look at https://www.npmjs.com/package/strava-v3
