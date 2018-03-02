@@ -433,9 +433,6 @@ var addGpxTrackToMap = function (name, element) {
 
 
 function addGraph(time,hr, start) {
-    if (!hr) {
-        hr = [];
-    }
     var speed = [];
     for (var i = 1; i < time.length; i++) {
         var sec = ((parseInt(time[i]) - start) / 1000);
@@ -454,12 +451,16 @@ function addGraph(time,hr, start) {
 
     while(time.length) {
         var a = time.splice(0,mergeSize);
-        var h = hr.splice(0,mergeSize);
-        var s = speed.splice(0,mergeSize);
         var timeV = parseInt(a.reduce(function(a, b) { return a + b; }) / a.length);
         labelsMerged.push(new Date(timeV).toISOString().substr(new Date(timeV).toISOString().lastIndexOf('T') + 1, 8));
-        hrMerged.push(parseInt(h.reduce(function(a, b) { return a + b; }) / h.length));
-        speedMerged.push(Math.round( parseFloat(s.reduce(function(a, b) { return a + b; }) / s.length)* 10) / 10 );
+        if (hr) {
+            var h = hr.splice(0,mergeSize);
+            hrMerged.push(parseInt(h.reduce(function(a, b) { return a + b; }) / h.length));
+        }
+        if (speed) {
+            var s = speed.splice(0,mergeSize);
+            speedMerged.push(Math.round( parseFloat(s.reduce(function(a, b) { return a + b; }) / s.length)* 10) / 10 );
+        }
     }
 
     var ctx = $('#hr-graph');
