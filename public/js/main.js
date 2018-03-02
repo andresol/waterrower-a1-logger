@@ -457,7 +457,7 @@ function addGraph(time,hr, start) {
         var timeV = parseInt(a.reduce(function(a, b) { return a + b; }) / a.length);
         labelsMerged.push(new Date(timeV).toISOString().substr(new Date(timeV).toISOString().lastIndexOf('T') + 1, 8));
         hrMerged.push(parseInt(h.reduce(function(a, b) { return a + b; }) / h.length));
-        speedMerged.push(parseInt(s.reduce(function(a, b) { return a + b; }) / s.length))
+        speedMerged.push(Math.round( parseFloat(s.reduce(function(a, b) { return a + b; }) / s.length)* 10) / 10 );
     }
 
     var ctx = $('#hr-graph');
