@@ -438,7 +438,6 @@ function addGraph(time,hr, start) {
     for (var i = 1; i < time.length; i++) {
         var sec = ((parseInt(time[i]) - start) / 1000);
         speed.push((( (RATION / 100) / sec) ) * 3.6);
-        labels.push(new Date(time[i]).toISOString().substr(new Date(time[i]).toISOString().lastIndexOf('T') + 1, 8));
         start = parseInt(time[i]);
     }
 
@@ -446,14 +445,19 @@ function addGraph(time,hr, start) {
     var speedMerged = [];
     var hrMerged = [];
     var labelsMerged = [];
+    var mergeSize = 10;
+    if (time.length > 1000) {
+        mergeSize = 20;
+    }
 
-    while(labels.length) {
-        var a = labels.splice(0,10);
-        var h = hr.splice(0,10);
-        var s = speed.splice(0,10);
-        labelsMerged.push(a.reduce(function(a, b) { return a + b; }) / a.length);
-        hrMerged.push(h.reduce(function(a, b) { return a + b; }) / h.length);
-        speedMerged.push(s.reduce(function(a, b) { return a + b; }) / s.length)
+    while(time.length) {
+        var a = time.splice(0,mergeSize);
+        var h = hr.splice(0,mergeSize);
+        var s = speed.splice(0,mergeSize);
+        var timeV = parseInt(a.reduce(function(a, b) { return a + b; }) / a.length);
+        labelsMerged.push(new Date(timeV).toISOString().substr(new Date(timeV).toISOString().lastIndexOf('T') + 1, 8));
+        hrMerged.push(parseInt(h.reduce(function(a, b) { return a + b; }) / h.length));
+        speedMerged.push(parseInt(s.reduce(function(a, b) { return a + b; }) / s.length))
     }
 
     var ctx = $('#hr-graph');
