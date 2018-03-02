@@ -442,22 +442,36 @@ function addGraph(time,hr, start) {
         start = parseInt(time[i]);
     }
 
+    //Remove ever second element
+    var speedMerged = [];
+    var hrMerged = [];
+    var labelsMerged = [];
+
+    while(labels.length) {
+        var a = labels.splice(0,10);
+        var h = hr.splice(0,10);
+        var s = speed.splice(0,10);
+        labelsMerged.push(a.reduce(function(a, b) { return a + b; }) / a.length);
+        hrMerged.push(h.reduce(function(a, b) { return a + b; }) / h.length);
+        speedMerged.push(s.reduce(function(a, b) { return a + b; }) / s.length)
+    }
+
     var ctx = $('#hr-graph');
     var lineChartData = {
-        labels: labels,
+        labels: labelsMerged,
         datasets: [{
             label: 'Heart rate (bpm)',
             borderColor: '#dc3545',
             backgroundColor: '#dc3545',
             fill: false,
-            data: hr,
-            yAxisID: 'y-axis-1'
+            data: hrMerged,
+            yAxisID: 'y-axis-1',
         }, {
             label: 'Speed (km/t)',
             borderColor: '#007bff',
             backgroundColor: '#007bff',
             fill: false,
-            data: speed,
+            data: speedMerged,
             yAxisID: 'y-axis-2'
         }]
     };
@@ -472,13 +486,20 @@ function addGraph(time,hr, start) {
                     type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
                     display: true,
                     position: 'left',
-                    id: 'y-axis-1'
+                    id: 'y-axis-1',
+                    ticks: {
+                        suggestedMin: 30,
+                        min: 0,
+                        stepSize: 5
+                    }
                 }, {
                     type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
                     display: true,
                     position: 'right',
                     id: 'y-axis-2',
-
+                    ticks: {
+                        stepSize: 2
+                    },
                     // grid line settings
                     gridLines: {
                         drawOnChartArea: false // only want the grid lines for one axis to show up
