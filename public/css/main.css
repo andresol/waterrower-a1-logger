@@ -10,3 +10,7 @@
 #table-content {
     font-size: 1.9rem;
 }
+
+#table-content .material-icons, #history-table .material-icons {
+    font-size: 36px;
+}
