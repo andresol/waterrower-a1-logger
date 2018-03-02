@@ -288,10 +288,14 @@ function getHtml(label, json, day) {
     html += '<div class="row"><div class="col">2k(p):</div><div class="col">' + fmtMSS(parseInt(json.towKPace)) +'</div></div>';
     html += '<div class="row"><div class="col">Avg.W:</div><div class="col">' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div></div>';
     html += '<div class="row"><div class="col">Strokerate:</div><div class="col">' + Math.round( parseFloat(json.stroke)* 10) / 10 +'</div></div>';
+    if (parseInt(json.hr) > 0) {
+        html += '<div class="row"><div class="col">HR:</div><div class="col">' + parseInt(json.hr) +'</div></div>';
+    }
     if(json.fileName) {
         html += '<div class="row"><div class="col">Actions:</div><div class="col"><a id="" href="/sessions/' + json.fileName;
-        html += '"><i class="material-icons md-36">file_download</i> <a class="strava" href="/strava/upload/' + json.name;
-        html += '"><i aria-hidden="true" title="Upload to strava" class="material-icons md-36">cloud_upload</i></a></div></div>';
+        html += '"><i class="material-icons">file_download</i><a class="strava" href="/strava/upload/' + json.name;
+        html += '"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a>';
+        html += '<a class="" href="/history/' + json.name+ '"><i aria-hidden="true" title="Session" class="material-icons">fiber_new</i></a></div></div>';
     }
     return html + "";
 }

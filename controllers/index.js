@@ -22,4 +22,8 @@ router.get('/user/', function(req, res) {
     res.sendFile('user.html', {root: './public'});
 });
 
+router.get('/route/', function(req, res) {
+    res.sendFile('route.html', {root: './public'});
+});
+
 module.exports = router;

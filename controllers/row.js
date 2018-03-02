@@ -32,6 +32,7 @@ router.get('/start', function(req, res) {
         session = new RowSession("ROWING", new Route(r.gps));
         try {
             session.startRow();
+            session.heartRate();
             session.route = routeParam;
         } catch (e) {
             session = NOT_ROWING;
@@ -50,6 +51,7 @@ router.get('/simulate', function(req, res) {
         }
         var r = Routes.routes[routeParam];
         session = new RowSession("SIMULATE", new Route(r.gps));
+        session.heartRate();
         session.route = routeParam;
         session.simulate();
     }
