@@ -1,23 +1,24 @@
 # waterrower-a1-logger
 
 Raspberry Pi 3 project for logging rowing on a WaterRower A1. It will track watt,
-pace, length, time and laps. If you own a heart rate ant plus stick it is also supported.
+pace, length, time, laps and heart rate (Needs ant plus stick). 
 
-It now supports gpx. After a rowing session one can download the gpx file or even
-just push it to strava(beta).
+The most important feature is the route feature. One needs to select route before starting a row session. 
+This route will be used as a template for the row sessiong. After a rowing session is done one can download 
+the gpx file or even just push it to strava.
 ![web-gui](web-gui.png "Main Gui")
 
 ## Getting Started
-Obviously the WaterRower A1 is needed. I also recommend a 2 EL Wire Splitter Cable and a rasberry pi. Please 
+Obviously the WaterRower A1 is needed. I also recommend a 2 EL Wire Splitter Cable and a Rasberry Pi 3. Please 
 connect the WaterRower A1 sensor to the Raspberry Pi 3. Connect the 2 EL Wire Splitter is
-to the GPID 4 and ground. Doesn't matter which way! This is a hacking project, and I am not I 
+to the GPID 4 and ground on the RP3. Doesn't matter which way! This is a hacking project, and I am not I 
 am not responsible for any damage caused by any problems that may arise! 
 
 ![setup](setup.JPG "Setup")
 
 ## Prerequisites
 A Raspberry Pi 3 with wifi and running with nodejs. I use nodejs 9.4. Recommend also use of
-yarn. 
+yarn over npm. 
 
 ## Installing
 ```
@@ -34,7 +35,6 @@ This program supports heart rate by usb ant+ stick. Please install drivers with
  sudo apt-get install build-essential libudev-dev
 ```
 
-
 Install as service. 
 ```
 sudo npm install -g forever
@@ -43,9 +43,8 @@ sudo forever-service install
 ```
 
 ## Using
-After starting the app one can go to the web page. IP:3000. 
-Start so a activity.  E.g 192.168.1.190:3000. I use a iPad mini with and iPad holder.
-
+After starting the app one can go to the web page by typing its IP:3000 int
+the browser. E.g https://192.168.1.190:3000. I use a iPad mini with and iPad holder.
 
 
 ## Strava
@@ -54,7 +53,7 @@ Basic you need to do the quick start guide. After that you need to
 create get a writeable access_token. Look at the "Running the tests" section.
 
 ## Mounting
-Mounting the cable and Raspberry Pi 3 is done with glue and double sided tape.
+Mounting the cable and Raspberry Pi 3 is done with only glue and double sided tape.
 
 ## TODO
 Complete strava integration, more routes, better route handling, live view of rowing session. 
