@@ -1,4 +1,4 @@
-# waterrower-a1-logger
+# WaterRower A1 Logger
 
 Raspberry Pi 3 project for logging rowing on a WaterRower A1. It will track watt,
 pace, length, time, laps and heart rate (Needs ant plus stick). 
