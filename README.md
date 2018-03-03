@@ -71,5 +71,5 @@ One can use the parameter ?test=test to get a button that simulates a rowing ses
 ![strava](strava.png "strava")
 ![web-gui-history](web-gui-history.png "gui")
 ![web-gui-ipad](Ipad.JPG "ipad")
-![web-gui-side](setup1.JPG "overview")
-![web-gui-side2](setup2.JPG "overview side")
+![web-gui-side](setup1.jpg "overview")
+![web-gui-side2](setup2.jpg "overview side")
