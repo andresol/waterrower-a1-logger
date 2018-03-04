@@ -25,7 +25,7 @@
 <body>
 <!-- Nav -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Waterrower A1</a>
+    <a class="navbar-brand" href="/">Waterrower A1</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -36,13 +36,13 @@
                 <a class="nav-link" href="/">Home </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/history">History <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/history">History</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/user">Users</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="/route">Routes</a>
+                <a class="nav-link" href="/route">Routes <span class="sr-only">(current)</span></a>
             </li>
         </ul>
     </div>
@@ -50,15 +50,26 @@
 
 <!-- Main content -->
 
-<div id = "main-routes" class="container mt-3">
+<div id = "routes-t" class="container mt-4">
     <div class="row">
-        <div class="col">
+        <div id="routes-table" class="col pt-3">
             <h2>All routes</h2>
-            <div id="cards" class="row">
-            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Length</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="routes-table-body">
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

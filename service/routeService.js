@@ -1,19 +1,24 @@
 var cuid = require('cuid');
 var db = require('../db/db');
+var routes = require('../models/routes');
 
 function addRoute(route) {
     db.routes.put(route.name, route);
 }
 
-function getAllRoutes() {
-    var values = [];
-    db.routes.createReadStream()
-        .on('data', function (data) {
-            //console.log(data.key, '=', data.value)
-            values.push(data);
-        });
-    return values;
+function getAllRoutes(limit, reverse) {
+    return db.routes.createReadStream({limit: limit, reverse: reverse});
 }
+
+function getRoute(id) {
+    return db.routes.get(id);
+}
+
+
 module.exports =  {
-    addRoute: addRoute
+    add: addRoute,
+    all: getAllRoutes,
+    getDefaults: routes.routes,
+    routes: routes,
+    get: getRoute
 }

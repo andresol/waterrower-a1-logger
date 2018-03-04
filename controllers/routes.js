@@ -16,6 +16,7 @@ router.get('/', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
 
     var array = [];
+    array.push.apply(array, routeService.getDefaults);
     routeService.all(50, true).on('data', function (data) {
         array.push(JSON.parse(data.value));
     }).on('error', function (err) {
@@ -29,9 +30,14 @@ router.get('/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var id = req.params.id;
     if (id) {
+        var resRoute = routeService.routes[id.toUpperCase()];
+        if (resRoute) {
+            res.send(resRoute);
+            return;
+        }
         routeService.get(id).then(function (value) {
             res.send(value);
-        }).catch(function (err) { console.error(err) });
+        }).catch(function (err) { console.error(err); res.status(404).send('Cannot find route.'); });
     } else{
         res.status(404).send('Cannot find route');
     }
