@@ -17,6 +17,10 @@ body .container {
     min-height: 250px;
 }
 
+#users-main {
+    min-height: 550px;
+}
+
 #table-content {
     font-size: 1.9rem;
 }
