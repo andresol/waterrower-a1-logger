@@ -10,8 +10,15 @@ function getAllRoutes(limit, reverse) {
     return db.routes.createReadStream({limit: limit, reverse: reverse});
 }
 
+function getRoute(id) {
+    return db.routes.get(id);
+}
+
+
 module.exports =  {
-    addRoute: addRoute,
+    add: addRoute,
     all: getAllRoutes,
-    getDefaults: routes.routes
+    getDefaults: routes.routes,
+    routes: routes,
+    get: getRoute
 }
