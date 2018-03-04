@@ -5,6 +5,7 @@ router.use('/row', require('./row'));
 router.use('/session', require('./session'));
 router.use('/strava', require('./strava'));
 router.use('/users', require('./users'));
+router.use('/routes', require('./routes'));
 
 router.get('/', function(req, res) {
     res.sendFile('index.html', {root: './public'});

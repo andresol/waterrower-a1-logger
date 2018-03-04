@@ -131,6 +131,21 @@ $(function() {
         });
     });
 
+    /** routes.html */
+    $('#routes-t').each(function () {
+        $.get("/routes", function(data) {
+            var htmlTable = '';
+            var index = 0;
+            data.forEach(function (route) {
+                htmlTable = createRouteRecord(htmlTable, index, route);
+                index++;
+            });
+
+            $('#routes-table-body').html(htmlTable);
+
+        });
+    });
+
     $('#history-session').each(function () {
         var key = getLastPart();
         var title = "History";
@@ -397,6 +412,17 @@ var createLapTableRecord = function (htmlTable, index, session) {
     htmlTable += '</tr>';
     return htmlTable;
 };
+
+var createRouteRecord = function (htmlTable, index, route) {
+    htmlTable += '<tr>';
+    htmlTable += '<th scope="row">' + (index + 1) + '</th>';
+    htmlTable += '<td><a href="/routes/' + route.name +'">' + route.name + '</a></td>';
+    htmlTable += '<td>' + parseInt(route.meters) + 'm</td>';
+    htmlTable += '<td>' + route.country + '</td>';
+    htmlTable += '</tr>';
+    return htmlTable;
+};
+
 var addGpxTrackToMap = function (name, element) {
     if (name) {
         $.ajax({
@@ -431,6 +457,39 @@ var addGpxTrackToMap = function (name, element) {
     }
 };
 
+var addRouteTrackToMap = function (name, element) {
+    if (name) {
+        $.ajax({
+            type: "GET",
+            url: '/routes/' + name,
+            success: function (data) {
+                var points = [];
+                var map = new google.maps.Map(element[0], {
+                    zoom: 16
+                });
+
+                map.set('styles', styles);
+
+                var bounds = new google.maps.LatLngBounds();
+
+                data.gps.each(function (point) {
+                    var lat = point.lat;
+                    var lon = point.lon;
+                    var p = new google.maps.LatLng(lat, lon);
+                    points.push(p);
+                    bounds.extend(p);
+                });
+
+                var poly = createPolyLine(points);
+
+                poly.setMap(map);
+
+                // fit bounds to track
+                map.fitBounds(bounds);
+            }
+        });
+    }
+};
 
 function addGraph(time,hr, start) {
     var speed = [];

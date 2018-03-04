@@ -16,6 +16,7 @@ router.get('/', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
 
     var array = [];
+    array.push.apply(array, routeService.getDefaults);
     routeService.all(50, true).on('data', function (data) {
         array.push(JSON.parse(data.value));
     }).on('error', function (err) {
