@@ -31,7 +31,7 @@ $(function() {
         e.preventDefault();
         var routes = $('#routes').val();
         $.get( "/row/start",{ routes: routes }, function() {
-            $(window).scrollTop($('#table-content').offset().top); //Scroll
+            $(window).scrollTop($('#main').offset().top); //Scroll
             get_rowInfo(true, "Rowing");
             cleanMap();
             $('#routes').attr('disabled', 'disabled');
@@ -63,7 +63,7 @@ $(function() {
         e.preventDefault();
         var routes = $('#routes').val();
         $.get("/row/simulate", { routes: routes }, function() {
-            $(window).scrollTop($('#table-content').offset().top); //Scroll
+            $(window).scrollTop($('#main').offset().top); //Scroll
             get_rowInfo(true, "Simulate");
             cleanMap();
             $('#routes').attr('disabled', 'disabled');
@@ -73,6 +73,14 @@ $(function() {
             startRow.html('Rowing...');
             $(this).attr('disabled','disabled');
         });
+    });
+
+    $('#main').each(function () {
+        //TODO: Move map to start.
+       // var route = $('#routes').val();
+        cleanMap();
+        var p = new google.maps.LatLng(59.88,10.76);
+        liveMap.panTo(p);
     });
 
     $('#routes').each(function () {
@@ -371,9 +379,9 @@ function cleanMap() {
     liveMap.fitBounds(liveBounds);
 }
 
+//TODO: Change color by speed or hr.
 function createPolyLine(points) {
     return new google.maps.Polyline({
-        // use your own style here
         path: points,
         strokeColor: "#FF00AA",
         strokeOpacity: .7,
