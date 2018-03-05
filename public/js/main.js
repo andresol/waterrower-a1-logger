@@ -236,7 +236,7 @@ $(function() {
         });
     });
 
-    $( "#save-user" ).on( "click", function( event ) {
+    $(document).on("click", "#save-user", function(event) {
         event.preventDefault();
         var form =  $("#addUserForm");
         var firstName = form.find('#firstName').val();
