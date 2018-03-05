@@ -27,6 +27,53 @@ $(function() {
     }
 
     /** index.html */
+    $(document).on("click",'#user', function (e) {
+        e.preventDefault();
+        $('#main').load('/user', function () {
+            $( this ).find('#users-body').each(function () {
+                var that = this;
+                $.get( "/users/", function(data) {
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var user = data[i];
+                        html += '<tr><td><a href="#" data-id="'+ user.id +'">' + (i + 1) + '</a></td><td>'+user.firstName +'</td><td>'+ user.lastName +'</td>';
+                        html +=  '<td><a class="edit-user" href="#" data-id="'+ user.id +'"><i class="material-icons">create</i></a><a class="del-user" href="#" data-id="' + user.id + '"><i aria-hidden="true" title="Delete user" class="material-icons">delete</i></a></td>'+'</tr>'
+                    }
+                    $(that).html(html);
+                });
+            });
+        });
+    });
+
+    $(document).on("click",'#history', function (e) {
+        e.preventDefault();
+        $('#main').load('/history', function () {
+            $(this).find('#history').each(function () {
+                $.get("/session", function (data) {
+                    var htmlCards = '';
+                    var htmlTable = '';
+                    var index = 0;
+                    data.forEach(function (session) {
+                        if (index < 3) {
+                            htmlCards = createCard(htmlCards, session);
+                        }
+                        htmlTable = createLapTableRecord(htmlTable, index, session);
+                        index++;
+                    });
+
+                    $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards + '</div></div>');
+                    $('#histor-table-body').html(htmlTable);
+
+                    $('.gpx-track').each(function () {
+                        var name = $(this).data('name');
+                        var element = $(this).find('.card-map-top');
+                        addGpxTrackToMap(name, element);
+                    });
+                });
+            });
+        });
+    });
+
     $(document).on("click",'#startRow', function (e) {
         e.preventDefault();
         var routes = $('#routes').val();
@@ -122,29 +169,6 @@ $(function() {
     });
 
     /** history.html */
-    $('#history').each(function () {
-        $.get("/session", function(data) {
-            var htmlCards = '';
-            var htmlTable = '';
-            var index = 0;
-            data.forEach(function (session) {
-                if (index < 3) {
-                    htmlCards = createCard(htmlCards, session);
-                }
-                htmlTable = createLapTableRecord(htmlTable, index, session);
-                index++;
-            });
-
-            $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards +'</div></div>');
-            $('#histor-table-body').html(htmlTable);
-
-            $('.gpx-track').each(function () {
-                var name = $(this).data('name');
-                var element = $(this).find('.card-map-top');
-                addGpxTrackToMap(name, element);
-            });
-        });
-    });
 
     /** routes.html */
     $('#routes-t').each(function () {
@@ -223,19 +247,6 @@ $(function() {
         });
     });
 
-    $('#users-body').each(function () {
-        var that = this;
-        $.get( "/users/", function(data) {
-            var html = '';
-            for (var i = 0; i < data.length; i++) {
-                var user = data[i];
-                html += '<tr><td><a href="#" data-id="'+ user.id +'">' + (i + 1) + '</a></td><td>'+user.firstName +'</td><td>'+ user.lastName +'</td>';
-                html +=  '<td><a class="edit-user" href="#" data-id="'+ user.id +'"><i class="material-icons">create</i></a><a class="del-user" href="#" data-id="' + user.id + '"><i aria-hidden="true" title="Delete user" class="material-icons">delete</i></a></td>'+'</tr>'
-            }
-            $(that).html(html);
-        });
-    });
-
     $(document).on("click", "#save-user", function(event) {
         event.preventDefault();
         var form =  $("#addUserForm");
@@ -274,7 +285,6 @@ $(function() {
             });
         }
     });
-
 });
 
 function get_rowInfo(continues, title){
