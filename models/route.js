@@ -26,7 +26,7 @@ Route.prototype.getIndex = function (i) {
 
 Route.prototype.getNext = function (i) {
     return this.getIndex(i + 1);
-}
+};
 
 // export the class
 module.exports = Route;

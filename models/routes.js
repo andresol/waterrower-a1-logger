@@ -312,7 +312,7 @@ const NYSTULVATN = {
         { lat: 59.56194060, lon: 9.037048810, el: 303.0 },
         { lat: 59.56163620, lon: 9.038271900, el: 303.0 },
     ]
-}
+};
 
 const THAMES = {
     name: 'River Thames',

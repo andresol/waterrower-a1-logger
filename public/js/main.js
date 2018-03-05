@@ -75,14 +75,6 @@ $(function() {
         });
     });
 
-    $('#main').each(function () {
-        //TODO: Move map to start.
-       // var route = $('#routes').val();
-        cleanMap();
-        var p = new google.maps.LatLng(59.88,10.76);
-        liveMap.panTo(p);
-    });
-
     $('#routes').each(function () {
         var that = this;
         $.get("/row/routes", function(data) {
@@ -91,16 +83,31 @@ $(function() {
             var group = '';
             data.sort(function(a,b) {return (a.country > b.country) ? 1 : ((b.country > a.country) ? -1 : 0);} );
 
+            var selected = 'selected="selected"';
             data.forEach(function (value) {
                 if (value.country !== group) {
                     html+= '<optgroup label="' + value.country + '">';
                     group = value.country;
                 }
-                html+= '<option value="'+ value.index + '">'+ value.name + ' (' + value.meters + 'm)</option>';
+                html+= '<option '+selected+' value="'+ value.index + '" data-lat="' +value.gps[0].lat +'" data-lon="'+ value.gps[0].lon +'">'+ value.name + ' (' + value.meters + 'm)</option>';
+                selected = '';
                 index++;
             });
-            $(that).html(html)
+            $(that).html(html);
+            var selected = $('#routes').find(":selected");
+            cleanMap();
+            var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
+            liveMap.panTo(p);
         });
+
+    });
+
+    $(document).on("change", '#routes', function(e) {
+        var selected = $('#routes').find(":selected");
+        cleanMap();
+        console.log(selected);
+        var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
+        liveMap.panTo(p);
     });
 
     $('#session-user').each(function () {
@@ -282,7 +289,7 @@ function get_rowInfo(continues, title){
             var p = new google.maps.LatLng(lat, lon);
             livePoints.push(p);
             liveBounds.extend(p);
-            var poly = createPolyLine(livePoints)
+            var poly = createPolyLine(livePoints);
             poly.setMap(liveMap);
             liveMap.fitBounds(liveBounds);
         }
@@ -305,7 +312,7 @@ function getHtml(label, json, day) {
     }
     var html = '';
     if (day) {
-        html += '<div class="row"><div class="col">Day</div><div class="col">' + json.start.substr(0, json.start.lastIndexOf('T')) +'</div></div>';
+        html += '<div class="row"><div class="col">Day</div><div class="col">' + json.start.substr(2, json.start.lastIndexOf('T') - 2) +'</div></div>';
     }
     html += '<div class="row"><div class="col">Start:</div><div class="col">' + json.start.substr(json.start.lastIndexOf('T') + 1, 8) +'</div></div>';
     html += '<div class="row"><div class="col">Time:</div><div class="col">' + fmtMSS(parseInt(json.seconds)) +'</div></div>';
@@ -314,7 +321,7 @@ function getHtml(label, json, day) {
     html += '<div class="row"><div class="col">500m(p):</div><div class="col">' + fmtMSS(parseInt(json.lapPace)) +'</div></div>';
     html += '<div class="row"><div class="col">2k(p):</div><div class="col">' + fmtMSS(parseInt(json.towKPace)) +'</div></div>';
     html += '<div class="row"><div class="col">Avg.W:</div><div class="col">' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div></div>';
-    html += '<div class="row"><div class="col">Strokerate:</div><div class="col">' + Math.round( parseFloat(json.stroke)* 10) / 10 +'</div></div>';
+    html += '<div class="row"><div class="col">SR:</div><div class="col">' + Math.round( parseFloat(json.stroke)* 10) / 10 +'</div></div>';
     if (parseInt(json.hr) > 0) {
         html += '<div class="row"><div class="col">HR:</div><div class="col '+ getHeartRateColor(parseInt(json.hr)) +'">' + parseInt(json.hr) +'</div></div>';
     }

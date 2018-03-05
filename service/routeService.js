@@ -14,11 +14,15 @@ function getRoute(id) {
     return db.routes.get(id);
 }
 
+function delRoute(id) {
+    return db.routes.del(id);
+}
 
 module.exports =  {
     add: addRoute,
     all: getAllRoutes,
     getDefaults: routes.routes,
     routes: routes,
-    get: getRoute
-}
+    get: getRoute,
+    del: delRoute
+};

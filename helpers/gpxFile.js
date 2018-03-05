@@ -62,10 +62,10 @@ GpxFile.prototype.createFile = function() {
     }
     //add last point.
     if (i !== (this.rowSession.raw.length - 1)) {
-        var rawTime = new Date(this.rowSession.raw[this.rowSession.raw.length - 1]);
-        var distance = RowSession.prototype.getLengthInMetersByClicks(skip * 6); //6 click per raw.
+        rawTime = new Date(this.rowSession.raw[this.rowSession.raw.length - 1]);
+        distance = RowSession.prototype.getLengthInMetersByClicks(skip * 6); //6 click per raw.
         p = this.route.nextPoint(p, distance.toFixed(4));
-        var trackPoint = {
+        trackPoint = {
             '@lat': p.lat.toFixed(7),
             '@lon': p.lon.toFixed(7),
             ele: 0,

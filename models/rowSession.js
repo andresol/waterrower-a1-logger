@@ -254,20 +254,20 @@ RowSession.prototype.twoKPace = function () {
 
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
-};
+}
 
 function getRandomRowerSpeed(fast) {
     return getRandomArbitrary(10, 120) * ( fast ? 0.7 : 1)
-};
+}
 
 function getClicksByMeters(meters) {
     var cm = meters * 100;
     return Math.floor(cm / RATION);
-};
+}
 
 function watt(pace) {
     return WATT_RATION / Math.pow(pace, 3);
-};
+}
 
 function addStroke(stroke, val) {
     stroke.push(val);
