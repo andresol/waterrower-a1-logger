@@ -20,161 +20,26 @@ $(function() {
     /** Init shared */
     get_rowInfo(false,"");
 
-    var test = getUrlParameter("test");
-
-    if (test) {
-        $('#startSimulator').removeClass("sr-only");
-    }
-
-    /** index.html */
-    $(document).on("click",'#user', function (e) {
-        e.preventDefault();
-        loadUser();
-    });
-
-    function loadSession(url) {
-        $('#history-session').each(function () {
-            var key = url.substr(url.lastIndexOf('/') + 1);
-            var title = "History";
-            $.get("/session/" + key, function (data) {
-                var html = getHtml(title, data.endStats, true);
-                $('#routes').val(data.route);
-                $('#session-user').val(data.user);
-                if (html) {
-                    $('#table-content').html(html);
-                    $('#laps-body').html(getLapHtml(title, data.endStats));
-                    addGpxTrackToMap(key, $("#live-map"));
-                }
-                addGraph(data.raw, data.rawHr, parseInt(data.start));
-            });
-        });
-    }
-
-    function loadUser () {
-        $('#main').load('/user', function () {
-            $( this ).find('#users-body').each(function () {
-                var that = this;
-                $.get( "/users/", function(data) {
-                    var html = '';
-                    for (var i = 0; i < data.length; i++) {
-                        var user = data[i];
-                        html += '<tr><td><a href="#" data-id="'+ user.id +'">' + (i + 1) + '</a></td><td>'+user.firstName +'</td><td>'+ user.lastName +'</td>';
-                        html +=  '<td><a class="edit-user" href="#" data-id="'+ user.id +'"><i class="material-icons">create</i></a><a class="del-user" href="#" data-id="' + user.id + '"><i aria-hidden="true" title="Delete user" class="material-icons">delete</i></a></td>'+'</tr>'
-                    }
-                    $(that).html(html);
-                    $('#addUserModal').on('hidden.bs.modal', function (e) {
-                        loadUser();
-                    })
-                });
-            });
-        });
-    }
-    $(document).on("click",'.session', function (e) {
-        e.preventDefault();
-        var url = $(this).attr('href');
-        $('#main').load(url, function () {
+    function loadSession(name) {
+        $('#load').load('/sessions', function () {
             $(this).find('#routes').each(loadRoutes);
             $(this).find('#session-user').each(loadUsers);
-            loadSession(url);
-        });
-    });
-
-    $(document).on("click",'#history', function (e) {
-        e.preventDefault();
-        $('#main').load('/history', function () {
-            $(this).find('#history').each(function () {
-                $.get("/session", function (data) {
-                    var htmlCards = '';
-                    var htmlTable = '';
-                    var index = 0;
-                    data.forEach(function (session) {
-                        if (index < 3) {
-                            htmlCards = createCard(htmlCards, session);
-                        }
-                        htmlTable = createLapTableRecord(htmlTable, index, session);
-                        index++;
-                    });
-
-                    $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards + '</div></div>');
-                    $('#histor-table-body').html(htmlTable);
-
-                    $('.gpx-track').each(function () {
-                        var name = $(this).data('name');
-                        var element = $(this).find('.card-map-top');
-                        addGpxTrackToMap(name, element);
-                    });
+            $(this).find('#history-session').each(function () {
+                var title = "History";
+                $.get("/session/" + name, function (data) {
+                    var html = getHtml(title, data.endStats, true);
+                    $('#routes').val(data.route);
+                    $('#session-user').val(data.user);
+                    if (html) {
+                        $('#table-content').html(html);
+                        $('#laps-body').html(getLapHtml(title, data.endStats));
+                        addGpxTrackToMap(name, $("#live-map"));
+                    }
+                    addGraph(data.raw, data.rawHr, parseInt(data.start));
                 });
             });
         });
-    });
-
-    $(document).on("click",'#route', function (e) {
-        e.preventDefault();
-        $('#main').load('/route', function () {
-            $(this).find('#routes-t').each(function () {
-                $.get("/routes", function (data) {
-                    var htmlTable = '';
-                    var index = 0;
-                    data.forEach(function (route) {
-                        htmlTable = createRouteRecord(htmlTable, index, route);
-                        index++;
-                    });
-
-                    $('#routes-table-body').html(htmlTable);
-
-                });
-            });
-        });
-    });
-
-    $(document).on("click",'#startRow', function (e) {
-        e.preventDefault();
-        var routes = $('#routes').val();
-        $.get( "/row/start",{ routes: routes }, function() {
-            $(window).scrollTop($('#main').offset().top); //Scroll
-            get_rowInfo(true, "Rowing");
-            cleanMap();
-            $('#routes').attr('disabled', 'disabled');
-            $('#session-user').attr('disabled', 'disabled');
-            $("#startSimulator").attr('disabled','disabled');
-            $(this).attr('disabled','disabled');
-            $(this).html('Rowing...');
-        });
-    });
-
-    $(document).on("click", '#stopRow', function(e) {
-        e.preventDefault();
-        clearTimeout(timeOut);
-        run = false;
-        var routes = $('#routes').val();
-        var user = $('#session-user').val();
-        $.get( "/row/stop", { routes: routes, user: user }, function(data) {
-            $('#table-content').html(getHtml("Stopped", data, false));
-            var startRow = $("#startRow");
-            startRow.removeAttr('disabled');
-            startRow.html('Start row');
-            $('#routes').removeAttr('disabled');
-            $('#session-user').removeAttr('disabled');
-            $("#startSimulator").removeAttr('disabled');
-        });
-    });
-
-    $(document).on("click", '#startSimulator', function(e) {
-        e.preventDefault();
-        var routes = $('#routes').val();
-        $.get("/row/simulate", { routes: routes }, function() {
-            $(window).scrollTop($('#main').offset().top); //Scroll
-            get_rowInfo(true, "Simulate");
-            cleanMap();
-            $('#routes').attr('disabled', 'disabled');
-            $('#session-user').attr('disabled', 'disabled');
-            var startRow = $("#startRow");
-            startRow.attr('disabled','disabled');
-            startRow.html('Rowing...');
-            $(this).attr('disabled','disabled');
-        });
-    });
-
+    }
 
     var loadRoutes = function () {
         var that = this;
@@ -203,16 +68,66 @@ $(function() {
 
     };
 
-    $('#routes').each(loadRoutes);
+    function loadUser () {
+        $('#load').load('/user', function () {
+            $( this ).find('#users-body').each(function () {
+                var that = this;
+                $.get( "/users/", function(data) {
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var user = data[i];
+                        html += '<tr><td><a href="#" data-id="'+ user.id +'">' + (i + 1) + '</a></td><td>'+user.firstName +'</td><td>'+ user.lastName +'</td>';
+                        html +=  '<td><a class="edit-user" href="#" data-id="'+ user.id +'"><i class="material-icons">create</i></a><a class="del-user" href="#" data-id="' + user.id + '"><i aria-hidden="true" title="Delete user" class="material-icons">delete</i></a></td>'+'</tr>'
+                    }
+                    $(that).html(html);
+                    $('#addUserModal').on('hidden.bs.modal', function (e) {
+                        loadUser();
+                    })
+                });
+            });
+        });
+    }
 
-    $(document).on("change", '#routes', function(e) {
-        var selected = $('#routes').find(":selected");
-        cleanMap();
-        console.log(selected);
-        var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
-        liveMap.panTo(p);
-    });
+    function loadMain () {
+        $('#load').load('/main', function () {
+            $(this).find('#routes').each(loadRoutes);
+            $(this).find('#session-user').each(loadUsers);
 
+            //Run simulator if test.
+            if (getUrlParameter("test")) {
+                $('#startRow').attr("id", "startSimulator");
+            }
+
+        });
+    }
+
+    function loadHistory() {
+        $('#load').load('/history', function () {
+            $(this).find('#history').each(function () {
+                $.get("/session", function (data) {
+                    var htmlCards = '';
+                    var htmlTable = '';
+                    var index = 0;
+                    data.forEach(function (session) {
+                        if (index < 3) {
+                            htmlCards = createCard(htmlCards, session);
+                        }
+                        htmlTable = createLapTableRecord(htmlTable, index, session);
+                        index++;
+                    });
+
+                    $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards + '</div></div>');
+                    $('#histor-table-body').html(htmlTable);
+
+                    $('.gpx-track').each(function () {
+                        var name = $(this).data('name');
+                        var element = $(this).find('.card-map-top');
+                        addGpxTrackToMap(name, element);
+                    });
+                });
+            });
+        });
+    }
 
     var loadUsers = function () {
         var that = this;
@@ -225,8 +140,116 @@ $(function() {
         });
     };
 
-    $('#session-user').each(loadUsers);
+    var clickSession = function (e) {
+        e.preventDefault();
+        var name = $(this).data('name');
+        loadSession(name);
+    };
 
+    $(document).on("click",'#user', function (e) {
+        e.preventDefault();
+        loadUser();
+    });
+
+    $('#load').each(loadMain);
+
+    $(document).on("click",'.main', function (e) {
+        e.preventDefault();
+        loadMain();
+    });
+
+    $(document).on("click",'.nav-link', function (e) {
+        $('#main-nav').find(".nav-item").each(function () {
+            $(this).removeClass("active");
+        });
+        $(this).parent().addClass("active");
+    });
+
+    $(document).on("click",'.sessions', clickSession);
+
+    $(document).on("click",'a#history', function (e) {
+        e.preventDefault();
+        loadHistory();
+    });
+
+    $(document).on("click",'a#route', function (e) {
+        e.preventDefault();
+        $('#load').load('/route', function () {
+            $(this).find('#routes-t').each(function () {
+                $.get("/routes", function (data) {
+                    var htmlTable = '';
+                    var index = 0;
+                    data.forEach(function (route) {
+                        htmlTable = createRouteRecord(htmlTable, index, route);
+                        index++;
+                    });
+
+                    $('#routes-table-body').html(htmlTable);
+
+                });
+            });
+        });
+    });
+
+    $(document).on("click",'button#startRow', function (e) {
+        e.preventDefault();
+        var routes = $('#routes').val();
+        $.get( "/row/start",{ routes: routes }, function() {
+            $(window).scrollTop($('#main').offset().top); //Scroll
+            get_rowInfo(true, "Rowing");
+            cleanMap();
+            $('#routes').attr('disabled', 'disabled');
+            $('#session-user').attr('disabled', 'disabled');
+            $("#startSimulator").attr('disabled','disabled');
+            $(this).attr('disabled','disabled');
+            $(this).html('Rowing...');
+        });
+    });
+
+    $(document).on("click", 'button#stopRow', function(e) {
+        e.preventDefault();
+        clearTimeout(timeOut);
+        run = false;
+        var routes = $('#routes').val();
+        var user = $('#session-user').val();
+        $.get( "/row/stop", { routes: routes, user: user }, function(data) {
+            $('#table-content').html(getHtml("Stopped", data, false));
+            var startRow = $("#startRow");
+            startRow.removeAttr('disabled');
+            startRow.html('Start row');
+            $('#routes').removeAttr('disabled');
+            $('#session-user').removeAttr('disabled');
+            $("#startSimulator").removeAttr('disabled');
+        });
+    });
+
+    $(document).on("click", 'button#startSimulator', function(e) {
+        e.preventDefault();
+        var routes = $('#routes').val();
+        $.get("/row/simulate", { routes: routes }, function() {
+            $(window).scrollTop($('#main').offset().top); //Scroll
+            get_rowInfo(true, "Simulate");
+            cleanMap();
+            $('#routes').attr('disabled', 'disabled');
+            $('#session-user').attr('disabled', 'disabled');
+            var startRow = $("#startRow");
+            startRow.attr('disabled','disabled');
+            startRow.html('Rowing...');
+            $(this).attr('disabled','disabled');
+        });
+    });
+
+
+    $('#routes').each(loadRoutes);
+
+    $(document).on("change", '#routes', function(e) {
+        var selected = $('#routes').find(":selected");
+        cleanMap();
+        var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
+        liveMap.panTo(p);
+    });
+
+    $('#session-user').each(loadUsers);
 
        /** session.html */
     $(document).on("click", '.strava', function(e) {
@@ -245,7 +268,7 @@ $(function() {
         if (result) {
             $.get( '/session/del/' + name, function( data ) {
                 alert( "Session deleted" );
-                location.reload();
+                loadHistory();
             });
         }
     });
@@ -364,7 +387,7 @@ function getHtml(label, json, day) {
         html += '<div class="row"><div class="col">Actions:</div><div class="col"><a id="" href="/sessions/' + json.fileName;
         html += '"><i class="material-icons">file_download</i><a class="strava" href="/strava/upload/' + json.name;
         html += '"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a>';
-        html += '<a class="" href="/history/' + json.name+ '"><i aria-hidden="true" title="Session" class="material-icons">fiber_new</i></a></div></div>';
+        html += '<a class="sessions" data-name="'+ json.name +'" href="/sessions"><i aria-hidden="true" title="Session" class="material-icons">fiber_new</i></a></div></div>';
     }
     return html + "";
 }
@@ -431,7 +454,7 @@ var createCard = function (htmlCards, session) {
     htmlCards += '<div class="card gpx-track" data-name="' + session.name + '"">';
     htmlCards += '<div class="card-body">';
     htmlCards += '<div class="card-map-top "></div>';
-    htmlCards += '<h5 class="card-title mt-2"><a class="session" href="/history/' + session.name +'">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></h5>';
+    htmlCards += '<h5 class="card-title mt-2"><a class="sessions" data-name="'+ session.name +'" href="/session">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></h5>';
     htmlCards += '<p class="card-text">Length: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
     htmlCards += '<a href="/strava/upload/' + session.name + '" class="btn btn-primary strava btn-block">Upload to Strava</a>';
     htmlCards += '</div>';
@@ -452,7 +475,7 @@ function initMap() {
 var createLapTableRecord = function (htmlTable, index, session) {
     htmlTable += '<tr>';
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
-    htmlTable += '<td><a class="session" href="/history/' + session.name +'">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></td>';
+    htmlTable += '<td><a class="sessions" data-name="'+ session.name +'" href="/session">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></td>';
     htmlTable += '<td>Length: ' + parseInt(session.endStats.meters) + 'm</td>';
     htmlTable += '<td> <a id="" href="/sessions/' + session.name + '.gpx"><i class="material-icons md-36">file_download</i><a class="strava" href="/strava/upload/' + session.name + '"><i aria-hidden="true" title="Upload to Strava" class="material-icons md-36">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name + '"><i aria-hidden="true" title="Delete session local" class="material-icons md-36">delete</i></a></td>';
     htmlTable += '</tr>';

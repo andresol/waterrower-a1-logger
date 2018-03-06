@@ -1,0 +1,72 @@
+<div id="main" class="container mt-4">
+<div class="row">
+    <div class="col pt-3">
+        <form>
+            <div class="form-group row">
+                <div class="col-sm">
+                    <div class="input-group mt-2">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="routes">Route</label>
+                        </div>
+                        <select class="form-control" id="routes">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group mt-2">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="session-user">User</label>
+                        </div>
+                        <select class="form-control" id="session-user">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <button id="startRow" type="button" class="btn btn-lg btn-primary btn-block">Start row</button>
+    </div>
+    <div class="col">
+        <button id="stopRow" type="button" class="btn btn-lg btn-secondary btn-block">Stop row</button>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div id="table-content" class="col">
+        <div class="row"><div class="col">Day</div><div class="col">18-01-01</div></div>
+        <div class="row"><div class="col">Time:</div><div class="col">00:00:00</div></div>
+        <div class="row"><div class="col">Length:</div><div class="col">0 m</div></div>
+        <div class="row"><div class="col">Pace:</div><div class="col"> 0 km/t</div></div>
+        <div class="row"><div class="col">500m(p):</div><div class="col">00:00:00</div></div>
+        <div class="row"><div class="col">2k(p):</div><div class="col">00:00:00</div></div>
+        <div class="row"><div class="col">Avg.W:</div><div class="col">0.0w</div></div>
+        <div class="row"><div class="col">SR:</div><div class="col">0</div></div>
+        <div class="row"><div class="col">HR:</div><div class="col">0</div></div>
+    </div>
+
+    <div class="col-md-8 pr-3">
+        <div id="live-map">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div id="laps" class="col mt-5">
+        <div class="row">
+            <div class="table-responsive col">
+                <table class="table">
+                    <thead>
+                    <tr><th>Lap #</th><th>Meters</th><th>Time</th><th>Watt</th></tr>
+                    </thead>
+                    <!--get_rowInfo() -->
+                    <tbody id="laps-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
