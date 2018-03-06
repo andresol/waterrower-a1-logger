@@ -5,6 +5,7 @@ var liveMap;
 var liveBounds;
 var livePoints = [];
 const RATION = (100 / 4.805) * 6;
+const PAGE_SIZE = 10;
 
 const styles = [{"featureType": "landscape", "stylers": [{"saturation": -100}, {"lightness": 65},
         {"visibility": "on"}]}, {"featureType": "poi", "stylers": [{"saturation": -100}, {"lightness": 51},
@@ -102,7 +103,7 @@ $(function() {
     }
 
     function loadHistoryIndex(index) {
-        loadHistory(index * 25, (((index + 1) * 25 ))-1, index);
+        loadHistory(index * PAGE_SIZE, (((index + 1) * PAGE_SIZE ))-1, index);
     }
     function loadHistory(start, stop, mainIndex) {
         $('#load').load('/history', function () {
@@ -116,7 +117,7 @@ $(function() {
                             htmlCards = createCard(htmlCards, session);
                         }
 
-                        htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * 25), session);
+                        htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * PAGE_SIZE), session);
                         index++;
                     });
 
@@ -142,17 +143,17 @@ $(function() {
     function createHistoryNavPage(page, index) {
         var htmlElement = $('<ul id="history-page" data-index="' + index+ '"></ul>').addClass("pagination pagination-lg");
         $.get("session/size", function(data) {
-           var size = parseInt(parseInt(data) / 25) + 1;
-           var prevDisabled = (index === 0 ? 'disabled' : '');
+            var size = parseInt(parseInt(data) / PAGE_SIZE) + 1;
+            var prevDisabled = (index === 0 ? 'disabled' : '');
             var nextDisabled = (index === size - 1 ? 'disabled' : '');
             var prev = $('<li class="page-item ' + prevDisabled + '"></li>').append('<a class="page-link" href="#" data-next="-1" tabindex="-1">Previous</a>');
             var next = $('<li class="page-item '+ nextDisabled +'"></li>').append('<a class="page-link" data-next="1" href="#">Next</a>');
 
             htmlElement.append(prev);
-           for (var i = 0; i < size; i++) {
-               var item = $('<li class="page-item"><a class="page-link" data-index="' + i + '" href="#">' + (i + 1) + '</a></li>');
-               htmlElement.append(item);
-           }
+            for (var i = 0; i < size; i++) {
+                var item = $('<li class="page-item"><a class="page-link" data-index="' + i + '" href="#">' + (i + 1) + '</a></li>');
+                htmlElement.append(item);
+            }
             htmlElement.append(next);
             $(page).append(htmlElement);
         });
@@ -184,7 +185,7 @@ $(function() {
     $(document).on("click",'#history-page a', function (e) {
         e.preventDefault();
         var next = parseInt($(this).data('next')), index = parseInt($(this).data('index')),
-        mainIndex = parseInt($('#history-page').data('index'));
+            mainIndex = parseInt($('#history-page').data('index'));
         if (!isNaN(next)) {
             mainIndex += next;
         } else if (!isNaN(index)) {
