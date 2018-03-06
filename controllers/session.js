@@ -73,7 +73,7 @@ router.get('/:id', function(req, res) {
     }
 });
 
-router.get('/del/:id', function(req, res) {
+router.delete('/del/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var id = req.params.id;
     if (id) {

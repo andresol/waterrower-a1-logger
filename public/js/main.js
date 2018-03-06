@@ -319,23 +319,15 @@ $(function() {
     $(document).on("click", '.del-session', function(e) {
         e.preventDefault();
         var name = $(this).data('name');
-        var result = confirm("Are you sure you want to delete?");
+        var result = confirm("Are you sure you want to delete session?");
         if (result) {
-            $.get( '/session/del/' + name, function( data ) {
-                alert( "Session deleted" );
-                loadHistory(0, 0);
-            });
-        }
-    });
-
-    $(document).on("click", '.del-session', function(e) {
-        e.preventDefault();
-        var name = $(this).data('name');
-        var result = confirm("Are you sure you want to delete?");
-        if (result) {
-            $.get( '/session/del/' + name, function( data ) {
-                alert( "Session deleted" );
-                loadHistoryIndex(0, 0);
+            $.ajax({
+                url: '/session/del/' + name,
+                type: 'DELETE',
+                success: function(result) {
+                    alert( "Session deleted" );
+                    loadHistoryIndex(0, 0);
+                }
             });
         }
     });
