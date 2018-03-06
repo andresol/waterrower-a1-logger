@@ -82,10 +82,8 @@ function openStick(stick, stickid) {
             console.error(stickid, err);
         } else {
             console.log(stickid, 'Stick found');
-            //setTimeout(function() { stick.close(); }, 5000);
         }
     });
-        //setTimeout(function() { token && token.cancel(); }, 60000);
 
         return token;
     }
@@ -191,9 +189,11 @@ RowSession.prototype.stop = function() {
     try {
         if (this.stick) {
             this.stick.close();
+            delete this.stick;
         }
         if (this.token) {
-            token.cancel();
+            this.token.cancel();
+            delete this.token;
         }
     } catch (e) {
         console.log("Error with stick. " + e);
