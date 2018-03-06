@@ -41,6 +41,7 @@ $(function() {
         });
     }
 
+    /** All load functions */
     var loadRoutes = function () {
         var that = this;
         $.get("/row/routes", function(data) {
@@ -151,8 +152,6 @@ $(function() {
         loadUser();
     });
 
-    $('#load').each(loadMain);
-
     $(document).on("click",'.main', function (e) {
         e.preventDefault();
         loadMain();
@@ -239,41 +238,6 @@ $(function() {
         });
     });
 
-
-    $('#routes').each(loadRoutes);
-
-    $(document).on("change", '#routes', function(e) {
-        var selected = $('#routes').find(":selected");
-        cleanMap();
-        var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
-        liveMap.panTo(p);
-    });
-
-    $('#session-user').each(loadUsers);
-
-       /** session.html */
-    $(document).on("click", '.strava', function(e) {
-        e.preventDefault();
-        var href = $(this).attr('href');
-        $.get( href, function( data ) {
-            console.log(data);
-            alert( "Uploaded to strava!" );
-        });
-    });
-
-    $(document).on("click", '.del-session', function(e) {
-        e.preventDefault();
-        var name = $(this).data('name');
-        var result = confirm("Are you sure you want to delete?");
-        if (result) {
-            $.get( '/session/del/' + name, function( data ) {
-                alert( "Session deleted" );
-                loadHistory();
-            });
-        }
-    });
-
-    /** users.html */
     $(document).on("click", '.edit-user', function(e) {
         e.preventDefault();
         var id = $(this).data('id');
@@ -294,6 +258,27 @@ $(function() {
                 $('#addUserModal').modal('show');
             }
         });
+    });
+
+    $(document).on("click", '.strava', function(e) {
+        e.preventDefault();
+        var href = $(this).attr('href');
+        $.get( href, function( data ) {
+            console.log(data);
+            alert( "Uploaded to strava!" );
+        });
+    });
+
+    $(document).on("click", '.del-session', function(e) {
+        e.preventDefault();
+        var name = $(this).data('name');
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+            $.get( '/session/del/' + name, function( data ) {
+                alert( "Session deleted" );
+                loadHistory();
+            });
+        }
     });
 
     $(document).on("click", "#save-user", function(event) {
@@ -333,6 +318,23 @@ $(function() {
             });
         }
     });
+
+
+    $('#load').each(loadMain);
+
+    $('#routes').each(loadRoutes);
+
+    $('#session-user').each(loadUsers);
+
+
+    $(document).on("change", '#routes', function(e) {
+        var selected = $('#routes').find(":selected");
+        cleanMap();
+        var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
+        liveMap.panTo(p);
+    });
+
+
 });
 
 function get_rowInfo(continues, title){
