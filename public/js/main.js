@@ -126,9 +126,7 @@ $(function() {
                     $('#histor-table-body').html(htmlTable);
 
                     $('.gpx-track').each(function () {
-                        var name = $(this).data('name');
-                        var element = $(this).find('.card-map-top');
-                        addGpxTrackToMap(name, element);
+                        $( this ).trigger( "load-map", this );
                     });
 
                     $('#histor-table-body').html(htmlTable);
@@ -138,6 +136,12 @@ $(function() {
                 });
             });
         });
+    }
+
+    function loadGpxMap() {
+        var name = $(this).data('name');
+        var element = $(this).find('.card-map-top');
+        addGpxTrackToMap(name, element);
     }
 
     function createHistoryNavPage(page, index) {
@@ -157,7 +161,6 @@ $(function() {
             htmlElement.append(next);
             $(page).append(htmlElement);
         });
-        //return htmlElement.html();
     }
 
     var loadUsers = function () {
@@ -231,6 +234,8 @@ $(function() {
             });
         });
     });
+
+    $(document).on("load-map",'.gpx-track', loadGpxMap);
 
     $(document).on("click",'button#startRow', function (e) {
         e.preventDefault();
