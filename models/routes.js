@@ -598,6 +598,39 @@ const VENEZIA = {
     ]
 };
 
+const GOZO = {
+    name: "Gozo",
+    meters: '7873',
+    country: 'Malta',
+    index: 10,
+    gps: [{ lat: 36.02452921, lon: 14.29903864, el: 3.0 },
+        { lat: 36.02513661, lon: 14.29987549, el: 1.0 },
+        { lat: 36.02544898, lon: 14.30152773, el: 1.0 },
+        { lat: 36.02534485, lon: 14.30300831, el: 1.0 },
+        { lat: 36.02458127, lon: 14.30485367, el: 1.0 },
+        { lat: 36.02385239, lon: 14.30642008, el: 1.0 },
+        { lat: 36.02310615, lon: 14.30886626, el: 1.0 },
+        { lat: 36.02183926, lon: 14.31129097, el: 1.0 },
+        { lat: 36.02123184, lon: 14.31373715, el: 1.0 },
+        { lat: 36.01994756, lon: 14.31685924, el: 1.0 },
+        { lat: 36.01828144, lon: 14.31874752, el: 1.0 },
+        { lat: 36.01536565, lon: 14.32314634, el: 1.0 },
+        { lat: 36.01439369, lon: 14.32344675, el: 8.0 },
+        { lat: 36.01328287, lon: 14.32366132, el: 2.0 },
+        { lat: 36.01220675, lon: 14.32379007, el: 1.0 },
+        { lat: 36.01144304, lon: 14.32293176, el: 2.0 },
+        { lat: 36.01102647, lon: 14.32035684, el: 1.0 },
+        { lat: 36.01137361, lon: 14.31778192, el: 1.0 },
+        { lat: 36.01376886, lon: 14.31576490, el: 1.0 },
+        { lat: 36.01560864, lon: 14.31520700, el: 1.0 },
+        { lat: 36.01904509, lon: 14.31078672, el: 1.0 },
+        { lat: 36.02171778, lon: 14.30782556, el: 1.0 },
+        { lat: 36.02404329, lon: 14.30452108, el: 1.0 },
+        { lat: 36.02518867, lon: 14.30237531, el: 1.0 },
+        { lat: 36.02508454, lon: 14.30100202, el: 1.0 },
+        { lat: 36.02452921, lon: 14.29937124, el: 2.0 }]
+};
+
 
 module.exports = {
     GRESSHOLMEN : OSLO_ROUND,
@@ -609,9 +642,10 @@ module.exports = {
     ALCATRAZ: ALCATRAZ,
     NEW_YORK: NEW_YORK,
     VENEZIA: VENEZIA,
+    GOZO: GOZO,
     THE_ENGLISH_CHANNEL: THE_ENGLISH_CHANNEL,
     routes: [OSLO_ROUND, OSLO_SMALL, ILDJERNET, BLEIKOYA, NYSTULVATN, ALCATRAZ,
-        NEW_YORK, THAMES, THE_ENGLISH_CHANNEL, VENEZIA]
+        NEW_YORK, THAMES, THE_ENGLISH_CHANNEL, VENEZIA, GOZO]
 
 };
 
