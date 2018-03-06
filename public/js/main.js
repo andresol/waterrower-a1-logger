@@ -191,9 +191,6 @@ $(function() {
         } else if (!isNaN(index)) {
             mainIndex = index;
         }
-        console.log("MainIndex:" + mainIndex);
-        console.log("Next:" + next);
-        console.log("Index:" + index);
         loadHistoryIndex(mainIndex);
     });
 
