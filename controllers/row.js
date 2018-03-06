@@ -32,7 +32,6 @@ router.get('/start', function(req, res) {
         session = new RowSession("ROWING", new Route(r.gps));
         try {
             session.startRow();
-            session.heartRate();
             session.route = routeParam;
         } catch (e) {
             session = NOT_ROWING;

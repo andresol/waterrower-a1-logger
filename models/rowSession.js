@@ -58,7 +58,6 @@ RowSession.prototype.heartRate = function () {
 function openStick(stick, stickid) {
     var scanner = new Ant.HeartRateScanner(stick);
     var that = this;
-
     scanner.on('hbdata', function(data) {
         that.hr = data.ComputedHeartRate;
     });
@@ -98,6 +97,7 @@ RowSession.prototype.simulate = function() {
     this.sim = true; //mark this as sim
     console.log("Starting RowSession simulator");
     runSimulator = true;
+    //this.heartRate();
     var that = this;
     (function loop() {
         if(runSimulator) {
@@ -167,6 +167,7 @@ RowSession.prototype.increment = function() {
 };
 
 RowSession.prototype.startRow = function() {
+    this.heartRate();
     sensor = new Gpio(PID, 'in', 'falling');
     var that = this;
     sensor.watch(function (err, value) {
