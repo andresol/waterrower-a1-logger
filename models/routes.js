@@ -600,7 +600,7 @@ const VENEZIA = {
 
 const GOZO = {
     name: "Gozo",
-    meters: '7873',
+    meters: '5873',
     country: 'Malta',
     index: 10,
     gps: [{ lat: 36.02452921, lon: 14.29903864, el: 3.0 },
