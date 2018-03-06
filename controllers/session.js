@@ -49,6 +49,18 @@ router.get('/:start/:stop', function(req, res) {
     });
 });
 
+router.get('/size', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    var index = 0;
+    return sessionService.keys().on('data', function () {
+        index++;
+    }).on('error', function (err) {
+        console.log('Oh my!', err)
+    }).on('end', function () {
+        res.send(JSON.stringify(index, null, 3));
+    });
+});
+
 router.get('/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var id = req.params.id;

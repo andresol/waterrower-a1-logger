@@ -21,10 +21,15 @@ function getAllSessionsPag() {
     return db.sessions.createReadStream({reverse: true, keys: false});
 }
 
+function getAllKeys() {
+    return db.sessions.createReadStream({keys: true, values: false});
+}
+
 module.exports =  {
     addSession: addSession,
     getAll: getAllSessions,
     get: getSession,
     del: delSession,
-    getAllPag: getAllSessionsPag
+    getAllPag: getAllSessionsPag,
+    keys: getAllKeys
 };

@@ -98,26 +98,30 @@ $(function() {
             if (getUrlParameter("test")) {
                 $('#startRow').attr("id", "startSimulator");
             }
-
         });
     }
 
-    function loadHistory() {
+    function loadHistoryIndex(index) {
+        loadHistory(index * 25, (((index + 1) * 25 ))-1, index);
+    }
+    function loadHistory(start, stop, mainIndex) {
         $('#load').load('/history', function () {
             $(this).find('#history').each(function () {
-                $.get("/session/0/24", function (data) {
-                    var htmlCards = '';
-                    var htmlTable = '';
-                    var index = 0;
+                var that = $(this);
+                $.get('/session/'+ start +'/'+ stop , function (data) {
+                    var htmlCards = '', htmlTable = '', index = 0;
+
                     data.forEach(function (session) {
                         if (index < 3) {
                             htmlCards = createCard(htmlCards, session);
                         }
-                        htmlTable = createLapTableRecord(htmlTable, index, session);
+
+                        htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * 25), session);
                         index++;
                     });
 
                     $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards + '</div></div>');
+
                     $('#histor-table-body').html(htmlTable);
 
                     $('.gpx-track').each(function () {
@@ -125,9 +129,34 @@ $(function() {
                         var element = $(this).find('.card-map-top');
                         addGpxTrackToMap(name, element);
                     });
+
+                    $('#histor-table-body').html(htmlTable);
+                    var pag = that.find('.page');
+                    createHistoryNavPage(pag[0], mainIndex);
+
                 });
             });
         });
+    }
+
+    function createHistoryNavPage(page, index) {
+        var htmlElement = $('<ul id="history-page" data-index="' + index+ '"></ul>').addClass("pagination pagination-lg");
+        $.get("session/size", function(data) {
+           var size = parseInt(parseInt(data) / 25) + 1;
+           var prevDisabled = (index === 0 ? 'disabled' : '');
+            var nextDisabled = (index === size - 1 ? 'disabled' : '');
+            var prev = $('<li class="page-item ' + prevDisabled + '"></li>').append('<a class="page-link" href="#" data-next="-1" tabindex="-1">Previous</a>');
+            var next = $('<li class="page-item '+ nextDisabled +'"></li>').append('<a class="page-link" data-next="1" href="#">Next</a>');
+
+            htmlElement.append(prev);
+           for (var i = 0; i < size; i++) {
+               var item = $('<li class="page-item"><a class="page-link" data-index="' + i + '" href="#">' + (i + 1) + '</a></li>');
+               htmlElement.append(item);
+           }
+            htmlElement.append(next);
+            $(page).append(htmlElement);
+        });
+        //return htmlElement.html();
     }
 
     var loadUsers = function () {
@@ -152,6 +181,21 @@ $(function() {
         loadUser();
     });
 
+    $(document).on("click",'#history-page a', function (e) {
+        e.preventDefault();
+        var next = parseInt($(this).data('next')), index = parseInt($(this).data('index')),
+        mainIndex = parseInt($('#history-page').data('index'));
+        if (!isNaN(next)) {
+            mainIndex += next;
+        } else if (!isNaN(index)) {
+            mainIndex = index;
+        }
+        console.log("MainIndex:" + mainIndex);
+        console.log("Next:" + next);
+        console.log("Index:" + index);
+        loadHistoryIndex(mainIndex);
+    });
+
     $(document).on("click",'.main', function (e) {
         e.preventDefault();
         loadMain();
@@ -168,7 +212,7 @@ $(function() {
 
     $(document).on("click",'a#history', function (e) {
         e.preventDefault();
-        loadHistory();
+        loadHistoryIndex(0,0);
     });
 
     $(document).on("click",'a#route', function (e) {
@@ -276,7 +320,19 @@ $(function() {
         if (result) {
             $.get( '/session/del/' + name, function( data ) {
                 alert( "Session deleted" );
-                loadHistory();
+                loadHistory(0, 0);
+            });
+        }
+    });
+
+    $(document).on("click", '.del-session', function(e) {
+        e.preventDefault();
+        var name = $(this).data('name');
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+            $.get( '/session/del/' + name, function( data ) {
+                alert( "Session deleted" );
+                loadHistoryIndex(0, 0);
             });
         }
     });
