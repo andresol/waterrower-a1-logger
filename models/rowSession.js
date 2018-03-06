@@ -81,7 +81,7 @@ function openStick(stick, stickid) {
             console.error(stickid, err);
         } else {
             console.log(stickid, 'Stick found');
-           // setTimeout(function() { stick.close(); }, 10000);
+            setTimeout(function() { stick.close(); }, 10000);
         }
     });
         setTimeout(function() { token && token.cancel(); }, 60000);
