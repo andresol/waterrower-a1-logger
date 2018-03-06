@@ -40,7 +40,8 @@ function RowSession(status, route) {
 }
 
 RowSession.prototype.heartRate = function () {
-    openStick.bind(this)(new Ant.GarminStick2(), 1);
+    this.stick = new Ant.GarminStick2();
+    openStick.bind(this)(this.stick, 1);
 };
 
 //'scanner: ' 23652 61 undefined HeartRateScannerState {
@@ -75,16 +76,16 @@ function openStick(stick, stickid) {
 
     function tryOpen(stick) {
 
-        var token = stick.openAsync(function(err){
-            token = null;
+        this.token = stick.openAsync(function(err){
+            this.token = null;
         if (err) {
             console.error(stickid, err);
         } else {
             console.log(stickid, 'Stick found');
-            setTimeout(function() { stick.close(); }, 5000);
+            //setTimeout(function() { stick.close(); }, 5000);
         }
     });
-        setTimeout(function() { token && token.cancel(); }, 60000);
+        //setTimeout(function() { token && token.cancel(); }, 60000);
 
         return token;
     }
@@ -187,6 +188,17 @@ RowSession.prototype.stop = function() {
     if (runSimulator) {
         runSimulator = false;
     }
+    try {
+        if (this.stick) {
+            this.stick.close();
+        }
+        if (this.token) {
+            token.cancel();
+        }
+    } catch (e) {
+        console.log("Error with stick. " + e);
+    }
+
     this.endStats = this.stats();
 };
 
