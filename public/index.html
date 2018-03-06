@@ -23,9 +23,10 @@
     <link rel="shortcut icon" href="/icons/web_hi_res_512.png" />
 </head>
 <body>
+
 <!-- Nav -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">Waterrower A1</a>
+<nav id="main-nav" class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand main" href="/">Waterrower A1</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -33,106 +34,34 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link main" id="home" href="/">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/history">History <span class="sr-only">(current)</span></a>
+                <a class="nav-link" id="history" href="/history">History</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/user">Users</a>
+                <a class="nav-link" id="user" href="/user">Users</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/route">Routes</a>
+                <a class="nav-link" id="route" href="/route">Routes</a>
             </li>
         </ul>
     </div>
 </nav>
 
 <!-- Main -->
-<div id="main" class="container mt-4">
-    <div class="row">
-        <div class="col pt-3">
-            <form>
-                <div class="form-group row">
-                    <div class="col-sm">
-                        <div class="input-group mt-2">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="routes">Route</label>
-                            </div>
-                            <select class="form-control" id="routes">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm">
-                        <div class="input-group mt-2">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="session-user">User</label>
-                            </div>
-                            <select class="form-control" id="session-user">
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col">
-            <button id="startRow" type="button" class="btn btn-lg btn-primary btn-block">Start row</button>
-        </div>
-        <div class="col">
-            <button id="stopRow" type="button" class="btn btn-lg btn-secondary btn-block">Stop row</button>
-        </div>
-    </div>
-    <div class="row mt-1">
-        <div class="col">
-            <button id="startSimulator" type="button" class=" sr-only btn btn-lg btn-info btn-block">Start simulator</button>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div id="table-content" class="col">
-            <div class="row"><div class="col">Day</div><div class="col">18-01-01</div></div>
-            <div class="row"><div class="col">Time:</div><div class="col">00:00:00</div></div>
-            <div class="row"><div class="col">Length:</div><div class="col">0 m</div></div>
-            <div class="row"><div class="col">Pace:</div><div class="col"> 0 km/t</div></div>
-            <div class="row"><div class="col">500m(p):</div><div class="col">00:00:00</div></div>
-            <div class="row"><div class="col">2k(p):</div><div class="col">00:00:00</div></div>
-            <div class="row"><div class="col">Avg.W:</div><div class="col">0.0w</div></div>
-            <div class="row"><div class="col">SR:</div><div class="col">0</div></div>
-            <div class="row"><div class="col">HR:</div><div class="col">0</div></div>
-        </div>
-
-        <div class="col-md-8 pr-3">
-            <div id="live-map">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div id="laps" class="col mt-5">
-            <div class="row">
-                <div class="table-responsive col">
-                    <table class="table">
-                        <thead>
-                        <tr><th>Lap #</th><th>Meters</th><th>Time</th><th>Watt</th></tr>
-                        </thead>
-                        <!--get_rowInfo() -->
-                        <tbody id="laps-body">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="load">
 
 </div>
+
+
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
 <!--My map key. IP restricted -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPq6S4y5IOi2huNGa_4WhAPU5Hd_EW_dI&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPq6S4y5IOi2huNGa_4WhAPU5Hd_EW_dI"
         async defer></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="/js/main.js"></script>

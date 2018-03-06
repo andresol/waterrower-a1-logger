@@ -11,11 +11,15 @@ router.get('/', function(req, res) {
     res.sendFile('index.html', {root: './public'});
 });
 
+router.get('/main', function(req, res) {
+    res.sendFile('main.html', {root: './public'});
+});
+
 router.get('/history', function(req, res) {
     res.sendFile('history.html', {root: './public'});
 });
 
-router.get('/history/:id', function(req, res) {
+router.get('/sessions', function(req, res) {
     res.sendFile('session.html', {root: './public'});
 });
 
