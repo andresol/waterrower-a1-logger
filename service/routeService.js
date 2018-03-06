@@ -10,6 +10,7 @@ function getAllRoutes(limit, reverse) {
     return db.routes.createReadStream({limit: limit, reverse: reverse});
 }
 
+
 function getRoute(id) {
     return db.routes.get(id);
 }

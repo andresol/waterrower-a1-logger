@@ -16,9 +16,15 @@ function delSession(id) {
 function getAllSessions(limit, reverse) {
     return db.sessions.createReadStream({limit: limit, reverse: reverse});
 }
+
+function getAllSessionsPag() {
+    return db.sessions.createReadStream({reverse: true, keys: false});
+}
+
 module.exports =  {
     addSession: addSession,
     getAll: getAllSessions,
     get: getSession,
-    del: delSession
+    del: delSession,
+    getAllPag: getAllSessionsPag
 };

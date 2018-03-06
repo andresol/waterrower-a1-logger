@@ -105,7 +105,7 @@ $(function() {
     function loadHistory() {
         $('#load').load('/history', function () {
             $(this).find('#history').each(function () {
-                $.get("/session", function (data) {
+                $.get("/session/0/24", function (data) {
                     var htmlCards = '';
                     var htmlTable = '';
                     var index = 0;

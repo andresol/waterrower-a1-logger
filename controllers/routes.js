@@ -26,6 +26,21 @@ router.get('/', function(req, res) {
     });
 });
 
+// router.get('/:start/:stop', function(req, res) {
+//     res.setHeader('Content-Type', 'application/json');
+//     var start = req.params.start;
+//     var stop = req.params.stop;
+//     var array = [];
+//     array.push.apply(array, routeService.getDefaults);
+//     routeService.all(50, true).on('data', function (data) {
+//         array.push(JSON.parse(data.value));
+//     }).on('error', function (err) {
+//         console.log('Oh my!', err)
+//     }).on('end', function () {
+//         res.send(JSON.stringify(array, null, 3));
+//     });
+// });
+
 router.get('/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var id = req.params.id;
