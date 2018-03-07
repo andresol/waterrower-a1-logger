@@ -103,40 +103,44 @@ $(function() {
     }
 
     function loadHistoryIndex(index) {
-        loadHistory(index * PAGE_SIZE, (((index + 1) * PAGE_SIZE ))-1, index);
+        loadHistory(index);
     }
-    function loadHistory(start, stop, mainIndex) {
+
+    function loadHistory(mainIndex) {
         $('#load').load('/history', function () {
             $(this).find('#history').each(function () {
-                var that = $(this);
-                $.get('/session/'+ 0 +'/'+ 2 , function (data) {
-                    var htmlCards = '';
-
-                    data.forEach(function (session) {
-                            htmlCards = createCard(htmlCards, session);
-
-                    });
-
-                    $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards + '</div></div>');
-
-                    $('.gpx-track').each(function () {
-                        $( this ).trigger( "load-map", this );
-                    });
-
-                });
-
-                $.get('/session/'+ start +'/'+ stop , function (data) {
-                    var  htmlTable = '', index = 0;
-                    data.forEach(function (session) {
-                        htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * PAGE_SIZE), session);
-                        index++;
-                    });
-
-                    $('#histor-table-body').html(htmlTable);
-                    var pag = that.find('.page');
-                    createHistoryNavPage(pag[0], mainIndex);
-                });
+                loadLast3Sessions();
+                loadHistoryList($(this), mainIndex);
             });
+        });
+    }
+
+    function loadLast3Sessions() {
+        $.get('/session/'+ 0 +'/'+ 2 , function (data) {
+            var htmlCards = '';
+            data.forEach(function (session) {
+                htmlCards = createCard(htmlCards, session);
+            });
+
+            $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards + '</div></div>');
+            $('.gpx-track').each(function () {
+                $( this ).trigger( "load-map", this );
+            });
+        });
+    }
+
+    function loadHistoryList(that, mainIndex) {
+        var start = mainIndex * PAGE_SIZE, stop = (((mainIndex + 1) * PAGE_SIZE )) - 1;
+        $.get('/session/'+ start +'/'+ stop , function (data) {
+            var htmlTable = '', index = 0;
+            data.forEach(function (session) {
+                htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * PAGE_SIZE), session);
+                index++;
+            });
+
+            $('#histor-table-body').html(htmlTable);
+            var pag = that.find('.page');
+            createHistoryNavPage(pag[0], mainIndex);
         });
     }
 
@@ -196,7 +200,7 @@ $(function() {
         } else if (!isNaN(index)) {
             mainIndex = index;
         }
-        loadHistoryIndex(mainIndex);
+        loadHistoryList($('#history'),mainIndex);
     });
 
     $(document).on("click",'.main', function (e) {
