@@ -109,30 +109,32 @@ $(function() {
         $('#load').load('/history', function () {
             $(this).find('#history').each(function () {
                 var that = $(this);
-                $.get('/session/'+ start +'/'+ stop , function (data) {
-                    var htmlCards = '', htmlTable = '', index = 0;
+                $.get('/session/'+ 0 +'/'+ 2 , function (data) {
+                    var htmlCards = '';
 
                     data.forEach(function (session) {
-                        if (index < 3) {
                             htmlCards = createCard(htmlCards, session);
-                        }
 
-                        htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * PAGE_SIZE), session);
-                        index++;
                     });
 
                     $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards + '</div></div>');
-
-                    $('#histor-table-body').html(htmlTable);
 
                     $('.gpx-track').each(function () {
                         $( this ).trigger( "load-map", this );
                     });
 
+                });
+
+                $.get('/session/'+ start +'/'+ stop , function (data) {
+                    var  htmlTable = '', index = 0;
+                    data.forEach(function (session) {
+                        htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * PAGE_SIZE), session);
+                        index++;
+                    });
+
                     $('#histor-table-body').html(htmlTable);
                     var pag = that.find('.page');
                     createHistoryNavPage(pag[0], mainIndex);
-
                 });
             });
         });
