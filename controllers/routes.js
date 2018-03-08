@@ -30,7 +30,7 @@ router.get('/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var id = req.params.id;
     if (id) {
-        var resRoute = routeService.routes[id.toUpperCase()];
+        var resRoute = routeService.routes[id.toUpperCase().replace(/ /g, '_')];
         if (resRoute) {
             res.send(resRoute);
             return;
