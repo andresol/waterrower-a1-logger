@@ -2,6 +2,12 @@
 <!-- Main content -->
 <div id = "routes-t" class="container mt-4">
     <div class="row">
+        <div class="col pt-3">
+            <button id="add-route" data-toggle="modal" data-target="#add-route-modal" type="button" class="btn btn-lg btn-primary btn-block">Add Route</button>
+        </div>
+    </div>
+
+    <div class="row">
         <div id="routes-table" class="col pt-3">
             <h2>All routes</h2>
             <table class="table">
@@ -18,4 +24,42 @@
             </table>
         </div>
     </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="show-route-modal" tabindex="-1" role="dialog" aria-labelledby="show-route-modal-title" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="show-route-modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div id="live-route-map">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <div id="card-length" class="card-block">
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div id="card-country" class="card-block">
+                                </div>
+                            </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
 </div>

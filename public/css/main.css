@@ -16,6 +16,11 @@ body .container {
     height: 400px;
 }
 
+#live-route-map {
+    width: 100%;
+    height: 400px;
+}
+
 #users-main {
     min-height: 550px;
 }

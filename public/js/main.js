@@ -187,7 +187,6 @@ $(function() {
     };
 
     $(document).on("click",'#user', function (e) {
-        e.preventDefault();
         loadUser();
     });
 
@@ -204,7 +203,6 @@ $(function() {
     });
 
     $(document).on("click",'.main', function (e) {
-        e.preventDefault();
         loadMain();
     });
 
@@ -218,12 +216,14 @@ $(function() {
     $(document).on("click",'.sessions', clickSession);
 
     $(document).on("click",'a#history', function (e) {
-        e.preventDefault();
         loadHistoryIndex(0,0);
     });
 
     $(document).on("click",'a#route', function (e) {
-        e.preventDefault();
+        loadRoute();
+    });
+
+    function loadRoute() {
         $('#load').load('/route', function () {
             $(this).find('#routes-t').each(function () {
                 $.get("/routes", function (data) {
@@ -239,7 +239,7 @@ $(function() {
                 });
             });
         });
-    });
+    }
 
     $(document).on("load-map",'.gpx-track', loadGpxMap);
 
@@ -377,12 +377,43 @@ $(function() {
     });
 
 
-    $('#load').each(loadMain);
+    $('#load').each(function() {
+        var hash = window.location.hash;
+        switch(hash) {
+            case '#route':
+                loadRoute();
+                break;
+            case '#user':
+                loadUser();
+                break;
+            case '#history':
+                loadHistory(0);
+                break;
+            default:
+                loadMain();
+        }
+    });
 
     $('#routes').each(loadRoutes);
 
     $('#session-user').each(loadUsers);
 
+    $(document).on('show.bs.modal', '#show-route-modal', function (e) {
+        var name = $(e.relatedTarget).data('route-name');
+        var that = $(this);
+        $.get( "/routes/" + name, function(data) {
+            that.find('#show-route-modal-title').html(data.name);
+            that.find('#card-length').html('<h4 class="card-title">Length:</h4> <p class="card-text">4000m</p>');
+            that.find('#card-country').html('<h4 class="card-title">Country:</h4> <p class="card-text">Norway</p>');
+        });
+
+
+    });
+
+    $(document).on('shown.bs.modal', '#show-route-modal', function (e) {
+        var name = $(e.relatedTarget).data('route-name');
+        addRouteTrackToMap(name, $("#live-route-map"));
+    });
 
     $(document).on("change", '#routes', function(e) {
         var selected = $('#routes').find(":selected");
@@ -544,7 +575,7 @@ var createLapTableRecord = function (htmlTable, index, session) {
 var createRouteRecord = function (htmlTable, index, route) {
     htmlTable += '<tr>';
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
-    htmlTable += '<td><a href="/routes/' + route.name +'">' + route.name + '</a></td>';
+    htmlTable += '<td><a data-toggle="modal" data-route-name="' + route.name + '" data-target="#show-route-modal" href="/routes/' + route.name +'">' + route.name + '</a></td>';
     htmlTable += '<td>' + parseInt(route.meters) + 'm</td>';
     htmlTable += '<td>' + route.country + '</td>';
     htmlTable += '</tr>';
@@ -593,14 +624,15 @@ var addRouteTrackToMap = function (name, element) {
             success: function (data) {
                 var points = [];
                 var map = new google.maps.Map(element[0], {
-                    zoom: 16
+                    zoom: 8,
+                    maxZoom: 16
                 });
 
                 map.set('styles', styles);
 
                 var bounds = new google.maps.LatLngBounds();
 
-                data.gps.each(function (point) {
+                data.gps.forEach(function (point) {
                     var lat = point.lat;
                     var lon = point.lon;
                     var p = new google.maps.LatLng(lat, lon);
