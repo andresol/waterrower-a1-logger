@@ -406,8 +406,8 @@ $(function() {
             that.find('#card-length').html('<h4 class="card-title">Length:</h4> <p class="card-text">4000m</p>');
             that.find('#card-country').html('<h4 class="card-title">Country:</h4> <p class="card-text">Norway</p>');
         });
-           // console.log();
-           // console.log();
+
+        addRouteTrackToMap(name, $("#live-route-map"));
     });
 
     $(document).on("change", '#routes', function(e) {
@@ -626,7 +626,7 @@ var addRouteTrackToMap = function (name, element) {
 
                 var bounds = new google.maps.LatLngBounds();
 
-                data.gps.each(function (point) {
+                data.gps.forEach(function (point) {
                     var lat = point.lat;
                     var lon = point.lon;
                     var p = new google.maps.LatLng(lat, lon);
