@@ -407,6 +407,11 @@ $(function() {
             that.find('#card-country').html('<h4 class="card-title">Country:</h4> <p class="card-text">Norway</p>');
         });
 
+
+    });
+
+    $(document).on('shown.bs.modal', '#show-route-modal', function (e) {
+        var name = $(e.relatedTarget).data('route-name');
         addRouteTrackToMap(name, $("#live-route-map"));
     });
 
@@ -619,7 +624,8 @@ var addRouteTrackToMap = function (name, element) {
             success: function (data) {
                 var points = [];
                 var map = new google.maps.Map(element[0], {
-                    zoom: 16
+                    zoom: 8,
+                    maxZoom: 16
                 });
 
                 map.set('styles', styles);
