@@ -28,38 +28,77 @@
 
 <!-- Modal -->
 <div class="modal fade" id="show-route-modal" tabindex="-1" role="dialog" aria-labelledby="show-route-modal-title" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="show-route-modal-title"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="show-route-modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div id="live-route-map">
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col">
-                            <div id="live-route-map">
+
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div id="card-length" class="card-block">
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div id="card-country" class="card-block">
                             </div>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="card">
-                                <div id="card-length" class="card-block">
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div id="card-country" class="card-block">
-                                </div>
-                            </div>
-                    </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add-route-modal" tabindex="-1" role="dialog" aria-labelledby="addRouteModalLabel" aria-hidden="true">
+    <form id="addRoute">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRouteModalLabel">Add Route</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" class="form-control" id="userId" name="userId" value="River Themes">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="meters">Length</label>
+                        <input type="text" class="form-control" id="meters" name="meters" value="" placeholder="5000">
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Length</label>
+                        <input type="text" class="form-control" id="country" name="country" value="" placeholder="Norway">
+                    </div>
+                    <div class="form-group">
+                        <label for="gps">GPS</label>
+                        <textarea  rows="10" class="form-control" id="gps" name="gps" ></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="save-user" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
