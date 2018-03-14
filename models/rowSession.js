@@ -1,7 +1,7 @@
 try {
     var Gpio = require('onoff').Gpio;
 } catch (e) {
-    console.log("GPIO not supported.")
+    console.log("GPIO is not supported.")
 }
 try {
     var Ant = require('ant-plus');
@@ -44,18 +44,6 @@ RowSession.prototype.heartRate = function () {
     openStick.bind(this)(this.stick, 1);
 };
 
-//'scanner: ' 23652 61 undefined HeartRateScannerState {
-//    DeviceID: 23652,
-//       BeatTime: 22004,
-//       BeatCount: 91,
-//       ComputedHeartRate: 61,
-//       PreviousBeat: 21093,
-//       HwVersion: 4,
-//       SwVersion: 4,
-//       ModelNum: 5,
-//        OperatingTime: 178,
-//        ManId: 1,
-//        SerialNumber: 65536 }
 function openStick(stick, stickid) {
     var scanner = new Ant.HeartRateScanner(stick);
     var that = this;

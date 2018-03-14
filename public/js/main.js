@@ -338,6 +338,26 @@ $(function() {
         }
     });
 
+    $(document).on("click", "#save-route", function(event) {
+        event.preventDefault();
+        var form =  $("#addRoute");
+        var route = {};
+        route.name = form.find('#name').val();
+        route.meters = form.find('#lenght').val();
+        route.country = form.find('#country').val();
+        route.gps = [];
+        $.ajax({
+            type: 'PUT',
+            contentType: 'application/json',
+            dataType: 'json',
+            url: "/routes/add",
+            data: JSON.stringify(route),
+            success: function () {
+                $('#add-route-modal').modal('hide');
+            }
+        });
+    });
+
     $(document).on("click", "#save-user", function(event) {
         event.preventDefault();
         var form =  $("#addUserForm");

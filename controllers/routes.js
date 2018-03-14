@@ -9,6 +9,7 @@ router.put('/add', jsonParser, function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (!req.body) return res.sendStatus(400);
     //routeService.add(req.body);
+    console.log(req.body);
     res.send(JSON.stringify('', null, 3));
 });
 
@@ -42,7 +43,6 @@ router.get('/:id', function(req, res) {
         res.status(404).send('Cannot find route');
     }
 });
-
 
 router.delete('/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
