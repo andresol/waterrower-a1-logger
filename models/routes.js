@@ -9,7 +9,7 @@ const OSLO_ROUND = {
     meters: '7000',
     country: 'Norway',
     index: 0,
-    segementid: 0,
+    segementId: 0,
     gps: [
     { lat: 59.88458761, lon: 10.76115131, el: 4.0 },
     { lat: 59.88493213, lon: 10.75711727, el: 1.0 },
@@ -70,7 +70,7 @@ const OSLO_SMALL = {
     name: "Ormsundet",
     country: 'Norway',
     index: 1,
-    segementid: 0,
+    segementId: 0,
     meters: '600',
     gps: [
         {lat: 59.88458761, lon: 10.76097965, el: 3.0},
@@ -118,7 +118,7 @@ const ILDJERNET = {
     country: 'Norway',
     index: 2,
     meters: '20610',
-    segementid: 0,
+    segementId: 0,
     gps: [
         {lat: 59.88463068, lon: 10.76067924, el: 2.0},
         {lat: 59.88428616, lon: 10.75758934, el: 1.0},
@@ -217,7 +217,7 @@ const BLEIKOYA = {
     name: "Bleikoya",
     country: 'Norway',
     index: 3,
-    segementid: 17179877,
+    segementId: 17179877,
     meters: '4050',
     gps: [
         { lat: 59.88598040, lon: 10.75883380, el: 4.0 },
@@ -271,7 +271,7 @@ const NYSTULVATN = {
     name: "Nystulvatn",
     country: 'Norway',
     index: 4,
-    segementid: 17179917,
+    segementId: 17179917,
     meters: '2550',
     gps: [
         { lat: 59.56154930, lon: 9.038808340, el: 303.0 },
@@ -321,9 +321,9 @@ const NYSTULVATN = {
 
 const RIVER_THAMES = {
     name: 'River Thames',
-    country: 'England',
+    country: 'United Kingdom',
     index: 7,
-    segementid: 0,
+    segementId: 0,
     meters: 6910,
     gps: [
         { lat: 51.50604460, lon: -0.07379293, el: 8.0 },
@@ -381,9 +381,9 @@ const RIVER_THAMES = {
 
 const ALCATRAZ = {
     name: "Alcatraz",
-    country: 'USA',
+    country: 'United States',
     index: 5,
-    segementid: 0,
+    segementId: 17179935,
     meters: 5350,
     gps: [
         { lat: 37.80744440, lon: -122.422778, el: 1.0 },
@@ -431,9 +431,9 @@ const ALCATRAZ = {
 
 const NEW_YORK = {
     name: "New York",
-    country: 'USA',
+    country: 'United States',
     index: 6,
-    segementid: 17179902,
+    segementId: 17179902,
     meters: 7000,
     gps: [{ lat: 40.70034920, lon: -74.0132671, el: 1.0 },
         { lat: 40.69979610, lon: -74.0134602, el: 1.0 },
@@ -480,9 +480,9 @@ const NEW_YORK = {
 
 const THE_ENGLISH_CHANNEL = {
     name: "The English Channel",
-    country: 'England',
+    country: 'United Kingdom',
     index: 8,
-    segementid: 0,
+    segementId: 0,
     meters: 81920,
     gps: [{ lat: 51.12329690, lon: 1.330075260, el: 1.0 },
         { lat: 51.12060330, lon: 1.336426730, el: 1.0 },
@@ -548,7 +548,7 @@ const VENEZIA = {
     name: "Venezia",
     meters: '7230',
     country: 'Italy',
-    segementid: 0,
+    segementId: 0,
     index: 9,
     gps: [
         { lat: 45.43122620, lon: 12.33685250, el: 1.0 },
@@ -612,7 +612,7 @@ const GOZO = {
     name: "Gozo",
     meters: '5873',
     country: 'Malta',
-    segementid: 0,
+    segementId: 0,
     index: 10,
     gps: [{ lat: 36.02452921, lon: 14.29903864, el: 3.0 },
         { lat: 36.02513661, lon: 14.29987549, el: 1.0 },

@@ -108,11 +108,11 @@ $(function () {
             $(this).find('#session-user').each(loadUsers);
             $.get("/row/status", function (data) {
                 if (data.status === 'ROWING') {
-                    var startB = $('#startRow');
+                    var startButton = $('#startRow');
                     if (getUrlParameter("test")) {
-                       startB = $('#startSimulator')
+                        startButton = $('#startSimulator')
                     }
-                    start(startB);
+                    start(startButton);
                 }
             });
             //Run simulator if test.
@@ -368,9 +368,10 @@ $(function () {
         var form = $("#addRoute");
         var route = {};
         route.name = form.find('#name').val();
-        route.meters = form.find('#lenght').val();
-        route.country = form.find('#country').val();
-        route.gps = [];
+        route.meters = form.find('#meters').val();
+        route.stravaId = form.find('#segmentId').val();
+        route.country = form.find('#countries').val();
+        route.gps = form.find('textarea').val();
         $.ajax({
             type: 'PUT',
             contentType: 'application/json',
@@ -481,13 +482,13 @@ function get_rowInfo(continues, title) {
             var lon = data.gps.lon;
             var p = new google.maps.LatLng(lat, lon);
             livePoints.push(p);
-            if (liveBounds){
+            if (liveBounds) {
                 liveBounds.extend(p);
                 var poly = createPolyLine(livePoints);
                 poly.setMap(liveMap);
                 liveMap.fitBounds(liveBounds);
             }
-           
+
         }
     }).done(function () {
         if (run) {
@@ -722,11 +723,15 @@ function addGraph(time, hr, start) {
         labelsMerged.push(new Date(timeV).toISOString().substr(new Date(timeV).toISOString().lastIndexOf('T') + 1, 8));
         if (hr) {
             var h = hr.splice(0, mergeSize);
-            hrMerged.push(parseInt(h.reduce(function (a, b) { return a + b; }) / h.length));
+            if (h.length > 0 ) {
+                hrMerged.push(parseInt(h.reduce(function (a, b) { return a + b; }) / h.length));
+            }
         }
         if (speed) {
             var s = speed.splice(0, mergeSize);
-            speedMerged.push(Math.round(parseFloat(s.reduce(function (a, b) { return a + b; }) / s.length) * 10) / 10);
+            if (s.length > 0) {
+                speedMerged.push(Math.round(parseFloat(s.reduce(function (a, b) { return a + b; }) / s.length) * 10) / 10);
+            }
         }
     }
 
