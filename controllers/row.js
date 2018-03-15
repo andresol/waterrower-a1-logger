@@ -27,7 +27,6 @@ router.get('/status', function(req, res) {
     }
 });
 
-
 router.get('/routes', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(Routes.routes, null, 3));

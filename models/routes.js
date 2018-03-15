@@ -217,7 +217,7 @@ const BLEIKOYA = {
     name: "Bleikoya",
     country: 'Norway',
     index: 3,
-    segementid: 0,
+    segementid: 17179877,
     meters: '4050',
     gps: [
         { lat: 59.88598040, lon: 10.75883380, el: 4.0 },
@@ -271,7 +271,7 @@ const NYSTULVATN = {
     name: "Nystulvatn",
     country: 'Norway',
     index: 4,
-    segementid: 0,
+    segementid: 17179917,
     meters: '2550',
     gps: [
         { lat: 59.56154930, lon: 9.038808340, el: 303.0 },
@@ -433,7 +433,7 @@ const NEW_YORK = {
     name: "New York",
     country: 'USA',
     index: 6,
-    segementid: 0,
+    segementid: 17179902,
     meters: 7000,
     gps: [{ lat: 40.70034920, lon: -74.0132671, el: 1.0 },
         { lat: 40.69979610, lon: -74.0134602, el: 1.0 },

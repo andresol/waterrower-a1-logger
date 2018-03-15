@@ -7,19 +7,31 @@ var livePoints = [];
 const RATION = (100 / 4.805) * 6;
 const PAGE_SIZE = 10;
 
-const styles = [{"featureType": "landscape", "stylers": [{"saturation": -100}, {"lightness": 65},
-        {"visibility": "on"}]}, {"featureType": "poi", "stylers": [{"saturation": -100}, {"lightness": 51},
-        {"visibility": "simplified"}]}, {"featureType": "road.highway", "stylers": [{"saturation": -100},
-        {"visibility": "simplified"}]}, {"featureType": "road.arterial", "stylers": [{"saturation": -100},
-        {"lightness": 30}, {"visibility": "on"}]}, {"featureType": "road.local", "stylers": [{"saturation": -100},
-        {"lightness": 40}, {"visibility": "on"}]}, {"featureType": "transit", "stylers": [{"saturation": -100},
-        {"visibility": "simplified"}]}, {"featureType": "administrative.province", "stylers": [{"visibility": "off"}]},
-    {"featureType": "water", "elementType": "labels", "stylers": [{"visibility": "on"}, {"lightness": -25}, {"saturation": -100}]},
-    {"featureType": "water", "elementType": "geometry", "stylers": [{"hue": "#ffff00"}, {"lightness": -25}, {"saturation": -97}]}];
+const styles = [{
+    "featureType": "landscape", "stylers": [{ "saturation": -100 }, { "lightness": 65 },
+    { "visibility": "on" }]
+}, {
+    "featureType": "poi", "stylers": [{ "saturation": -100 }, { "lightness": 51 },
+    { "visibility": "simplified" }]
+}, {
+    "featureType": "road.highway", "stylers": [{ "saturation": -100 },
+    { "visibility": "simplified" }]
+}, {
+    "featureType": "road.arterial", "stylers": [{ "saturation": -100 },
+    { "lightness": 30 }, { "visibility": "on" }]
+}, {
+    "featureType": "road.local", "stylers": [{ "saturation": -100 },
+    { "lightness": 40 }, { "visibility": "on" }]
+}, {
+    "featureType": "transit", "stylers": [{ "saturation": -100 },
+    { "visibility": "simplified" }]
+}, { "featureType": "administrative.province", "stylers": [{ "visibility": "off" }] },
+{ "featureType": "water", "elementType": "labels", "stylers": [{ "visibility": "on" }, { "lightness": -25 }, { "saturation": -100 }] },
+{ "featureType": "water", "elementType": "geometry", "stylers": [{ "hue": "#ffff00" }, { "lightness": -25 }, { "saturation": -97 }] }];
 
-$(function() {
+$(function () {
     /** Init shared */
-    get_rowInfo(false,"");
+    get_rowInfo(false, "");
 
     function loadSession(name) {
         $('#load').load('/sessions', function () {
@@ -45,19 +57,19 @@ $(function() {
     /** All load functions */
     var loadRoutes = function () {
         var that = this;
-        $.get("/row/routes", function(data) {
+        $.get("/row/routes", function (data) {
             var html = '';
             var index = 0;
             var group = '';
-            data.sort(function(a,b) {return (a.country > b.country) ? 1 : ((b.country > a.country) ? -1 : 0);} );
+            data.sort(function (a, b) { return (a.country > b.country) ? 1 : ((b.country > a.country) ? -1 : 0); });
 
             var selected = 'selected="selected"';
             data.forEach(function (value) {
                 if (value.country !== group) {
-                    html+= '<optgroup label="' + value.country + '">';
+                    html += '<optgroup label="' + value.country + '">';
                     group = value.country;
                 }
-                html+= '<option '+selected+' value="'+ value.index + '" data-lat="' +value.gps[0].lat +'" data-lon="'+ value.gps[0].lon +'">'+ value.name + ' (' + value.meters + 'm)</option>';
+                html += '<option ' + selected + ' value="' + value.index + '" data-lat="' + value.gps[0].lat + '" data-lon="' + value.gps[0].lon + '">' + value.name + ' (' + value.meters + 'm)</option>';
                 selected = '';
                 index++;
             });
@@ -70,16 +82,16 @@ $(function() {
 
     };
 
-    function loadUser () {
+    function loadUser() {
         $('#load').load('/user', function () {
-            $( this ).find('#users-body').each(function () {
+            $(this).find('#users-body').each(function () {
                 var that = this;
-                $.get( "/users/", function(data) {
+                $.get("/users/", function (data) {
                     var html = '';
                     for (var i = 0; i < data.length; i++) {
                         var user = data[i];
-                        html += '<tr><td><a href="#" data-id="'+ user.id +'">' + (i + 1) + '</a></td><td>'+user.firstName +'</td><td>'+ user.lastName +'</td>';
-                        html +=  '<td><a class="edit-user" href="#" data-id="'+ user.id +'"><i class="material-icons">create</i></a><a class="del-user" href="#" data-id="' + user.id + '"><i aria-hidden="true" title="Delete user" class="material-icons">delete</i></a></td>'+'</tr>'
+                        html += '<tr><td><a href="#" data-id="' + user.id + '">' + (i + 1) + '</a></td><td>' + user.firstName + '</td><td>' + user.lastName + '</td>';
+                        html += '<td><a class="edit-user" href="#" data-id="' + user.id + '"><i class="material-icons">create</i></a><a class="del-user" href="#" data-id="' + user.id + '"><i aria-hidden="true" title="Delete user" class="material-icons">delete</i></a></td>' + '</tr>'
                     }
                     $(that).html(html);
                     $('#addUserModal').on('hidden.bs.modal', function (e) {
@@ -90,13 +102,17 @@ $(function() {
         });
     }
 
-    function loadMain () {
+    function loadMain() {
         $('#load').load('/main', function () {
             $(this).find('#routes').each(loadRoutes);
             $(this).find('#session-user').each(loadUsers);
-            $.get( "/row/status", function(data) {
+            $.get("/row/status", function (data) {
                 if (data.status === 'ROWING') {
-                    
+                    var startB = $('#startRow');
+                    if (getUrlParameter("test")) {
+                       startB = $('#startSimulator')
+                    }
+                    start(startB);
                 }
             });
             //Run simulator if test.
@@ -120,7 +136,7 @@ $(function() {
     }
 
     function loadLast3Sessions() {
-        $.get('/session/'+ 0 +'/'+ 2 , function (data) {
+        $.get('/session/' + 0 + '/' + 2, function (data) {
             var htmlCards = '';
             data.forEach(function (session) {
                 htmlCards = createCard(htmlCards, session);
@@ -128,14 +144,14 @@ $(function() {
 
             $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards + '</div></div>');
             $('.gpx-track').each(function () {
-                $( this ).trigger( "load-map", this );
+                $(this).trigger("load-map", this);
             });
         });
     }
 
     function loadHistoryList(that, mainIndex) {
-        var start = mainIndex * PAGE_SIZE, stop = (((mainIndex + 1) * PAGE_SIZE )) - 1;
-        $.get('/session/'+ start +'/'+ stop , function (data) {
+        var start = mainIndex * PAGE_SIZE, stop = (((mainIndex + 1) * PAGE_SIZE)) - 1;
+        $.get('/session/' + start + '/' + stop, function (data) {
             var htmlTable = '', index = 0;
             data.forEach(function (session) {
                 htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * PAGE_SIZE), session);
@@ -155,13 +171,13 @@ $(function() {
     }
 
     function createHistoryNavPage(page, index) {
-        var htmlElement = $('<ul id="history-page" data-index="' + index+ '"></ul>').addClass("pagination pagination-lg");
-        $.get("session/size", function(data) {
+        var htmlElement = $('<ul id="history-page" data-index="' + index + '"></ul>').addClass("pagination pagination-lg");
+        $.get("session/size", function (data) {
             var size = parseInt(parseInt(data) / PAGE_SIZE) + 1;
             var prevDisabled = (index === 0 ? 'disabled' : '');
             var nextDisabled = (index === size - 1 ? 'disabled' : '');
             var prev = $('<li class="page-item ' + prevDisabled + '"></li>').append('<a class="page-link" href="#" data-next="-1" tabindex="-1">Previous</a>');
-            var next = $('<li class="page-item '+ nextDisabled +'"></li>').append('<a class="page-link" data-next="1" href="#">Next</a>');
+            var next = $('<li class="page-item ' + nextDisabled + '"></li>').append('<a class="page-link" data-next="1" href="#">Next</a>');
 
             htmlElement.append(prev);
             for (var i = 0; i < size; i++) {
@@ -175,10 +191,10 @@ $(function() {
 
     var loadUsers = function () {
         var that = this;
-        $.get("/users", function(data) {
+        $.get("/users", function (data) {
             var html = '';
             data.forEach(function (value) {
-                html += '<option value="' + value.id + '">' + value.firstName + ' ' + value.lastName +'</option>'
+                html += '<option value="' + value.id + '">' + value.firstName + ' ' + value.lastName + '</option>'
             });
             $(that).html(html)
         });
@@ -190,11 +206,11 @@ $(function() {
         loadSession(name);
     };
 
-    $(document).on("click",'#user', function (e) {
+    $(document).on("click", '#user', function (e) {
         loadUser();
     });
 
-    $(document).on("click",'#history-page a', function (e) {
+    $(document).on("click", '#history-page a', function (e) {
         e.preventDefault();
         var next = parseInt($(this).data('next')), index = parseInt($(this).data('index')),
             mainIndex = parseInt($('#history-page').data('index'));
@@ -203,27 +219,27 @@ $(function() {
         } else if (!isNaN(index)) {
             mainIndex = index;
         }
-        loadHistoryList($('#history'),mainIndex);
+        loadHistoryList($('#history'), mainIndex);
     });
 
-    $(document).on("click",'.main', function (e) {
+    $(document).on("click", '.main', function (e) {
         loadMain();
     });
 
-    $(document).on("click",'.nav-link', function (e) {
+    $(document).on("click", '.nav-link', function (e) {
         $('#main-nav').find(".nav-item").each(function () {
             $(this).removeClass("active");
         });
         $(this).parent().addClass("active");
     });
 
-    $(document).on("click",'.sessions', clickSession);
+    $(document).on("click", '.sessions', clickSession);
 
-    $(document).on("click",'a#history', function (e) {
-        loadHistoryIndex(0,0);
+    $(document).on("click", 'a#history', function (e) {
+        loadHistoryIndex(0, 0);
     });
 
-    $(document).on("click",'a#route', function (e) {
+    $(document).on("click", 'a#route', function (e) {
         loadRoute();
     });
 
@@ -245,35 +261,35 @@ $(function() {
         });
     }
 
-    $(document).on("load-map",'.gpx-track', loadGpxMap);
+    $(document).on("load-map", '.gpx-track', loadGpxMap);
 
-    $(document).on("click",'button#startRow', function (e) {
+    $(document).on("click", 'button#startRow', function (e) {
         e.preventDefault();
         var routes = $('#routes').val();
         var that = this;
-        $.get( "/row/start",{ routes: routes }, function() {
-          start(that);
+        $.get("/row/start", { routes: routes }, function () {
+            start(that);
         });
     });
 
-    function start() {
+    function start(startButton) {
         $(window).scrollTop($('#main').offset().top); //Scroll
         get_rowInfo(true, "Rowing");
         cleanMap();
         $('#routes').attr('disabled', 'disabled');
         $('#session-user').attr('disabled', 'disabled');
-        $("#startSimulator").attr('disabled','disabled');
-        $(startButton).attr('disabled','disabled');
+        $("#startSimulator").attr('disabled', 'disabled');
+        $(startButton).attr('disabled', 'disabled');
         $(startButton).html('Rowing...');
     }
 
-    $(document).on("click", 'button#stopRow', function(e) {
+    $(document).on("click", 'button#stopRow', function (e) {
         e.preventDefault();
         clearTimeout(timeOut);
         run = false;
         var routes = $('#routes').val();
         var user = $('#session-user').val();
-        $.get( "/row/stop", { routes: routes, user: user }, function(data) {
+        $.get("/row/stop", { routes: routes, user: user }, function (data) {
             $('#table-content').html(getHtml("Stopped", data, false));
             var startRow = $("#startRow");
             startRow.removeAttr('disabled');
@@ -284,34 +300,34 @@ $(function() {
         });
     });
 
-    $(document).on("click", 'button#startSimulator', function(e) {
+    $(document).on("click", 'button#startSimulator', function (e) {
         e.preventDefault();
         var routes = $('#routes').val();
-        $.get("/row/simulate", { routes: routes }, function() {
+        $.get("/row/simulate", { routes: routes }, function () {
             $(window).scrollTop($('#main').offset().top); //Scroll
             get_rowInfo(true, "Simulate");
             cleanMap();
             $('#routes').attr('disabled', 'disabled');
             $('#session-user').attr('disabled', 'disabled');
             var startRow = $("#startRow");
-            startRow.attr('disabled','disabled');
+            startRow.attr('disabled', 'disabled');
             startRow.html('Rowing...');
-            $(this).attr('disabled','disabled');
+            $(this).attr('disabled', 'disabled');
         });
     });
 
-    $(document).on("click", '.edit-user', function(e) {
+    $(document).on("click", '.edit-user', function (e) {
         e.preventDefault();
         var id = $(this).data('id');
         $.ajax({
             url: '/users/' + id,
             type: 'GET',
-            success: function(result) {
+            success: function (result) {
                 var form = $("#addUserForm");
                 form.find('#firstName').val(result.firstName);
                 form.find('#lastName').val(result.lastName);
                 form.find('#userId').val(result.id);
-                $.get( '/strava/url', function( data ) {
+                $.get('/strava/url', function (data) {
                     var url = data.url.replace("%24", result.id);
                     $('.strava-url').attr('href', url);
                 });
@@ -322,16 +338,16 @@ $(function() {
         });
     });
 
-    $(document).on("click", '.strava', function(e) {
+    $(document).on("click", '.strava', function (e) {
         e.preventDefault();
         var href = $(this).attr('href');
-        $.get( href, function( data ) {
+        $.get(href, function (data) {
             console.log(data);
-            alert( "Uploaded to strava!" );
+            alert("Uploaded to strava!");
         });
     });
 
-    $(document).on("click", '.del-session', function(e) {
+    $(document).on("click", '.del-session', function (e) {
         e.preventDefault();
         var name = $(this).data('name');
         var result = confirm("Are you sure you want to delete session?");
@@ -339,17 +355,17 @@ $(function() {
             $.ajax({
                 url: '/session/del/' + name,
                 type: 'DELETE',
-                success: function(result) {
-                    alert( "Session deleted" );
+                success: function (result) {
+                    alert("Session deleted");
                     loadHistoryIndex(0, 0);
                 }
             });
         }
     });
 
-    $(document).on("click", "#save-route", function(event) {
+    $(document).on("click", "#save-route", function (event) {
         event.preventDefault();
-        var form =  $("#addRoute");
+        var form = $("#addRoute");
         var route = {};
         route.name = form.find('#name').val();
         route.meters = form.find('#lenght').val();
@@ -367,9 +383,9 @@ $(function() {
         });
     });
 
-    $(document).on("click", "#save-user", function(event) {
+    $(document).on("click", "#save-user", function (event) {
         event.preventDefault();
-        var form =  $("#addUserForm");
+        var form = $("#addUserForm");
         var firstName = form.find('#firstName').val();
         var lastName = form.find('#lastName').val();
         var id = form.find('#userId').val();
@@ -390,7 +406,7 @@ $(function() {
 
     });
 
-    $(document).on("click", '.del-user', function(e) {
+    $(document).on("click", '.del-user', function (e) {
         e.preventDefault();
         var id = $(this).data('id');
         var result = confirm("Are you sure you want to delete?");
@@ -398,7 +414,7 @@ $(function() {
             $.ajax({
                 url: '/users/' + id,
                 type: 'DELETE',
-                success: function(result) {
+                success: function (result) {
                     loadUser();
                 }
             });
@@ -406,9 +422,9 @@ $(function() {
     });
 
 
-    $('#load').each(function() {
+    $('#load').each(function () {
         var hash = window.location.hash;
-        switch(hash) {
+        switch (hash) {
             case '#route':
                 loadRoute();
                 break;
@@ -430,7 +446,7 @@ $(function() {
     $(document).on('show.bs.modal', '#show-route-modal', function (e) {
         var name = $(e.relatedTarget).data('route-name');
         var that = $(this);
-        $.get( "/routes/" + name, function(data) {
+        $.get("/routes/" + name, function (data) {
             that.find('#show-route-modal-title').html(data.name);
             that.find('#card-length').html('<h4 class="card-title">Length:</h4> <p class="card-text">4000m</p>');
             that.find('#card-country').html('<h4 class="card-title">Country:</h4> <p class="card-text">Norway</p>');
@@ -444,7 +460,7 @@ $(function() {
         addRouteTrackToMap(name, $("#live-route-map"));
     });
 
-    $(document).on("change", '#routes', function(e) {
+    $(document).on("change", '#routes', function (e) {
         var selected = $('#routes').find(":selected");
         cleanMap();
         var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
@@ -454,9 +470,9 @@ $(function() {
 
 });
 
-function get_rowInfo(continues, title){
+function get_rowInfo(continues, title) {
     run = continues;
-    $.get( "/row", function(data) {
+    $.get("/row", function (data) {
         var html = getHtml(title, data);
         if (html) {
             $('#table-content').html(html);
@@ -465,19 +481,22 @@ function get_rowInfo(continues, title){
             var lon = data.gps.lon;
             var p = new google.maps.LatLng(lat, lon);
             livePoints.push(p);
-            liveBounds.extend(p);
-            var poly = createPolyLine(livePoints);
-            poly.setMap(liveMap);
-            liveMap.fitBounds(liveBounds);
+            if (liveBounds){
+                liveBounds.extend(p);
+                var poly = createPolyLine(livePoints);
+                poly.setMap(liveMap);
+                liveMap.fitBounds(liveBounds);
+            }
+           
         }
-    }).done(function(){
+    }).done(function () {
         if (run) {
-            timeOut = setTimeout(function(){get_rowInfo(true, title);}, UPDATE_FREQ);
+            timeOut = setTimeout(function () { get_rowInfo(true, title); }, UPDATE_FREQ);
         }
     });
 }
 
-function fmtMSS(s){
+function fmtMSS(s) {
     var date = new Date(null);
     date.setSeconds(s); // specify value for SECONDS here
     return date.toISOString().substr(11, 8);
@@ -485,28 +504,28 @@ function fmtMSS(s){
 
 function getHtml(label, json, day) {
     if (parseInt(json.meters) === 0) {
-        return ;
+        return;
     }
     var html = '';
     if (day) {
-        html += '<div class="row"><div class="col">Day</div><div class="col">' + json.start.substr(2, json.start.lastIndexOf('T') - 2) +'</div></div>';
+        html += '<div class="row"><div class="col">Day</div><div class="col">' + json.start.substr(2, json.start.lastIndexOf('T') - 2) + '</div></div>';
     }
-    html += '<div class="row"><div class="col">Start:</div><div class="col">' + json.start.substr(json.start.lastIndexOf('T') + 1, 8) +'</div></div>';
-    html += '<div class="row"><div class="col">Time:</div><div class="col">' + fmtMSS(parseInt(json.seconds)) +'</div></div>';
-    html += '<div class="row"><div class="col">Length:</div><div class="col">' + parseInt(json.meters) +' m</div></div>';
-    html += '<div class="row"><div class="col">Pace:</div><div class="col">' + Math.round( parseFloat(json.pace) * 3.6 * 10) / 10 +' km/t</div></div>';
-    html += '<div class="row"><div class="col">500m(p):</div><div class="col">' + fmtMSS(parseInt(json.lapPace)) +'</div></div>';
-    html += '<div class="row"><div class="col">2k(p):</div><div class="col">' + fmtMSS(parseInt(json.towKPace)) +'</div></div>';
-    html += '<div class="row"><div class="col">Avg.W:</div><div class="col">' + Math.round( parseFloat(json.watt)* 10) / 10 +'w</div></div>';
-    html += '<div class="row"><div class="col">SR:</div><div class="col">' + Math.round( parseFloat(json.stroke)* 10) / 10 +'</div></div>';
+    html += '<div class="row"><div class="col">Start:</div><div class="col">' + json.start.substr(json.start.lastIndexOf('T') + 1, 8) + '</div></div>';
+    html += '<div class="row"><div class="col">Time:</div><div class="col">' + fmtMSS(parseInt(json.seconds)) + '</div></div>';
+    html += '<div class="row"><div class="col">Length:</div><div class="col">' + parseInt(json.meters) + ' m</div></div>';
+    html += '<div class="row"><div class="col">Pace:</div><div class="col">' + Math.round(parseFloat(json.pace) * 3.6 * 10) / 10 + ' km/t</div></div>';
+    html += '<div class="row"><div class="col">500m(p):</div><div class="col">' + fmtMSS(parseInt(json.lapPace)) + '</div></div>';
+    html += '<div class="row"><div class="col">2k(p):</div><div class="col">' + fmtMSS(parseInt(json.towKPace)) + '</div></div>';
+    html += '<div class="row"><div class="col">Avg.W:</div><div class="col">' + Math.round(parseFloat(json.watt) * 10) / 10 + 'w</div></div>';
+    html += '<div class="row"><div class="col">SR:</div><div class="col">' + Math.round(parseFloat(json.stroke) * 10) / 10 + '</div></div>';
     if (parseInt(json.hr) > 0) {
-        html += '<div class="row"><div class="col">HR:</div><div class="col '+ getHeartRateColor(parseInt(json.hr)) +'">' + parseInt(json.hr) +'</div></div>';
+        html += '<div class="row"><div class="col">HR:</div><div class="col ' + getHeartRateColor(parseInt(json.hr)) + '">' + parseInt(json.hr) + '</div></div>';
     }
-    if(json.fileName) {
+    if (json.fileName) {
         html += '<div class="row"><div class="col">Actions:</div><div class="col"><a id="" href="/sessions/' + json.fileName;
         html += '"><i class="material-icons">file_download</i><a class="strava" href="/strava/upload/' + json.name;
         html += '"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a>';
-        html += '<a class="sessions" data-name="'+ json.name +'" href="/sessions"><i aria-hidden="true" title="Session" class="material-icons">fiber_new</i></a></div></div>';
+        html += '<a class="sessions" data-name="' + json.name + '" href="/sessions"><i aria-hidden="true" title="Session" class="material-icons">fiber_new</i></a></div></div>';
     }
     return html + "";
 }
@@ -521,14 +540,14 @@ function getLapHtml(label, json, reverse) {
             lapNum = laps.length;
         }
         laps.forEach(function (value) {
-                html += '<tr><th scope="row">' + lapNum + '</th><td>'+ parseInt(value.meters)+ '</td><td>'+ fmtMSS(parseInt(value.seconds)) +'</td>';
-                html += '<td>' + Math.round( parseFloat(value.watt)* 10) / 10 +'w</td></tr>';
-                if (reverse) {
-                    lapNum--;
-                } else {
-                    lapNum++;
-                }
+            html += '<tr><th scope="row">' + lapNum + '</th><td>' + parseInt(value.meters) + '</td><td>' + fmtMSS(parseInt(value.seconds)) + '</td>';
+            html += '<td>' + Math.round(parseFloat(value.watt) * 10) / 10 + 'w</td></tr>';
+            if (reverse) {
+                lapNum--;
+            } else {
+                lapNum++;
             }
+        }
         );
     }
     return html;
@@ -573,7 +592,7 @@ var createCard = function (htmlCards, session) {
     htmlCards += '<div class="card gpx-track" data-name="' + session.name + '"">';
     htmlCards += '<div class="card-body">';
     htmlCards += '<div class="card-map-top "></div>';
-    htmlCards += '<h5 class="card-title mt-2"><a class="sessions" data-name="'+ session.name +'" href="/session">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></h5>';
+    htmlCards += '<h5 class="card-title mt-2"><a class="sessions" data-name="' + session.name + '" href="/session">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></h5>';
     htmlCards += '<p class="card-text">Length: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
     htmlCards += '<a href="/strava/upload/' + session.name + '" class="btn btn-primary strava btn-block">Upload to Strava</a>';
     htmlCards += '</div>';
@@ -594,7 +613,7 @@ function initMap() {
 var createLapTableRecord = function (htmlTable, index, session) {
     htmlTable += '<tr>';
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
-    htmlTable += '<td><a class="sessions" data-name="'+ session.name +'" href="/session">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></td>';
+    htmlTable += '<td><a class="sessions" data-name="' + session.name + '" href="/session">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></td>';
     htmlTable += '<td>Length: ' + parseInt(session.endStats.meters) + 'm</td>';
     htmlTable += '<td> <a id="" href="/sessions/' + session.name + '.gpx"><i class="material-icons md-36">file_download</i><a class="strava" href="/strava/upload/' + session.name + '"><i aria-hidden="true" title="Upload to Strava" class="material-icons md-36">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name + '"><i aria-hidden="true" title="Delete session local" class="material-icons md-36">delete</i></a></td>';
     htmlTable += '</tr>';
@@ -604,7 +623,7 @@ var createLapTableRecord = function (htmlTable, index, session) {
 var createRouteRecord = function (htmlTable, index, route) {
     htmlTable += '<tr>';
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
-    htmlTable += '<td><a data-toggle="modal" data-route-name="' + route.name + '" data-target="#show-route-modal" href="/routes/' + route.name +'">' + route.name + '</a></td>';
+    htmlTable += '<td><a data-toggle="modal" data-route-name="' + route.name + '" data-target="#show-route-modal" href="/routes/' + route.name + '">' + route.name + '</a></td>';
     htmlTable += '<td>' + parseInt(route.meters) + 'm</td>';
     htmlTable += '<td>' + route.country + '</td>';
     htmlTable += '</tr>';
@@ -680,11 +699,11 @@ var addRouteTrackToMap = function (name, element) {
     }
 };
 
-function addGraph(time,hr, start) {
+function addGraph(time, hr, start) {
     var speed = [];
     for (var i = 1; i < time.length; i++) {
         var sec = ((parseInt(time[i]) - start) / 1000);
-        speed.push((( (RATION / 100) / sec) ) * 3.6);
+        speed.push((((RATION / 100) / sec)) * 3.6);
         start = parseInt(time[i]);
     }
 
@@ -697,17 +716,17 @@ function addGraph(time,hr, start) {
         mergeSize = 20;
     }
 
-    while(time.length) {
-        var a = time.splice(0,mergeSize);
-        var timeV = parseInt(a.reduce(function(a, b) { return a + b; }) / a.length);
+    while (time.length) {
+        var a = time.splice(0, mergeSize);
+        var timeV = parseInt(a.reduce(function (a, b) { return a + b; }) / a.length);
         labelsMerged.push(new Date(timeV).toISOString().substr(new Date(timeV).toISOString().lastIndexOf('T') + 1, 8));
         if (hr) {
-            var h = hr.splice(0,mergeSize);
-            hrMerged.push(parseInt(h.reduce(function(a, b) { return a + b; }) / h.length));
+            var h = hr.splice(0, mergeSize);
+            hrMerged.push(parseInt(h.reduce(function (a, b) { return a + b; }) / h.length));
         }
         if (speed) {
-            var s = speed.splice(0,mergeSize);
-            speedMerged.push(Math.round( parseFloat(s.reduce(function(a, b) { return a + b; }) / s.length)* 10) / 10 );
+            var s = speed.splice(0, mergeSize);
+            speedMerged.push(Math.round(parseFloat(s.reduce(function (a, b) { return a + b; }) / s.length) * 10) / 10);
         }
     }
 
