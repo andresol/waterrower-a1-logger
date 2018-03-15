@@ -64,7 +64,6 @@ const OSLO_ROUND = {
     ]
 };
 
-
 // Short round in Oslo
 const OSLO_SMALL = {
     name: "Ormsundet",
@@ -643,6 +642,152 @@ const GOZO = {
 };
 
 
+const SNAKE_ISLAND = {
+    "name": "Snake Island",
+    "meters": "1400",
+    "stravaId": "",
+    index: 11,
+    "country": "Brazil",
+    "gps": [
+       {
+          "lat": -25.2742318,
+          "lon": -47.9542601,
+          "el": 10
+       },
+       {
+          "lat": -25.2745617,
+          "lon": -47.9541528,
+          "el": 3
+       },
+       {
+          "lat": -25.2746587,
+          "lon": -47.9537451,
+          "el": 3
+       },
+       {
+          "lat": -25.2746975,
+          "lon": -47.9533159,
+          "el": 6
+       },
+       {
+          "lat": -25.2745423,
+          "lon": -47.9527795,
+          "el": 1
+       },
+       {
+          "lat": -25.2741154,
+          "lon": -47.9525864,
+          "el": 5
+       },
+       {
+          "lat": -25.2736109,
+          "lon": -47.9525864,
+          "el": 8
+       },
+       {
+          "lat": -25.273087,
+          "lon": -47.9526293,
+          "el": 5
+       },
+       {
+          "lat": -25.2727377,
+          "lon": -47.9531013,
+          "el": 2
+       },
+       {
+          "lat": -25.2726019,
+          "lon": -47.9538524,
+          "el": 2
+       },
+       {
+          "lat": -25.2725049,
+          "lon": -47.9543244,
+          "el": 1
+       },
+       {
+          "lat": -25.2724079,
+          "lon": -47.954775,
+          "el": 1
+       },
+       {
+          "lat": -25.272272,
+          "lon": -47.9553115,
+          "el": 1
+       },
+       {
+          "lat": -25.272175,
+          "lon": -47.9558908,
+          "el": 1
+       },
+       {
+          "lat": -25.2721556,
+          "lon": -47.9563415,
+          "el": 1
+       },
+       {
+          "lat": -25.2721168,
+          "lon": -47.9567921,
+          "el": 1
+       },
+       {
+          "lat": -25.2721556,
+          "lon": -47.9572641,
+          "el": 1
+       },
+       {
+          "lat": -25.2723497,
+          "lon": -47.9577147,
+          "el": 1
+       },
+       {
+          "lat": -25.2727959,
+          "lon": -47.9578864,
+          "el": 1
+       },
+       {
+          "lat": -25.273281,
+          "lon": -47.9579293,
+          "el": 1
+       },
+       {
+          "lat": -25.2738049,
+          "lon": -47.9575431,
+          "el": 1
+       },
+       {
+          "lat": -25.273999,
+          "lon": -47.9571998,
+          "el": 1
+       },
+       {
+          "lat": -25.2741348,
+          "lon": -47.9567706,
+          "el": 1
+       },
+       {
+          "lat": -25.2743094,
+          "lon": -47.9564273,
+          "el": 2
+       },
+       {
+          "lat": -25.2744647,
+          "lon": -47.9556977,
+          "el": 3
+       },
+       {
+          "lat": -25.2744453,
+          "lon": -47.9550111,
+          "el": 1
+       },
+       {
+          "lat": -25.2743676,
+          "lon": -47.9543673,
+          "el": 5
+       }
+    ]
+ };
+
+
 module.exports = {
     GRESSHOLMEN : OSLO_ROUND,
     ORMSUNDET : OSLO_SMALL,
@@ -654,9 +799,10 @@ module.exports = {
     NEW_YORK: NEW_YORK,
     VENEZIA: VENEZIA,
     GOZO: GOZO,
+    SNAKE_ISLAND: SNAKE_ISLAND,
     THE_ENGLISH_CHANNEL: THE_ENGLISH_CHANNEL,
     routes: [OSLO_ROUND, OSLO_SMALL, ILDJERNET, BLEIKOYA, NYSTULVATN, ALCATRAZ,
-        NEW_YORK, RIVER_THAMES, THE_ENGLISH_CHANNEL, VENEZIA, GOZO]
+        NEW_YORK, RIVER_THAMES, THE_ENGLISH_CHANNEL, VENEZIA, GOZO, SNAKE_ISLAND]
 
 };
 

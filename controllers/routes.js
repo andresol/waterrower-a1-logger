@@ -9,8 +9,14 @@ router.put('/add', jsonParser, function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (!req.body) return res.sendStatus(400);
     //routeService.add(req.body);
-    console.log(req.body);
-    res.send(JSON.stringify('', null, 3));
+  
+    var route = {... req.body}
+    var gps = req.body.gps;
+    gps = gps.replace(/(.*),(.*),(.*)/gm, '{ "lat": $1, "lon": $2, "el": $3 },');
+    gps = JSON.parse("[" + gps.replace(/,\s*$/, "") + "]");
+    route.gps = gps; 
+    console.log(JSON.stringify(route, null, 3));
+    res.send(JSON.stringify(route, null, 3));
 });
 
 router.get('/', function(req, res) {
