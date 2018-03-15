@@ -10,11 +10,23 @@ var express = require('express'),
 const NOT_ROWING = new RowSession("NOT_ROWING", new Route(Routes.routes[0].gps));
 
 var session = NOT_ROWING;
+const STATUS_ROWING = {status: 'ROWING'};
+const STATUS_NOT_ROWING = {status: 'NOT_ROWING'};
 
 router.get('/', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(session.stats(), null, 3));
 });
+
+router.get('/status', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    if (session === NOT_ROWING) {
+        res.send(JSON.stringify(STATUS_NOT_ROWING, null, 3));
+    } else {
+        res.send(JSON.stringify(STATUS_ROWING, null, 3));
+    }
+});
+
 
 router.get('/routes', function(req, res) {
     res.setHeader('Content-Type', 'application/json');

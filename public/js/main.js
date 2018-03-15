@@ -94,7 +94,11 @@ $(function() {
         $('#load').load('/main', function () {
             $(this).find('#routes').each(loadRoutes);
             $(this).find('#session-user').each(loadUsers);
-
+            $.get( "/row/status", function(data) {
+                if (data.status === 'ROWING') {
+                    
+                }
+            });
             //Run simulator if test.
             if (getUrlParameter("test")) {
                 $('#startRow').attr("id", "startSimulator");
@@ -246,17 +250,22 @@ $(function() {
     $(document).on("click",'button#startRow', function (e) {
         e.preventDefault();
         var routes = $('#routes').val();
+        var that = this;
         $.get( "/row/start",{ routes: routes }, function() {
-            $(window).scrollTop($('#main').offset().top); //Scroll
-            get_rowInfo(true, "Rowing");
-            cleanMap();
-            $('#routes').attr('disabled', 'disabled');
-            $('#session-user').attr('disabled', 'disabled');
-            $("#startSimulator").attr('disabled','disabled');
-            $(this).attr('disabled','disabled');
-            $(this).html('Rowing...');
+          start(that);
         });
     });
+
+    function start() {
+        $(window).scrollTop($('#main').offset().top); //Scroll
+        get_rowInfo(true, "Rowing");
+        cleanMap();
+        $('#routes').attr('disabled', 'disabled');
+        $('#session-user').attr('disabled', 'disabled');
+        $("#startSimulator").attr('disabled','disabled');
+        $(startButton).attr('disabled','disabled');
+        $(startButton).html('Rowing...');
+    }
 
     $(document).on("click", 'button#stopRow', function(e) {
         e.preventDefault();
