@@ -3,7 +3,7 @@ var db = require('../db/db');
 var routes = require('../models/routes');
 
 function addRoute(route) {
-    db.routes.put(route.name, route);
+    db.routes.put(route.name, JSON.stringify(route, null, 3));
 }
 
 function getAllRoutes(limit, reverse) {

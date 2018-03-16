@@ -15,7 +15,6 @@ router.put('/add', jsonParser, function(req, res) {
 
 router.get('/', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-
     var array = [];
     userService.all(50, true).on('data', function (data) {
         array.push(JSON.parse(data.value));

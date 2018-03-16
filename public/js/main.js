@@ -256,6 +256,9 @@ $(function () {
 
                     $('#routes-table-body').html(htmlTable);
 
+                    $('#add-route-modal').on('hidden.bs.modal', function (e) {
+                        loadRoute();
+                    })
                 });
             });
         });
@@ -417,6 +420,21 @@ $(function () {
                 type: 'DELETE',
                 success: function (result) {
                     loadUser();
+                }
+            });
+        }
+    });
+
+    $(document).on("click", '.del-route', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        var result = confirm("Are you sure you want to delete route?");
+        if (result) {
+            $.ajax({
+                url: '/routes/' + id,
+                type: 'DELETE',
+                success: function (result) {
+                    loadRoute();
                 }
             });
         }
@@ -627,7 +645,10 @@ var createRouteRecord = function (htmlTable, index, route) {
     htmlTable += '<td><a data-toggle="modal" data-route-name="' + route.name + '" data-target="#show-route-modal" href="/routes/' + route.name + '">' + route.name + '</a></td>';
     htmlTable += '<td>' + parseInt(route.meters) + 'm</td>';
     htmlTable += '<td>' + route.country + '</td>';
-    htmlTable += '<td><a class="edit-route" href="#" data-id="' + route.name + '"><i class="material-icons">create</i></a><a class="del-route" href="#" data-id="' + route.name + '"><i aria-hidden="true" title="Delete user" class="material-icons">delete</i></a></td>';
+    htmlTable += '<td>' 
+    if (route.permanent !== true) {  
+     htmlTable += '<a class="edit-route" href="#" data-id="' + route.name + '"><i class="material-icons">create</i></a><a class="del-route" href="#" data-id="' + route.name + '"><i aria-hidden="true" title="Delete route" class="material-icons">delete</i></a>' + '</td>';
+    }
     htmlTable += '</tr>';
     return htmlTable;
 };

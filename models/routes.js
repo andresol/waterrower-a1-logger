@@ -9,6 +9,7 @@ const OSLO_ROUND = {
     meters: '7000',
     country: 'Norway',
     index: 0,
+    permanent: true,
     segementId: 0,
     gps: [
     { lat: 59.88458761, lon: 10.76115131, el: 4.0 },
@@ -69,6 +70,7 @@ const OSLO_SMALL = {
     name: "Ormsundet",
     country: 'Norway',
     index: 1,
+    permanent: true,
     segementId: 0,
     meters: '600',
     gps: [
@@ -116,6 +118,7 @@ const ILDJERNET = {
     name: "Ildjernet",
     country: 'Norway',
     index: 2,
+    permanent: true,
     meters: '20610',
     segementId: 0,
     gps: [
@@ -216,6 +219,7 @@ const BLEIKOYA = {
     name: "Bleikoya",
     country: 'Norway',
     index: 3,
+    permanent: true,
     segementId: 17179877,
     meters: '4050',
     gps: [
@@ -270,6 +274,7 @@ const NYSTULVATN = {
     name: "Nystulvatn",
     country: 'Norway',
     index: 4,
+    permanent: true,
     segementId: 17179917,
     meters: '2550',
     gps: [
@@ -323,6 +328,7 @@ const RIVER_THAMES = {
     country: 'United Kingdom',
     index: 7,
     segementId: 0,
+    permanent: true,
     meters: 6910,
     gps: [
         { lat: 51.50604460, lon: -0.07379293, el: 8.0 },
@@ -382,6 +388,7 @@ const ALCATRAZ = {
     name: "Alcatraz",
     country: 'United States',
     index: 5,
+    permanent: true,
     segementId: 17179935,
     meters: 5350,
     gps: [
@@ -432,6 +439,7 @@ const NEW_YORK = {
     name: "New York",
     country: 'United States',
     index: 6,
+    permanent: true,
     segementId: 17179902,
     meters: 7000,
     gps: [{ lat: 40.70034920, lon: -74.0132671, el: 1.0 },
@@ -482,6 +490,7 @@ const THE_ENGLISH_CHANNEL = {
     country: 'United Kingdom',
     index: 8,
     segementId: 0,
+    permanent: true,
     meters: 81920,
     gps: [{ lat: 51.12329690, lon: 1.330075260, el: 1.0 },
         { lat: 51.12060330, lon: 1.336426730, el: 1.0 },
@@ -547,6 +556,7 @@ const VENEZIA = {
     name: "Venezia",
     meters: '7230',
     country: 'Italy',
+    permanent: true,
     segementId: 0,
     index: 9,
     gps: [
@@ -611,6 +621,7 @@ const GOZO = {
     name: "Gozo",
     meters: '5873',
     country: 'Malta',
+    permanent: true,
     segementId: 0,
     index: 10,
     gps: [{ lat: 36.02452921, lon: 14.29903864, el: 3.0 },
@@ -647,6 +658,7 @@ const SNAKE_ISLAND = {
     "meters": "1400",
     "stravaId": "",
     index: 11,
+    permanent: true,
     "country": "Brazil",
     "gps": [
        {
