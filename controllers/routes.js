@@ -30,6 +30,46 @@ router.get('/', function(req, res) {
     });
 });
 
+router.get('/size', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    var index = 0;
+    return routeService.keys().on('data', function () {
+        index++;
+    }).on('error', function (err) {
+        console.log('Oh my!', err)
+    }).on('end', function () {
+        res.send(JSON.stringify(index + routeService.getDefaults.length, null, 3));
+    });
+});
+
+router.get('/:start/:stop', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    var start = req.params.start;
+    var stop = req.params.stop;
+    var result = [];
+    var index = 0;
+    while ( index < routeService.getDefaults.length) {
+        if (index >= start && index <= stop) {
+            result.push(routeService.getDefaults[index]);
+        }
+            index++;
+    }
+   
+    return routeService.getAllPag().on('data', function (data) {
+        if (index >= start && index <= stop) {
+            result.push(JSON.parse(data));
+        }
+        index++;
+        if (index <= stop) {
+            return;
+        }
+    }).on('error', function (err) {
+        console.log('Oh my!', err)
+    }).on('end', function () {
+        res.send(JSON.stringify(result, null, 3));
+    });
+});
+
 router.get('/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var id = req.params.id;

@@ -57,7 +57,7 @@ $(function () {
     /** All load functions */
     var loadRoutes = function () {
         var that = this;
-        $.get("/row/routes", function (data) {
+        $.get("/routes", function (data) {
             var html = '';
             var index = 0;
             var group = '';
@@ -160,7 +160,7 @@ $(function () {
 
             $('#histor-table-body').html(htmlTable);
             var pag = that.find('.page');
-            createHistoryNavPage(pag[0], mainIndex);
+            createHistoryNavPage(pag, mainIndex);
         });
     }
 
@@ -181,11 +181,38 @@ $(function () {
 
             htmlElement.append(prev);
             for (var i = 0; i < size; i++) {
-                var item = $('<li class="page-item"><a class="page-link" data-index="' + i + '" href="#">' + (i + 1) + '</a></li>');
+                var active = '';
+                if (index === i) {
+                    active = "active";
+                }
+                var item = $('<li class="page-item ' + active + '"><a class="page-link" data-index="' + i + '" href="#">' + (i + 1) + '</a></li>');
                 htmlElement.append(item);
             }
             htmlElement.append(next);
-            $(page).append(htmlElement);
+            $(page).html(htmlElement);
+        });
+    }
+
+    function createRouteNavPage(page, index) {
+        var htmlElement = $('<ul id="route-page" data-index="' + index + '"></ul>').addClass("pagination pagination-lg");
+        $.get("routes/size", function (data) {
+            var size = parseInt(parseInt(data) / PAGE_SIZE) + 1;
+            var prevDisabled = (index === 0 ? 'disabled' : '');
+            var nextDisabled = (index === size - 1 ? 'disabled' : '');
+            var prev = $('<li class="page-item ' + prevDisabled + '"></li>').append('<a class="page-link" href="#" data-next="-1" tabindex="-1">Previous</a>');
+            var next = $('<li class="page-item ' + nextDisabled + '"></li>').append('<a class="page-link" data-next="1" href="#">Next</a>');
+
+            htmlElement.append(prev);
+            for (var i = 0; i < size; i++) {
+                var active = '';
+                if (index === i) {
+                    active = "active";
+                }
+                var item = $('<li class="page-item ' + active + '"><a class="page-link" data-index="' + i + '" href="#">' + (i + 1) + '</a></li>');
+                htmlElement.append(item);
+            }
+            htmlElement.append(next);
+            $(page).html(htmlElement);
         });
     }
 
@@ -219,7 +246,22 @@ $(function () {
         } else if (!isNaN(index)) {
             mainIndex = index;
         }
-        loadHistoryList($('#history'), mainIndex);
+        loadHistoryList($('#history-table'), mainIndex);
+    });
+
+    //TODO: refactory
+    $(document).on("click", '#route-page a', function (e) {
+        e.preventDefault();
+        var next = parseInt($(this).data('next')), index = parseInt($(this).data('index')),
+            mainIndex = parseInt($('#route-page').data('index'));
+        if (!isNaN(next)) {
+            mainIndex += next;
+        } else if (!isNaN(index)) {
+            mainIndex = index;
+        }
+        var pag = $('#routes-table').find('.page');
+        createRouteNavPage(pag[0], mainIndex);
+        loadRouteTable(mainIndex); 
     });
 
     $(document).on("click", '.main', function (e) {
@@ -240,29 +282,36 @@ $(function () {
     });
 
     $(document).on("click", 'a#route', function (e) {
-        loadRoute();
+        loadRoute(0);
     });
 
-    function loadRoute() {
+    function loadRoute(mainIndex) {
         $('#load').load('/route', function () {
             $(this).find('#routes-t').each(function () {
-                $.get("/routes", function (data) {
-                    var htmlTable = '';
-                    var index = 0;
-                    data.forEach(function (route) {
-                        htmlTable = createRouteRecord(htmlTable, index, route);
-                        index++;
-                    });
-
-                    $('#routes-table-body').html(htmlTable);
-
-                    $('#add-route-modal').on('hidden.bs.modal', function (e) {
-                        loadRoute();
-                    })
-                });
+                loadRouteTable(0);
+                var pag = $('#routes-table').find('.page');
+                createRouteNavPage(pag[0], mainIndex);
             });
         });
     }
+
+    function loadRouteTable(mainIndex) {
+        var start = mainIndex * PAGE_SIZE, stop = (((mainIndex + 1) * PAGE_SIZE)) - 1;
+        $.get('/routes/' + start + '/' + stop, function (data) {
+            var htmlTable = '';
+            var index = 0;
+            data.forEach(function (route) {
+                htmlTable = createRouteRecord(htmlTable, index, route);
+                index++;
+            });
+
+            $('#routes-table-body').html(htmlTable);
+            $('#add-route-modal').on('hidden.bs.modal', function (e) {
+                loadRoute(0);
+            })
+        });
+    }
+
 
     $(document).on("load-map", '.gpx-track', loadGpxMap);
 
@@ -337,6 +386,20 @@ $(function () {
                 var connect = $(".strava-connect");
                 connect.removeClass("sr-only");
                 $('#addUserModal').modal('show');
+            }
+        });
+    });
+    $(document).on("click", '.edit-route', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        $.ajax({
+            url: '/routes/' + id,
+            type: 'GET',
+            success: function (result) {
+                var form = $("#addRoute");
+                form.find('#name').val(result.name);
+                form.find('#meters').val(result.meters);
+                $('#add-route-modal').modal('show');
             }
         });
     });
@@ -434,7 +497,7 @@ $(function () {
                 url: '/routes/' + id,
                 type: 'DELETE',
                 success: function (result) {
-                    loadRoute();
+                    loadRoute(0);
                 }
             });
         }
@@ -445,7 +508,7 @@ $(function () {
         var hash = window.location.hash;
         switch (hash) {
             case '#route':
-                loadRoute();
+                loadRoute(0);
                 break;
             case '#user':
                 loadUser();
