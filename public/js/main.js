@@ -57,7 +57,7 @@ $(function () {
     /** All load functions */
     var loadRoutes = function () {
         var that = this;
-        $.get("/routes", function (data) {
+        $.get("/row/routes", function (data) {
             var html = '';
             var index = 0;
             var group = '';
