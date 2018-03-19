@@ -10,8 +10,12 @@ router.put('/add', jsonParser, function(req, res) {
     if (!req.body) return res.sendStatus(400);
     var route = {... req.body}
     var gps = req.body.gps;
-    gps = gps.replace(/(.*),(.*),(.*)/gm, '{ "lat": $1, "lon": $2, "el": $3 },');
-    gps = JSON.parse("[" + gps.replace(/,\s*$/, "") + "]");
+    try {
+        gps = JSON.parse(gps);
+    } catch (e) {
+        gps = gps.replace(/(.*),(.*),(.*)/gm, '{ "lat": $1, "lon": $2, "el": $3 },');
+        gps = JSON.parse("[" + gps.replace(/,\s*$/, "") + "]");
+    }
     route.gps = gps; 
     routeService.add(route);
     res.send(JSON.stringify(route, null, 3));

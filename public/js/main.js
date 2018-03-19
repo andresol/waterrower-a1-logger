@@ -399,6 +399,11 @@ $(function () {
                 var form = $("#addRoute");
                 form.find('#name').val(result.name);
                 form.find('#meters').val(result.meters);
+                form.find('#segmentId').val(result.segmentId);
+                form.find('#countries').val(result.country);
+                //gps.replace(/(.*),(.*),(.*)/gm, '{ "lat": $1, "lon": $2, "el": $3 },');
+                var gpsCvs = JSON.stringify(result.gps);
+                form.find('#gps').append(gpsCvs);
                 $('#add-route-modal').modal('show');
             }
         });
