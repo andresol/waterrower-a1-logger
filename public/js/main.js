@@ -6,6 +6,7 @@ var liveBounds;
 var livePoints = [];
 const RATION = (100 / 4.805) * 6;
 const PAGE_SIZE = 10;
+const WATT_RATION = 2.80;
 
 const styles = [{
     "featureType": "landscape", "stylers": [{ "saturation": -100 }, { "lightness": 65 },
@@ -301,7 +302,7 @@ $(function () {
             var htmlTable = '';
             var index = 0;
             data.forEach(function (route) {
-                htmlTable = createRouteRecord(htmlTable, index, route);
+                htmlTable = createRouteRecord(htmlTable, index + (mainIndex * PAGE_SIZE), route);
                 index++;
             });
 
@@ -792,15 +793,20 @@ var addRouteTrackToMap = function (name, element) {
 
 function addGraph(time, hr, start) {
     var speed = [];
+    var watt = [];
     for (var i = 1; i < time.length; i++) {
         var sec = ((parseInt(time[i]) - start) / 1000);
-        speed.push((((RATION / 100) / sec)) * 3.6);
+        var lenght = (RATION / 100);
+        speed.push(((lenght / sec)) * 3.6);
+        var wattValue = calcWatt(sec/lenght);
+        watt.push(wattValue);
         start = parseInt(time[i]);
     }
 
     //Remove ever second element
     var speedMerged = [];
     var hrMerged = [];
+    var wattMerged = [];
     var labelsMerged = [];
     var mergeSize = 10;
     if (time.length > 1000) {
@@ -819,8 +825,12 @@ function addGraph(time, hr, start) {
         }
         if (speed) {
             var s = speed.splice(0, mergeSize);
+            var w = watt.splice(0, mergeSize);
             if (s.length > 0) {
                 speedMerged.push(Math.round(parseFloat(s.reduce(function (a, b) { return a + b; }) / s.length) * 10) / 10);
+            }
+            if (w.length > 0 ) {
+                wattMerged.push(Math.round(parseFloat(w.reduce(function (a, b) { return a + b; }) / w.length) * 10) / 10);
             }
         }
     }
@@ -842,6 +852,14 @@ function addGraph(time, hr, start) {
             fill: false,
             data: speedMerged,
             yAxisID: 'y-axis-2'
+        },
+        {
+            label: 'Watt',
+            borderColor: '#4bc0c0',
+            backgroundColor: '#4bc0c0',
+            fill: false,
+            data: wattMerged,
+            yAxisID: 'y-axis-3'
         }]
     };
     var myLineChart = Chart.Line(ctx, {
@@ -873,11 +891,29 @@ function addGraph(time, hr, start) {
                     gridLines: {
                         drawOnChartArea: false // only want the grid lines for one axis to show up
                     }
+                },
+                {
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'right',
+                    id: 'y-axis-3',
+                    ticks: {
+                        stepSize: 10
+                    },
+                    // grid line settings
+                    gridLines: {
+                        drawOnChartArea: false // only want the grid lines for one axis to show up
+                    }
                 }]
             }
         }
     });
 }
+
+function calcWatt(pace) {
+    return WATT_RATION / Math.pow(pace, 3);
+}
+
 
 function getHeartRateColor(hr) {
     if (hr < 125) {
