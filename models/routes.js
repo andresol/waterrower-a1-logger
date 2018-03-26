@@ -72,7 +72,7 @@ const OSLO_SMALL = {
     index: 1,
     permanent: true,
     segementId: 0,
-    meters: '600',
+    meters: '6000',
     gps: [
         {lat: 59.88458761, lon: 10.76097965, el: 3.0},
         {lat: 59.88488907, lon: 10.75823307, el: 1.0},
@@ -656,7 +656,7 @@ const GOZO = {
 const SNAKE_ISLAND = {
     "name": "Snake Island",
     "meters": "1400",
-    "stravaId": "",
+    "stravaId": "17249698",
     index: 11,
     permanent: true,
     "country": "Brazil",
