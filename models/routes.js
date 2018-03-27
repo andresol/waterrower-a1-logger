@@ -329,7 +329,7 @@ const RIVER_THAMES = {
     index: 7,
     segementId: 0,
     permanent: true,
-    meters: 6910,
+    meters: 6900,
     gps: [
         { lat: 51.50604460, lon: -0.07379293, el: 8.0 },
         { lat: 51.50628500, lon: -0.07580995, el: 7.0 },
