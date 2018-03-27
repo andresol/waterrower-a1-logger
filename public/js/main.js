@@ -607,7 +607,7 @@ function getHtml(label, json, day) {
     html += '<div class="row"><div class="col-sm-4">Avg.W:</div><div class="col">' + Math.round(parseFloat(json.watt) * 10) / 10 + 'w</div></div>';
     html += '<div class="row"><div class="col-sm-4">SR:</div><div class="col">' + Math.round(parseFloat(json.stroke) * 10) / 10 + '</div></div>';
     if (parseInt(json.hr) > 0) {
-        html += '<div class="row"><div class="col-sm-4">HR:</div><div class="col ' + getHeartRateColor(parseInt(json.hr)) + '">' + parseInt(json.hr) + '</div></div>';
+        html += '<div class="row"><div class="col-sm-4">HR:</div><div class="col ' + getHeartRateColor(parseInt(json.hr)) + '">' + parseInt(json.hr) + (parseInt(json.avgHr) > 0 ? '('+ parseInt(json.avgHr)+ ')' : '' )+'</div></div>';
     }
     if (json.fileName) {
         html += '<div class="row"><div class="col">Actions:</div><div class="col"><a href="/sessions/' + json.fileName;

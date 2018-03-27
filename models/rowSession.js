@@ -37,6 +37,7 @@ function RowSession(status, route) {
     this.name = sanitize(new Date(this.start).toISOString());
     this.routeObject = route;
     this.routeObjectLenght = route.getRouteLength();
+    this.avgHr = -1;
 
 }
 
@@ -223,6 +224,7 @@ RowSession.prototype.stats = function() {
     stats.towKPace = this.twoKPace();
     stats.totalLaps = this.totalLaps();
     stats.laps = this.laps();
+    stats.avgHr = this.getAvgHr();
     stats.gps = this.trackPoint;
     stats.stroke = this.getStrokeRate();
     stats.hr = this.hr;
@@ -250,6 +252,12 @@ RowSession.prototype.totalTime = function () {
 
 RowSession.prototype.meterPerSeconds = function () {
     return this.totalInMeters() / this.totalTimeInSec()
+};
+
+RowSession.prototype.getAvgHr = function () {
+    if (this.rawHr.length > 0) {
+        return (this.rawHr.reduce(function (total, num) {return total + num}) / this.rawHr.length) | 0;
+    } else return -1;
 };
 
 RowSession.prototype.fiveHundrePace = function () {
