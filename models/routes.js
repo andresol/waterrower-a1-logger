@@ -72,7 +72,7 @@ const OSLO_SMALL = {
     index: 1,
     permanent: true,
     segementId: 0,
-    meters: '600',
+    meters: '4300',
     gps: [
         {lat: 59.88458761, lon: 10.76097965, el: 3.0},
         {lat: 59.88488907, lon: 10.75823307, el: 1.0},
@@ -119,7 +119,7 @@ const ILDJERNET = {
     country: 'Norway',
     index: 2,
     permanent: true,
-    meters: '20610',
+    meters: '20600',
     segementId: 0,
     gps: [
         {lat: 59.88463068, lon: 10.76067924, el: 2.0},
@@ -221,7 +221,7 @@ const BLEIKOYA = {
     index: 3,
     permanent: true,
     segementId: 17179877,
-    meters: '4050',
+    meters: '4500',
     gps: [
         { lat: 59.88598040, lon: 10.75883380, el: 4.0 },
         { lat: 59.88593740, lon: 10.75763220, el: 2.0 },
@@ -491,7 +491,7 @@ const THE_ENGLISH_CHANNEL = {
     index: 8,
     segementId: 0,
     permanent: true,
-    meters: 81920,
+    meters: 81900,
     gps: [{ lat: 51.12329690, lon: 1.330075260, el: 1.0 },
         { lat: 51.12060330, lon: 1.336426730, el: 1.0 },
         { lat: 51.12076490, lon: 1.343851080, el: 1.0 },
@@ -554,7 +554,7 @@ const THE_ENGLISH_CHANNEL = {
 
 const VENEZIA = {
     name: "Venezia",
-    meters: '7230',
+    meters: '7250',
     country: 'Italy',
     permanent: true,
     segementId: 0,
@@ -619,7 +619,7 @@ const VENEZIA = {
 
 const GOZO = {
     name: "Gozo",
-    meters: '5873',
+    meters: '5850',
     country: 'Malta',
     permanent: true,
     segementId: 0,

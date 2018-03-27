@@ -36,6 +36,7 @@ function RowSession(status, route) {
     this.p = null;
     this.name = sanitize(new Date(this.start).toISOString());
     this.routeObject = route;
+    this.routeObjectLenght = route.getRouteLength();
 
 }
 
@@ -226,6 +227,7 @@ RowSession.prototype.stats = function() {
     stats.stroke = this.getStrokeRate();
     stats.hr = this.hr;
     stats.routeLap = this.getRouteLap();
+    stats.routeLength = this.routeObjectLenght;
     stats.watt = watt(this.totalTimeInSec() / this.totalInMeters());
     return stats;
 };
@@ -235,7 +237,7 @@ RowSession.prototype.totalInMeters = function () {
 };
 
 RowSession.prototype.getRouteLap = function () {
-    return ((this.totalInMeters() / this.routeObject.meters) | 0) + 1;
+    return ((this.totalInMeters() / this.routeObjectLenght) | 0) + 1;
 }
 
 RowSession.prototype.totalTimeInSec = function () {
