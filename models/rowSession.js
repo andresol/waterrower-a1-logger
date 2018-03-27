@@ -26,6 +26,7 @@ var runSimulator = false;
 
 function RowSession(status, route) {
     this.status = status;
+    this.paused = false;
     this.stroke = [];
     this.counter = 0;
     this.start = Date.now();
@@ -86,7 +87,6 @@ RowSession.prototype.simulate = function() {
     this.sim = true; //mark this as sim
     console.log("Starting RowSession simulator");
     runSimulator = true;
-    //this.heartRate();
     var that = this;
     (function loop() {
         if(runSimulator) {
@@ -101,7 +101,9 @@ RowSession.prototype.simulate = function() {
 };
 
 RowSession.prototype.increase = function() {
-    this.increment(); //TODO: Debunce?
+    if (!this.paused) {
+        this.increment(); //TODO: Debunce?
+    }
 };
 
 RowSession.prototype.totalLaps = function () {
@@ -190,6 +192,14 @@ RowSession.prototype.stop = function() {
     }
 
     this.endStats = this.stats();
+};
+
+RowSession.prototype.pause = function() {
+    this.paused = true;
+};
+
+RowSession.prototype.resume = function() {
+    this.paused = false;
 };
 
 RowSession.prototype.getTotalLength = function() {

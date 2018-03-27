@@ -81,6 +81,22 @@ router.get('/simulate', function(req, res) {
     res.send(JSON.stringify(session, null, 3));
 });
 
+router.get('/pause', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    if (session !== NOT_ROWING) {
+        session.pause();
+    }
+    res.send(JSON.stringify(session.stats(), null, 3));
+});
+
+router.get('/resume', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    if (session !== NOT_ROWING) {
+        session.resume();
+    }
+    res.send(JSON.stringify(session.stats(), null, 3));
+});
+
 router.get('/stop', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var routeParam = req.query.routes;
@@ -101,6 +117,8 @@ router.get('/stop', function(req, res) {
         stats.fileName = sanitize(fileName);
         res.send(JSON.stringify(stats, null, 3));
         session = NOT_ROWING;
+    } else {
+        res.send(JSON.stringify(NOT_ROWING.stats(), null, 3));
     }
 });
 
