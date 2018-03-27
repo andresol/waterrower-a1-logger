@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "NODE_ENV=production nodejs app.js",
+    "test": "PORT=9999 NODE_ENV=test nodejs app.js"
   },
   "keywords": [
     "waterrower",
