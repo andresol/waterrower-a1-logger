@@ -225,6 +225,7 @@ RowSession.prototype.stats = function() {
     stats.gps = this.trackPoint;
     stats.stroke = this.getStrokeRate();
     stats.hr = this.hr;
+    stats.routeLap = this.getRouteLap();
     stats.watt = watt(this.totalTimeInSec() / this.totalInMeters());
     return stats;
 };
@@ -232,6 +233,10 @@ RowSession.prototype.stats = function() {
 RowSession.prototype.totalInMeters = function () {
     return this.getTotalLength() / 100
 };
+
+RowSession.prototype.getRouteLap = function () {
+    return ((this.totalInMeters() / this.routeObject.meters) | 0) + 1;
+}
 
 RowSession.prototype.totalTimeInSec = function () {
     return this.totalTime() / 1000
