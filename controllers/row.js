@@ -7,6 +7,7 @@ var express = require('express'),
     sessionService = require('../service/sessionService'),
     sanitize = require("sanitize-filename");
 
+const env = process.env.NODE_ENV || '';
 const NOT_ROWING = new RowSession("NOT_ROWING", new Route(Routes.routes[0].gps));
 
 var session = NOT_ROWING;
@@ -32,38 +33,50 @@ router.get('/routes', function(req, res) {
     res.send(JSON.stringify(Routes.routes, null, 3));
 });
 
+function startRow(req) {
+    var routeParam = req.query.routes;
+    if (isNaN(routeParam)) {
+        routeParam = 1;
+    }
+    var r = Routes.routes[routeParam];
+    session = new RowSession("ROWING", new Route(r.gps));
+    try {
+        session.startRow();
+        session.route = routeParam;
+    } catch (e) {
+        session = NOT_ROWING;
+        console.log("Cannot start row. Look at error" + e);
+    }
+}
+
 router.get('/start', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (session === NOT_ROWING) {
-        var routeParam = req.query.routes;
-        if (isNaN(routeParam)) {
-            routeParam = 1;
-        }
-        var r = Routes.routes[routeParam];
-        session = new RowSession("ROWING", new Route(r.gps));
-        try {
-            session.startRow();
-            session.route = routeParam;
-        } catch (e) {
-            session = NOT_ROWING;
-            console.log("Cannot start row. Look at error" + e);
+        if (env === 'test') {
+            simulateRow(req);
+        } else {
+            startRow(req);
         }
     }
     res.send(JSON.stringify(session, null, 3));
 });
 
+function simulateRow(req) {
+    var routeParam = req.query.routes;
+    if (isNaN(routeParam)) {
+        routeParam = 1;
+    }
+    var r = Routes.routes[routeParam];
+    session = new RowSession("SIMULATE", new Route(r.gps));
+    session.heartRate();
+    session.route = routeParam;
+    session.simulate();
+}
+
 router.get('/simulate', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (session === NOT_ROWING) {
-        var routeParam = req.query.routes;
-        if (isNaN(routeParam)) {
-            routeParam = 1;
-        }
-        var r = Routes.routes[routeParam];
-        session = new RowSession("SIMULATE", new Route(r.gps));
-        session.heartRate();
-        session.route = routeParam;
-        session.simulate();
+        simulateRow(req);
     }
     res.send(JSON.stringify(session, null, 3));
 });
