@@ -72,11 +72,7 @@ const OSLO_SMALL = {
     index: 1,
     permanent: true,
     segementId: 0,
-<<<<<<< HEAD
-    meters: '6000',
-=======
     meters: '4300',
->>>>>>> 6ab4bf2cc15db44ed233f20d02c7bfb6a5a2c6e3
     gps: [
         {lat: 59.88458761, lon: 10.76097965, el: 3.0},
         {lat: 59.88488907, lon: 10.75823307, el: 1.0},
