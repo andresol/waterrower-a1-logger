@@ -6,7 +6,7 @@
 //Larger round in oslo
 const OSLO_ROUND = {
     name: "Gressholmen",
-    meters: '7000',
+    meters: '7200',
     country: 'Norway',
     index: 0,
     permanent: true,
@@ -656,7 +656,7 @@ const GOZO = {
 const SNAKE_ISLAND = {
     "name": "Snake Island",
     "meters": "1400",
-    "stravaId": "17249698",
+    "segementId": "17249698",
     index: 11,
     permanent: true,
     "country": "Brazil",

@@ -1,7 +1,8 @@
 var express = require('express'),
     router = express.Router(),
     routeService = require('../service/routeService'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    Route = require('../models/route');
 
 var jsonParser = bodyParser.json();
 
@@ -80,11 +81,16 @@ router.get('/:id', function(req, res) {
     if (id) {
         var resRoute = routeService.routes[id.toUpperCase().replace(/ /g, '_')];
         if (resRoute) {
-            res.send(resRoute);
+            var route = new Route(resRoute.gps);
+            resRoute.gpsLenght = route.getRouteLength();
+            res.send(JSON.stringify(resRoute, null, 3));
             return;
         }
         routeService.get(id).then(function (value) {
-            res.send(value);
+            var resRoute = JSON.parse(value);
+            var route = new Route(resRoute.gps); 
+            resRoute.gpsLenght = route.getRouteLength();
+            res.send(JSON.stringify(resRoute, null, 3));
         }).catch(function (err) { console.error(err); res.status(404).send('Cannot find route.'); });
     } else{
         res.status(404).send('Cannot find route');

@@ -35,7 +35,6 @@ Route.prototype.getRouteLength = function () {
     for (var i = 0; i < this.coordinates.length - 1 ; i++ ) {
         var latLon = new LatLonV(this.coordinates[i].lat,this.coordinates[i].lon);
         meters += latLon.distanceTo(new LatLonV(this.coordinates[i + 1].lat, this.coordinates[i + 1].lon));
-
     }
     return meters | 0;
 };

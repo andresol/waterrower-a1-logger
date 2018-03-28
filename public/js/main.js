@@ -535,9 +535,15 @@ $(function () {
         var name = $(e.relatedTarget).data('route-name');
         var that = $(this);
         $.get("/routes/" + name, function (data) {
-            that.find('#show-route-modal-title').html(data.name);
-            that.find('#card-length').html('<h4 class="card-title">Length:</h4> <p class="card-text">4000m</p>');
-            that.find('#card-country').html('<h4 class="card-title">Country:</h4> <p class="card-text">Norway</p>');
+            var title = data.name;
+            if (data.segementId) {
+                title = '<a target="_blank" href="https://www.strava.com/segments/' + data.segementId + '">' + title + ' </a>';
+            }
+            that.find('#show-route-modal-title').html(title);
+            var html = '<li class="list-group-item"><h5 class="card-title">Display Lenght:</h5>'+ data.meters +' m</li>';
+            html += '<li class="list-group-item"><h5 class="card-title">Gps Lenght:</h5>'+ data.gpsLenght +' m</li>';
+            html += '<li class="list-group-item"><h5 class="card-title">Country:</h5>' + data.country+ '</li>';
+            that.find('.card .list-group').html(html);
         });
 
 
