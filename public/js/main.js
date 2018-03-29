@@ -153,15 +153,21 @@ $(function () {
     function loadHistoryList(that, mainIndex) {
         var start = mainIndex * PAGE_SIZE, stop = (((mainIndex + 1) * PAGE_SIZE)) - 1;
         $.get('/session/' + start + '/' + stop, function (data) {
-            var htmlTable = '', index = 0;
-            data.forEach(function (session) {
-                htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * PAGE_SIZE), session);
-                index++;
-            });
+            $.get('/users', function (users) {
+                var htmlTable = '', index = 0;
+                var userMap = users.reduce(function(map, obj) {
+                    map[obj.id] = obj;
+                    return map;
+                }, {});
+                data.forEach(function (session) {
+                    htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * PAGE_SIZE), session, userMap);
+                    index++;
+                });
 
-            $('#histor-table-body').html(htmlTable);
-            var pag = that.find('.page');
-            createHistoryNavPage(pag, mainIndex);
+                $('#histor-table-body').html(htmlTable);
+                var pag = that.find('.page');
+                createHistoryNavPage(pag, mainIndex);
+            });
         });
     }
 
@@ -262,7 +268,7 @@ $(function () {
         }
         var pag = $('#routes-table').find('.page');
         createRouteNavPage(pag[0], mainIndex);
-        loadRouteTable(mainIndex); 
+        loadRouteTable(mainIndex);
     });
 
     $(document).on("click", '.main', function (e) {
@@ -540,9 +546,9 @@ $(function () {
                 title = '<a target="_blank" href="https://www.strava.com/segments/' + data.segementId + '">' + title + ' </a>';
             }
             that.find('#show-route-modal-title').html(title);
-            var html = '<li class="list-group-item"><h5 class="card-title">Display Lenght:</h5>'+ data.meters +' m</li>';
-            html += '<li class="list-group-item"><h5 class="card-title">Gps Lenght:</h5>'+ data.gpsLenght +' m</li>';
-            html += '<li class="list-group-item"><h5 class="card-title">Country:</h5>' + data.country+ '</li>';
+            var html = '<li class="list-group-item"><h5 class="card-title">Display Lenght:</h5>' + data.meters + ' m</li>';
+            html += '<li class="list-group-item"><h5 class="card-title">Gps Lenght:</h5>' + data.gpsLenght + ' m</li>';
+            html += '<li class="list-group-item"><h5 class="card-title">Country:</h5>' + data.country + '</li>';
             that.find('.card .list-group').html(html);
         });
 
@@ -560,8 +566,6 @@ $(function () {
         var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
         liveMap.panTo(p);
     });
-
-
 });
 
 function get_rowInfo(continues, title) {
@@ -606,14 +610,14 @@ function getHtml(label, json, day) {
     }
     html += '<div class="row"><div class="col-sm-4">Start:</div><div class="col">' + json.start.substr(json.start.lastIndexOf('T') + 1, 8) + '</div></div>';
     html += '<div class="row"><div class="col-sm-4">Time:</div><div class="col">' + fmtMSS(parseInt(json.seconds)) + '</div></div>';
-    html += '<div class="row"><div class="col-sm-4">Length:</div><div class="col">' + parseInt(json.meters) + ' m ('+parseInt(json.routeLap)+')</div></div>';
+    html += '<div class="row"><div class="col-sm-4">Length:</div><div class="col">' + parseInt(json.meters) + ' m (' + parseInt(json.routeLap) + ')</div></div>';
     html += '<div class="row"><div class="col-sm-4">Pace:</div><div class="col">' + Math.round(parseFloat(json.pace) * 3.6 * 10) / 10 + ' km/t</div></div>';
     html += '<div class="row"><div class="col-sm-4">500m:</div><div class="col">' + fmtMSS(parseInt(json.lapPace)) + '</div></div>';
     html += '<div class="row"><div class="col-sm-4">2k:</div><div class="col">' + fmtMSS(parseInt(json.towKPace)) + '</div></div>';
     html += '<div class="row"><div class="col-sm-4">Avg.W:</div><div class="col">' + Math.round(parseFloat(json.watt) * 10) / 10 + 'w</div></div>';
     html += '<div class="row"><div class="col-sm-4">SR:</div><div class="col">' + Math.round(parseFloat(json.stroke) * 10) / 10 + '</div></div>';
     if (parseInt(json.hr) > 0) {
-        html += '<div class="row"><div class="col-sm-4">HR:</div><div class="col ' + getHeartRateColor(parseInt(json.hr)) + '">' + parseInt(json.hr) + (parseInt(json.avgHr) > 0 ? '('+ parseInt(json.avgHr)+ ')' : '' )+'</div></div>';
+        html += '<div class="row"><div class="col-sm-4">HR:</div><div class="col ' + getHeartRateColor(parseInt(json.hr)) + '">' + parseInt(json.hr) + (parseInt(json.avgHr) > 0 ? '(' + parseInt(json.avgHr) + ')' : '') + '</div></div>';
     }
     if (json.fileName) {
         html += '<div class="row"><div class="col">Actions:</div><div class="col"><a href="/sessions/' + json.fileName;
@@ -704,11 +708,13 @@ function initMap() {
     liveMap.set('styles', styles);
 }
 
-var createLapTableRecord = function (htmlTable, index, session) {
+var createLapTableRecord = function (htmlTable, index, session, userMap) {
+    var user = userMap[session.user];
     htmlTable += '<tr>';
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
     htmlTable += '<td><a class="sessions" data-name="' + session.name + '" href="/session">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></td>';
     htmlTable += '<td>Length: ' + parseInt(session.endStats.meters) + 'm</td>';
+    htmlTable += '<td>' + user.firstName + ' ' + user.lastName + '</td>'; 
     htmlTable += '<td> <a href="/sessions/' + session.name + '.gpx"><i class="material-icons md-36">file_download</i><a class="strava" href="/strava/upload/' + session.name + '"><i aria-hidden="true" title="Upload to Strava" class="material-icons md-36">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name + '"><i aria-hidden="true" title="Delete session local" class="material-icons md-36">delete</i></a></td>';
     htmlTable += '</tr>';
     return htmlTable;
@@ -720,9 +726,9 @@ var createRouteRecord = function (htmlTable, index, route) {
     htmlTable += '<td><a data-toggle="modal" data-route-name="' + route.name + '" data-target="#show-route-modal" href="/routes/' + route.name + '">' + route.name + '</a></td>';
     htmlTable += '<td>' + parseInt(route.meters) + 'm</td>';
     htmlTable += '<td>' + route.country + '</td>';
-    htmlTable += '<td>' 
-    if (route.permanent !== true) {  
-     htmlTable += '<a class="edit-route" href="#" data-id="' + route.name + '"><i class="material-icons">create</i></a><a class="del-route" href="#" data-id="' + route.name + '"><i aria-hidden="true" title="Delete route" class="material-icons">delete</i></a>' + '</td>';
+    htmlTable += '<td>'
+    if (route.permanent !== true) {
+        htmlTable += '<a class="edit-route" href="#" data-id="' + route.name + '"><i class="material-icons">create</i></a><a class="del-route" href="#" data-id="' + route.name + '"><i aria-hidden="true" title="Delete route" class="material-icons">delete</i></a>' + '</td>';
     }
     htmlTable += '</tr>';
     return htmlTable;
@@ -804,7 +810,7 @@ function addGraph(time, hr, start) {
         var sec = ((parseInt(time[i]) - start) / 1000);
         var lenght = (RATION / 100);
         speed.push(((lenght / sec)) * 3.6);
-        var wattValue = calcWatt(sec/lenght);
+        var wattValue = calcWatt(sec / lenght);
         watt.push(wattValue);
         start = parseInt(time[i]);
     }
@@ -825,7 +831,7 @@ function addGraph(time, hr, start) {
         labelsMerged.push(new Date(timeV).toISOString().substr(new Date(timeV).toISOString().lastIndexOf('T') + 1, 8));
         if (hr) {
             var h = hr.splice(0, mergeSize);
-            if (h.length > 0 ) {
+            if (h.length > 0) {
                 hrMerged.push(parseInt(h.reduce(function (a, b) { return a + b; }) / h.length));
             }
         }
@@ -835,7 +841,7 @@ function addGraph(time, hr, start) {
             if (s.length > 0) {
                 speedMerged.push(Math.round(parseFloat(s.reduce(function (a, b) { return a + b; }) / s.length) * 10) / 10);
             }
-            if (w.length > 0 ) {
+            if (w.length > 0) {
                 wattMerged.push(Math.round(parseFloat(w.reduce(function (a, b) { return a + b; }) / w.length) * 10) / 10);
             }
         }
