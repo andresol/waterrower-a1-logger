@@ -340,10 +340,13 @@ $(function () {
         $("#startSimulator").attr('disabled', 'disabled');
         $(startButton).attr('disabled', 'disabled');
         $(startButton).html('Rowing...');
+        $(startButton).addClass('d-none');
+        $('#stopRow').removeClass('d-none');
     }
 
     $(document).on("click", 'button#stopRow', function (e) {
         e.preventDefault();
+        var that = $(this);
         clearTimeout(timeOut);
         run = false;
         var routes = $('#routes').val();
@@ -352,26 +355,12 @@ $(function () {
             $('#table-content').html(getHtml("Stopped", data, false));
             var startRow = $("#startRow");
             startRow.removeAttr('disabled');
+            startRow.removeClass('d-none');
             startRow.html('Start row');
+            that.addClass('d-none');
             $('#routes').removeAttr('disabled');
             $('#session-user').removeAttr('disabled');
             $("#startSimulator").removeAttr('disabled');
-        });
-    });
-
-    $(document).on("click", 'button#startSimulator', function (e) {
-        e.preventDefault();
-        var routes = $('#routes').val();
-        $.get("/row/simulate", { routes: routes }, function () {
-            $(window).scrollTop($('#main').offset().top); //Scroll
-            get_rowInfo(true, "Simulate");
-            cleanMap();
-            $('#routes').attr('disabled', 'disabled');
-            $('#session-user').attr('disabled', 'disabled');
-            var startRow = $("#startRow");
-            startRow.attr('disabled', 'disabled');
-            startRow.html('Rowing...');
-            $(this).attr('disabled', 'disabled');
         });
     });
 
