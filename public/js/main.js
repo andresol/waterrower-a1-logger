@@ -926,7 +926,7 @@ function addGraph(time, hr, start, strokes) {
                     position: 'right',
                     id: 'y-axis-3',
                     ticks: {
-                        stepSize: 10
+                        stepSize: 25
                     },
                     // grid line settings
                     gridLines: {
