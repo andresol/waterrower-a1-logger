@@ -864,6 +864,7 @@ function addGraph(time, hr, start, strokes) {
             backgroundColor: '#dc3545',
             fill: false,
             data: hrMerged,
+           // cubicInterpolationMode: 'monotone',
             yAxisID: 'y-axis-1',
         }, {
             label: 'Speed (km/t)',
@@ -871,6 +872,7 @@ function addGraph(time, hr, start, strokes) {
             backgroundColor: '#007bff',
             fill: false,
             data: speedMerged,
+            //cubicInterpolationMode: 'monotone',
             yAxisID: 'y-axis-2'
         },
         {
@@ -879,6 +881,8 @@ function addGraph(time, hr, start, strokes) {
             backgroundColor: '#4bc0c0',
             fill: false,
             data: wattMerged,
+            lineTension: 0,
+            //cubicInterpolationMode: 'monotone',
             yAxisID: 'y-axis-3'
         },
         {
@@ -939,7 +943,8 @@ function addGraph(time, hr, start, strokes) {
                     position: 'right',
                     id: 'y-axis-4',
                     ticks: {
-                        stepSize: 2
+                        stepSize: 2,
+                        suggestedMin: 10,
                     },
                     // grid line settings
                     gridLines: {
