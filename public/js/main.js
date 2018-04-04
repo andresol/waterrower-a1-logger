@@ -49,7 +49,7 @@ $(function () {
                         $('#laps-body').html(getLapHtml(title, data.endStats));
                         addGpxTrackToMap(name, $("#live-map"));
                     }
-                    addGraph(data.raw, data.rawHr, parseInt(data.start));
+                    addGraph(data.raw, data.rawHr, parseInt(data.start), data.stroke);
                 });
             });
         });
@@ -796,22 +796,31 @@ var addRouteTrackToMap = function (name, element) {
     }
 };
 
-function addGraph(time, hr, start) {
+function addGraph(time, hr, start, strokes) {
     var speed = [];
     var watt = [];
+    var stroke = [];
+    var strokeConter = 1;
     for (var i = 1; i < time.length; i++) {
-        var sec = ((parseInt(time[i]) - start) / 1000);
+        var timeVal = parseInt(time[i]);
+        var strokeTime = parseInt(strokes[strokeConter]);
+        var sec = ((timeVal - start) / 1000);
         var lenght = (RATION / 100);
         speed.push(((lenght / sec)) * 3.6);
         var wattValue = calcWatt(sec / lenght);
         watt.push(wattValue);
+        stroke.push(1000*60 / (strokeTime - parseInt(strokes[strokeConter-1])));
         start = parseInt(time[i]);
+        if (timeVal > strokeTime) {
+            strokeConter++;
+        }
     }
 
     //Remove ever second element
     var speedMerged = [];
     var hrMerged = [];
     var wattMerged = [];
+    var strokeMerged = [];
     var labelsMerged = [];
     var mergeSize = 10;
     if (time.length > 1000) {
@@ -826,6 +835,12 @@ function addGraph(time, hr, start) {
             var h = hr.splice(0, mergeSize);
             if (h.length > 0) {
                 hrMerged.push(parseInt(h.reduce(function (a, b) { return a + b; }) / h.length));
+            }
+        }
+        if (stroke) {
+            var h = stroke.splice(0, mergeSize);
+            if (h.length > 0) {
+                strokeMerged.push(parseInt(h.reduce(function (a, b) { return a + b; }) / h.length));
             }
         }
         if (speed) {
@@ -865,6 +880,14 @@ function addGraph(time, hr, start) {
             fill: false,
             data: wattMerged,
             yAxisID: 'y-axis-3'
+        },
+        {
+            label: 'Stroke rate (spm)',
+            borderColor: '#9966FF',
+            backgroundColor: '#9966FF',
+            fill: false,
+            data: strokeMerged,
+            yAxisID: 'y-axis-4'
         }]
     };
     var myLineChart = Chart.Line(ctx, {
@@ -904,6 +927,19 @@ function addGraph(time, hr, start) {
                     id: 'y-axis-3',
                     ticks: {
                         stepSize: 10
+                    },
+                    // grid line settings
+                    gridLines: {
+                        drawOnChartArea: false // only want the grid lines for one axis to show up
+                    }
+                },
+                {
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'right',
+                    id: 'y-axis-4',
+                    ticks: {
+                        stepSize: 2
                     },
                     // grid line settings
                     gridLines: {
