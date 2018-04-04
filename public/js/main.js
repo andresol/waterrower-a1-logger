@@ -703,7 +703,11 @@ var createLapTableRecord = function (htmlTable, index, session, userMap) {
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
     htmlTable += '<td><a class="sessions" data-name="' + session.name + '" href="/session">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></td>';
     htmlTable += '<td>Length: ' + parseInt(session.endStats.meters) + 'm</td>';
-    htmlTable += '<td>' + user.firstName + ' ' + user.lastName + '</td>'; 
+    if (user) {
+        htmlTable += '<td>' + user.firstName + ' ' + user.lastName + '</td>'; 
+    } else {
+        htmlTable += '<td></td>'; 
+    }
     htmlTable += '<td> <a href="/sessions/' + session.name + '.gpx"><i class="material-icons md-36">file_download</i><a class="strava" href="/strava/upload/' + session.name + '"><i aria-hidden="true" title="Upload to Strava" class="material-icons md-36">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name + '"><i aria-hidden="true" title="Delete session local" class="material-icons md-36">delete</i></a></td>';
     htmlTable += '</tr>';
     return htmlTable;
