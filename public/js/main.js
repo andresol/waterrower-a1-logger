@@ -840,7 +840,7 @@ function addGraph(time, hr, start, strokes) {
         if (stroke) {
             var h = stroke.splice(0, mergeSize);
             if (h.length > 0) {
-                strokeMerged.push(Math.round(parseFloat(s.reduce(function (a, b) { return a + b; }) / h.length) * 10) / 10);
+                strokeMerged.push(Math.round(parseFloat(h.reduce(function (a, b) { return a + b; }) / h.length) * 10) / 10);
             }
         }
         if (speed) {
