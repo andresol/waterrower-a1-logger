@@ -8,6 +8,68 @@ const RATION = (100 / 4.805) * 6;
 const PAGE_SIZE = 10;
 const WATT_RATION = 2.80;
 
+/**
+ * Declares a new object in the window namely QueryString that contains every get parameter from the current URL as a property
+ */
+window.QueryString = function () {
+    // This function is anonymous, is executed immediately and 
+    // the return value is assigned to QueryString!
+    var query_string = {};
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+
+        // If first entry with this name
+        if (typeof query_string[pair[0]] === "undefined") {
+            query_string[pair[0]] = decodeURIComponent(pair[1]);
+            // If second entry with this name
+        } else if (typeof query_string[pair[0]] === "string") {
+            var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
+            query_string[pair[0]] = arr;
+            // If third or later entry with this name
+        } else {
+            query_string[pair[0]].push(decodeURIComponent(pair[1]));
+        }
+    }
+
+    return query_string;
+}();
+
+
+/**
+ * This function returns an object that contains every get parameter from a URL (first argument) as a property
+ * 
+ * @param URL {String}
+ */
+function QueryString(URL) {
+    // This function is anonymous, is executed immediately and 
+    // the return value is assigned to QueryString!
+    var query_string = {};
+    var usefulParam = URL.split("?")[1] || "";
+    var query = usefulParam || "";
+    var vars = query.split("&");
+
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        
+        // If first entry with this name
+        if (typeof query_string[pair[0]] === "undefined") {
+            query_string[pair[0]] = decodeURIComponent(pair[1]);
+            // If second entry with this name
+        } else if (typeof query_string[pair[0]] === "string") {
+            var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
+            query_string[pair[0]] = arr;
+            // If third or later entry with this name
+        } else {
+            query_string[pair[0]].push(decodeURIComponent(pair[1]));
+        }
+    }
+
+    return query_string;
+}
+
 const styles = [{
     "featureType": "landscape", "stylers": [{ "saturation": -100 }, { "lightness": 65 },
     { "visibility": "on" }]
@@ -517,6 +579,9 @@ $(function () {
             case '#history':
                 loadHistory(0);
                 break;
+            case '#session':
+                loadSession(QueryString["name"]);
+                break;
             default:
                 loadMain();
         }
@@ -540,8 +605,6 @@ $(function () {
             html += '<li class="list-group-item"><h5 class="card-title">Country:</h5>' + data.country + '</li>';
             that.find('.card .list-group').html(html);
         });
-
-
     });
 
     $(document).on('shown.bs.modal', '#show-route-modal', function (e) {
@@ -701,7 +764,7 @@ var createLapTableRecord = function (htmlTable, index, session, userMap) {
     var user = userMap[session.user];
     htmlTable += '<tr>';
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
-    htmlTable += '<td><a class="sessions" data-name="' + session.name + '" href="/session">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></td>';
+    htmlTable += '<td><a class="sessions" data-name="' + session.name + '" href="/?name='+session.name+'#session">' + session.name.substring(0, session.name.lastIndexOf('.')) + '</a></td>';
     htmlTable += '<td>Length: ' + parseInt(session.endStats.meters) + 'm</td>';
     if (user) {
         htmlTable += '<td>' + user.firstName + ' ' + user.lastName + '</td>'; 

@@ -67,7 +67,10 @@ router.get('/:id', function(req, res) {
     if (id) {
         sessionService.get(id).then(function (value) {
             res.send(value);
-        }).catch(function (err) { console.error(err) });
+        }).catch(function (err) { 
+            console.error(err);
+            res.status(404).send('Cannot find session'); 
+        });
     } else{
         res.status(404).send('Cannot find session');
     }
