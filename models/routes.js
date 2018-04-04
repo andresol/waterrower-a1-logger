@@ -557,7 +557,7 @@ const VENEZIA = {
     meters: '7250',
     country: 'Italy',
     permanent: true,
-    segementId: 0,
+    segementId: 17309383,
     index: 9,
     gps: [
         { lat: 45.43122620, lon: 12.33685250, el: 1.0 },
