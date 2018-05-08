@@ -12,12 +12,6 @@ abstract-leveldown@^4.0.0, abstract-leveldown@~4.0.0:
   dependencies:
     xtend "~4.0.0"
 
-abstract-leveldown@~3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/abstract-leveldown/-/abstract-leveldown-3.0.0.tgz#5cb89f958a44f526779d740d1440e743e0c30a57"
-  dependencies:
-    xtend "~4.0.0"
-
 accepts@~1.3.4:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/accepts/-/accepts-1.3.4.tgz#86246758c7dd6d21a6474ff084a4740ec05eb21f"
@@ -138,7 +132,7 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bindings@~1.3.0:
+bindings@^1.3.0, bindings@~1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.3.0.tgz#b346f6ecf6a95f5a815c5839fc7cdb22502f1ed7"
 
@@ -316,9 +310,9 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-date-diff@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/date-diff/-/date-diff-0.1.3.tgz#3d1dd99902bcfc9e67649015ea1c9aa29f2760c3"
+date-diff@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/date-diff/-/date-diff-0.2.0.tgz#204fb6fb0815eaebf86339fc3d1383f3e5517c12"
 
 dateformat@^3.0.2:
   version "3.0.2"
@@ -408,12 +402,12 @@ end-of-stream@^1.0.0, end-of-stream@^1.1.0:
   dependencies:
     once "^1.4.0"
 
-epoll@~1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/epoll/-/epoll-1.0.2.tgz#d7d913e3fbdaf4315bd029ceecf9dc6487713b57"
+epoll@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/epoll/-/epoll-2.0.1.tgz#4742f963048fab6ad4347f678b0e9e38d58a417e"
   dependencies:
-    bindings "~1.3.0"
-    nan "~2.8.0"
+    bindings "^1.3.0"
+    nan "^2.10.0"
 
 errno@~0.1.1:
   version "0.1.7"
@@ -839,23 +833,23 @@ level-packager@^2.0.2:
     encoding-down "~4.0.0"
     levelup "^2.0.0"
 
-level@^2.1.1:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/level/-/level-2.1.2.tgz#3aaca16af50f4953c4433815fe0cccf999d98d39"
+level@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/level/-/level-3.0.1.tgz#577093dc988410372ae84dfc07370e0ac69175e3"
   dependencies:
     level-packager "^2.0.2"
-    leveldown "^2.1.1"
+    leveldown "^3.0.0"
     opencollective "^1.0.3"
 
-leveldown@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/leveldown/-/leveldown-2.1.1.tgz#2f4d786dfe6ba3ecc63409784ce29eca110413bf"
+leveldown@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/leveldown/-/leveldown-3.0.2.tgz#d1fb708991c54c874ca1b0688644a25d926e6302"
   dependencies:
-    abstract-leveldown "~3.0.0"
+    abstract-leveldown "~4.0.0"
     bindings "~1.3.0"
     fast-future "~1.0.2"
-    nan "~2.8.0"
-    prebuild-install "^2.1.0"
+    nan "~2.10.0"
+    prebuild-install "^4.0.0"
 
 levelup@^2.0.0:
   version "2.0.2"
@@ -865,6 +859,10 @@ levelup@^2.0.0:
     level-errors "~1.1.0"
     level-iterator-stream "~2.0.0"
     xtend "~4.0.0"
+
+lodash.debounce@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
 
 lodash@^4.3.0:
   version "4.17.5"
@@ -948,13 +946,13 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
+nan@^2.10.0, nan@~2.10.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
+
 nan@^2.8.0:
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.9.2.tgz#f564d75f5f8f36a6d9456cca7a6c4fe488ab7866"
-
-nan@~2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
 
 negotiator@0.6.1:
   version "0.6.1"
@@ -1043,11 +1041,12 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-onoff@^1.1.9:
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/onoff/-/onoff-1.1.9.tgz#2d1ffc7c80d0c4ebcdd9e8a91697ea5d01de35ef"
+onoff@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/onoff/-/onoff-3.0.2.tgz#af8a20017fdc96b4c7a6f637e1c7f2129516c96f"
   dependencies:
-    epoll "~1.0.2"
+    epoll "^2.0.1"
+    lodash.debounce "^4.0.8"
 
 opencollective@^1.0.3:
   version "1.0.3"
@@ -1116,9 +1115,9 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
 
-prebuild-install@^2.1.0:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-2.5.1.tgz#0f234140a73760813657c413cdccdda58296b1da"
+prebuild-install@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-4.0.0.tgz#206ce8106ce5efa4b6cf062fc8a0a7d93c17f3a8"
   dependencies:
     detect-libc "^1.0.3"
     expand-template "^1.0.2"
@@ -1593,9 +1592,9 @@ xmlbuilder@8.2.2:
   version "8.2.2"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-8.2.2.tgz#69248673410b4ba42e1a6136551d2922335aa773"
 
-xmlbuilder@^9.0.4:
-  version "9.0.4"
-  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-9.0.4.tgz#519cb4ca686d005a8420d3496f3f0caeecca580f"
+xmlbuilder@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-10.0.0.tgz#c64e52f8ae097fe5fd46d1c38adaade071ee1b55"
 
 xtend@^4.0.0, xtend@~4.0.0:
   version "4.0.1"
