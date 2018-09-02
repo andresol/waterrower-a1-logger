@@ -1,3 +1,5 @@
+import utils from './utils/utils';
+
 const UPDATE_FREQ = 1000;
 var timeOut;
 var run = false;
@@ -6,7 +8,6 @@ var liveBounds;
 var livePoints = [];
 const RATION = (100 / 4.805) * 6;
 const PAGE_SIZE = 10;
-const WATT_RATION = 2.80;
 
 /**
  * Declares a new object in the window namely QueryString that contains every get parameter from the current URL as a property
@@ -669,7 +670,7 @@ function getHtml(label, json, day) {
     html += '<div class="row"><div class="col-sm-4">Avg.W:</div><div class="col">' + Math.round(parseFloat(json.watt) * 10) / 10 + 'w</div></div>';
     html += '<div class="row"><div class="col-sm-4">SR:</div><div class="col">' + Math.round(parseFloat(json.stroke) * 10) / 10 + '</div></div>';
     if (parseInt(json.hr) > 0) {
-        html += '<div class="row"><div class="col-sm-4">HR:</div><div class="col ' + getHeartRateColor(parseInt(json.hr)) + '">' + parseInt(json.hr) + (parseInt(json.avgHr) > 0 ? '(' + parseInt(json.avgHr) + ')' : '') + '</div></div>';
+        html += '<div class="row"><div class="col-sm-4">HR:</div><div class="col ' + utils.getHeartRateColor(parseInt(json.hr)) + '">' + parseInt(json.hr) + (parseInt(json.avgHr) > 0 ? '(' + parseInt(json.avgHr) + ')' : '') + '</div></div>';
     }
     if (json.fileName) {
         html += '<div class="row"><div class="col">Actions:</div><div class="col"><a href="/sessions/' + json.fileName;
@@ -742,7 +743,7 @@ var createCard = function (htmlCards, session) {
     htmlCards += '<div class="card gpx-track" data-name="' + session.name + '"">';
     htmlCards += '<div class="card-body">';
     htmlCards += '<div class="card-map-top "></div>';
-    htmlCards += '<h5 class="card-title mt-2"><a class="sessions" data-name="' + session.name + '" href="/session">' + sessionNameToReadable(session.name) + '</a></h5>';
+    htmlCards += '<h5 class="card-title mt-2"><a class="sessions" data-name="' + session.name + '" href="/session">' + utils.sessionNameToReadable(session.name) + '</a></h5>';
     htmlCards += '<p class="card-text">Length: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
     htmlCards += '<a href="/strava/upload/' + session.name + '" class="btn btn-primary strava btn-block">Upload to Strava</a>';
     htmlCards += '</div>';
@@ -764,7 +765,7 @@ var createLapTableRecord = function (htmlTable, index, session, userMap) {
     var user = userMap[session.user];
     htmlTable += '<tr>';
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
-    htmlTable += '<td><a class="sessions" data-name="' + session.name + '" href="/?name='+session.name+'#session">' + sessionNameToReadable(session.name) + '</a></td>';
+    htmlTable += '<td><a class="sessions" data-name="' + session.name + '" href="/?name='+session.name+'#session">' + utils.sessionNameToReadable(session.name) + '</a></td>';
     htmlTable += '<td>Length: ' + parseInt(session.endStats.meters) + 'm</td>';
     if (user) {
         htmlTable += '<td>' + user.firstName + ' ' + user.lastName + '</td>'; 
@@ -870,7 +871,7 @@ function addGraph(time, hr, start, strokes) {
         var sec = ((timeVal - start) / 1000);
         var lenght = (RATION / 100);
         speed.push(((lenght / sec)) * 3.6);
-        var wattValue = calcWatt(sec / lenght);
+        var wattValue = utils.calcWatt(sec / lenght);
         watt.push(wattValue);
         stroke.push(1000*60 / (strokeTime - parseInt(strokes[strokeConter-1])));
         start = parseInt(time[i]);
@@ -1017,25 +1018,4 @@ function addGraph(time, hr, start, strokes) {
             }
         }
     });
-}
-
-function calcWatt(pace) {
-    return WATT_RATION / Math.pow(pace, 3);
-}
-
-function sessionNameToReadable(name) {
-    return moment(name.slice(0, 13) + ':' + name.slice(13,15) + ':' + name.slice(15)).format("YYYY-MM-DD hh:mm:ss");
-}
-
-
-function getHeartRateColor(hr) {
-    if (hr < 125) {
-        return 'text-success'
-    } else if (hr < 150) {
-        return 'text-primary'
-    } else if (hr < 175) {
-        return 'text-warning';
-    } else {
-        return 'text-danger';
-    }
 }
