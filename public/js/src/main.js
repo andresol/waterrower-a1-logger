@@ -1,13 +1,16 @@
 import utils from './utils/utils';
+import globals from './utils/globals';
+import front from './front/index';
+import route from './route/index';
+import user from './user/index';
+import mapUtils from './utils/mapUtils'
+import map from './map/index'
+
 
 const UPDATE_FREQ = 1000;
 var timeOut;
 var run = false;
-var liveMap;
-var liveBounds;
-var livePoints = [];
-const RATION = (100 / 4.805) * 6;
-const PAGE_SIZE = 10;
+
 
 /**
  * Declares a new object in the window namely QueryString that contains every get parameter from the current URL as a property
@@ -71,36 +74,21 @@ function QueryString(URL) {
     return query_string;
 }
 
-const styles = [{
-    "featureType": "landscape", "stylers": [{ "saturation": -100 }, { "lightness": 65 },
-    { "visibility": "on" }]
-}, {
-    "featureType": "poi", "stylers": [{ "saturation": -100 }, { "lightness": 51 },
-    { "visibility": "simplified" }]
-}, {
-    "featureType": "road.highway", "stylers": [{ "saturation": -100 },
-    { "visibility": "simplified" }]
-}, {
-    "featureType": "road.arterial", "stylers": [{ "saturation": -100 },
-    { "lightness": 30 }, { "visibility": "on" }]
-}, {
-    "featureType": "road.local", "stylers": [{ "saturation": -100 },
-    { "lightness": 40 }, { "visibility": "on" }]
-}, {
-    "featureType": "transit", "stylers": [{ "saturation": -100 },
-    { "visibility": "simplified" }]
-}, { "featureType": "administrative.province", "stylers": [{ "visibility": "off" }] },
-{ "featureType": "water", "elementType": "labels", "stylers": [{ "visibility": "on" }, { "lightness": -25 }, { "saturation": -100 }] },
-{ "featureType": "water", "elementType": "geometry", "stylers": [{ "hue": "#ffff00" }, { "lightness": -25 }, { "saturation": -97 }] }];
 
 $(function () {
+
     /** Init shared */
     get_rowInfo(false, "");
 
+    $(document).on("click", '.main', function (e) {
+        loadMain();
+    });
+
+
     function loadSession(name) {
         $('#load').load('/sessions', function () {
-            $(this).find('#routes').each(loadRoutes);
-            $(this).find('#session-user').each(loadUsers);
+            $(this).find('#routes').each(route.loadRoutes);
+            $(this).find('#session-user').each(user.loadUsers);
             $(this).find('#history-session').each(function () {
                 var title = "History";
                 $.get("/session/" + name, function (data) {
@@ -118,33 +106,7 @@ $(function () {
         });
     }
 
-    /** All load functions */
-    var loadRoutes = function () {
-        var that = this;
-        $.get("/row/routes", function (data) {
-            var html = '';
-            var index = 0;
-            var group = '';
-            data.sort(function (a, b) { return (a.country > b.country) ? 1 : ((b.country > a.country) ? -1 : 0); });
 
-            var selected = 'selected="selected"';
-            data.forEach(function (value) {
-                if (value.country !== group) {
-                    html += '<optgroup label="' + value.country + '">';
-                    group = value.country;
-                }
-                html += '<option ' + selected + ' value="' + value.index + '" data-lat="' + value.gps[0].lat + '" data-lon="' + value.gps[0].lon + '">' + value.name + ' (' + value.meters + 'm)</option>';
-                selected = '';
-                index++;
-            });
-            $(that).html(html);
-            var selected = $('#routes').find(":selected");
-            cleanMap();
-            var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
-            liveMap.panTo(p);
-        });
-
-    };
 
     function loadUser() {
         $('#load').load('/user', function () {
@@ -166,25 +128,6 @@ $(function () {
         });
     }
 
-    function loadMain() {
-        $('#load').load('/main', function () {
-            $(this).find('#routes').each(loadRoutes);
-            $(this).find('#session-user').each(loadUsers);
-            $.get("/row/status", function (data) {
-                if (data.status === 'ROWING') {
-                    var startButton = $('#startRow');
-                    if (getUrlParameter("test")) {
-                        startButton = $('#startSimulator')
-                    }
-                    start(startButton);
-                }
-            });
-            //Run simulator if test.
-            if (getUrlParameter("test")) {
-                $('#startRow').attr("id", "startSimulator");
-            }
-        });
-    }
 
     function loadHistoryIndex(index) {
         loadHistory(index);
@@ -214,7 +157,7 @@ $(function () {
     }
 
     function loadHistoryList(that, mainIndex) {
-        var start = mainIndex * PAGE_SIZE, stop = (((mainIndex + 1) * PAGE_SIZE)) - 1;
+        var start = mainIndex * globals.PAGE_SIZE, stop = (((mainIndex + 1) * globals.PAGE_SIZE)) - 1;
         $.get('/session/' + start + '/' + stop, function (data) {
             $.get('/users', function (users) {
                 var htmlTable = '', index = 0;
@@ -223,7 +166,7 @@ $(function () {
                     return map;
                 }, {});
                 data.forEach(function (session) {
-                    htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * PAGE_SIZE), session, userMap);
+                    htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * globals.PAGE_SIZE), session, userMap);
                     index++;
                 });
 
@@ -243,7 +186,7 @@ $(function () {
     function createHistoryNavPage(page, index) {
         var htmlElement = $('<ul id="history-page" data-index="' + index + '"></ul>').addClass("pagination pagination-lg");
         $.get("session/size", function (data) {
-            var size = parseInt(parseInt(data) / PAGE_SIZE) + 1;
+            var size = parseInt(parseInt(data) / globals.PAGE_SIZE) + 1;
             var prevDisabled = (index === 0 ? 'disabled' : '');
             var nextDisabled = (index === size - 1 ? 'disabled' : '');
             var prev = $('<li class="page-item ' + prevDisabled + '"></li>').append('<a class="page-link" href="#" data-next="-1" tabindex="-1">Previous</a>');
@@ -266,7 +209,7 @@ $(function () {
     function createRouteNavPage(page, index) {
         var htmlElement = $('<ul id="route-page" data-index="' + index + '"></ul>').addClass("pagination pagination-lg");
         $.get("routes/size", function (data) {
-            var size = parseInt(parseInt(data) / PAGE_SIZE) + 1;
+            var size = parseInt(parseInt(data) / globals.PAGE_SIZE) + 1;
             var prevDisabled = (index === 0 ? 'disabled' : '');
             var nextDisabled = (index === size - 1 ? 'disabled' : '');
             var prev = $('<li class="page-item ' + prevDisabled + '"></li>').append('<a class="page-link" href="#" data-next="-1" tabindex="-1">Previous</a>');
@@ -285,17 +228,6 @@ $(function () {
             $(page).html(htmlElement);
         });
     }
-
-    var loadUsers = function () {
-        var that = this;
-        $.get("/users", function (data) {
-            var html = '';
-            data.forEach(function (value) {
-                html += '<option value="' + value.id + '">' + value.firstName + ' ' + value.lastName + '</option>'
-            });
-            $(that).html(html)
-        });
-    };
 
     var clickSession = function (e) {
         e.preventDefault();
@@ -334,10 +266,6 @@ $(function () {
         loadRouteTable(mainIndex);
     });
 
-    $(document).on("click", '.main', function (e) {
-        loadMain();
-    });
-
     $(document).on("click", '.nav-link', function (e) {
         $('#main-nav').find(".nav-item").each(function () {
             $(this).removeClass("active");
@@ -366,12 +294,12 @@ $(function () {
     }
 
     function loadRouteTable(mainIndex) {
-        var start = mainIndex * PAGE_SIZE, stop = (((mainIndex + 1) * PAGE_SIZE)) - 1;
+        var start = mainIndex * globals.PAGE_SIZE, stop = (((mainIndex + 1) * globals.PAGE_SIZE)) - 1;
         $.get('/routes/' + start + '/' + stop, function (data) {
             var htmlTable = '';
             var index = 0;
             data.forEach(function (route) {
-                htmlTable = createRouteRecord(htmlTable, index + (mainIndex * PAGE_SIZE), route);
+                htmlTable = createRouteRecord(htmlTable, index + (mainIndex * globals.PAGE_SIZE), route);
                 index++;
             });
 
@@ -397,7 +325,7 @@ $(function () {
     function start(startButton) {
         $(window).scrollTop($('#main').offset().top); //Scroll
         get_rowInfo(true, "Rowing");
-        cleanMap();
+        mapUtils.cleanMap();
         $('#routes').attr('disabled', 'disabled');
         $('#session-user').attr('disabled', 'disabled');
         $("#startSimulator").attr('disabled', 'disabled');
@@ -584,13 +512,13 @@ $(function () {
                 loadSession(QueryString["name"]);
                 break;
             default:
-                loadMain();
+                front.loadMain();
         }
     });
 
-    $('#routes').each(loadRoutes);
+    $('#routes').each(route.loadRoutes);
 
-    $('#session-user').each(loadUsers);
+    $('#session-user').each(user.loadUsers);
 
     $(document).on('show.bs.modal', '#show-route-modal', function (e) {
         var name = $(e.relatedTarget).data('route-name');
@@ -615,9 +543,9 @@ $(function () {
 
     $(document).on("change", '#routes', function (e) {
         var selected = $('#routes').find(":selected");
-        cleanMap();
+        mapUtils.cleanMap();
         var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
-        liveMap.panTo(p);
+        map.liveMap.panTo(p);
     });
 });
 
@@ -631,12 +559,12 @@ function get_rowInfo(continues, title) {
             var lat = data.gps.lat;
             var lon = data.gps.lon;
             var p = new google.maps.LatLng(lat, lon);
-            livePoints.push(p);
-            if (liveBounds) {
-                liveBounds.extend(p);
-                var poly = createPolyLine(livePoints);
-                poly.setMap(liveMap);
-                liveMap.fitBounds(liveBounds);
+            map.livePoints.push(p);
+            if (map.liveBounds) {
+                map.liveBounds.extend(p);
+                var poly = mapUtils.createPolyLine(map.livePoints);
+                poly.setMap(map.liveMap);
+                map.liveMap.fitBounds(map.liveBounds);
             }
 
         }
@@ -704,40 +632,6 @@ function getLapHtml(label, json, reverse) {
     return html;
 }
 
-var getUrlParameter = function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
-        }
-    }
-};
-
-function cleanMap() {
-    initMap();
-    livePoints = [];
-    var poly = createPolyLine(livePoints);
-    poly.setMap(liveMap);
-
-    // fit bounds to track
-    liveMap.fitBounds(liveBounds);
-}
-
-//TODO: Change color by speed or hr.
-function createPolyLine(points) {
-    return new google.maps.Polyline({
-        path: points,
-        strokeColor: "#FF00AA",
-        strokeOpacity: .7,
-        strokeWeight: 4
-    });
-}
 
 var createCard = function (htmlCards, session) {
     htmlCards += '<div class="card gpx-track" data-name="' + session.name + '"">';
@@ -751,15 +645,6 @@ var createCard = function (htmlCards, session) {
     return htmlCards;
 };
 
-function initMap() {
-    liveMap = new google.maps.Map(document.getElementById('live-map'), {
-        zoom: 8,
-        maxZoom: 16
-    });
-
-    liveBounds = new google.maps.LatLngBounds();
-    liveMap.set('styles', styles);
-}
 
 var createLapTableRecord = function (htmlTable, index, session, userMap) {
     var user = userMap[session.user];
@@ -802,7 +687,7 @@ var addGpxTrackToMap = function (name, element) {
                     zoom: 16
                 });
 
-                map.set('styles', styles);
+                map.set('styles', mapUtils.styles);
 
                 var bounds = new google.maps.LatLngBounds();
 
@@ -814,7 +699,7 @@ var addGpxTrackToMap = function (name, element) {
                     bounds.extend(p);
                 });
 
-                var poly = createPolyLine(points);
+                var poly = mapUtils.createPolyLine(points);
 
                 poly.setMap(map);
 
@@ -837,7 +722,7 @@ var addRouteTrackToMap = function (name, element) {
                     maxZoom: 16
                 });
 
-                map.set('styles', styles);
+                map.set('styles', mapUtils.styles);
 
                 var bounds = new google.maps.LatLngBounds();
 
@@ -849,7 +734,7 @@ var addRouteTrackToMap = function (name, element) {
                     bounds.extend(p);
                 });
 
-                var poly = createPolyLine(points);
+                var poly = mapUtils.createPolyLine(points);
 
                 poly.setMap(map);
 
@@ -869,7 +754,7 @@ function addGraph(time, hr, start, strokes) {
         var timeVal = parseInt(time[i]);
         var strokeTime = parseInt(strokes[strokeConter]);
         var sec = ((timeVal - start) / 1000);
-        var lenght = (RATION / 100);
+        var lenght = (globals.RATION / 100);
         speed.push(((lenght / sec)) * 3.6);
         var wattValue = utils.calcWatt(sec / lenght);
         watt.push(wattValue);
