@@ -35,4 +35,11 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
-export default { calcWatt, sessionNameToReadable, getHeartRateColor, getUrlParameter }
+function fmtMSS(s) {
+    var date = new Date(null);
+    date.setSeconds(s); // specify value for SECONDS here
+    return date.toISOString().substr(11, 8);
+}
+
+export default { calcWatt, sessionNameToReadable, getHeartRateColor, getUrlParameter, fmtMSS }
+

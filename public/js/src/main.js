@@ -1,13 +1,13 @@
 import utils from './utils/utils';
-import globals from './utils/globals';
+import { UPDATE_FREQ, PAGE_SIZE, RATION } from './utils/globals';
 import front from './front/index';
 import route from './route/index';
 import user from './user/index';
 import mapUtils from './utils/mapUtils'
 import map from './map/index'
+import history from './history/index'
 
 
-const UPDATE_FREQ = 1000;
 var timeOut;
 var run = false;
 
@@ -107,109 +107,17 @@ $(function () {
     }
 
 
-
-    function loadUser() {
-        $('#load').load('/user', function () {
-            $(this).find('#users-body').each(function () {
-                var that = this;
-                $.get("/users/", function (data) {
-                    var html = '';
-                    for (var i = 0; i < data.length; i++) {
-                        var user = data[i];
-                        html += '<tr><td><a href="#" data-id="' + user.id + '">' + (i + 1) + '</a></td><td>' + user.firstName + '</td><td>' + user.lastName + '</td>';
-                        html += '<td><a class="edit-user" href="#" data-id="' + user.id + '"><i class="material-icons">create</i></a><a class="del-user" href="#" data-id="' + user.id + '"><i aria-hidden="true" title="Delete user" class="material-icons">delete</i></a></td>' + '</tr>'
-                    }
-                    $(that).html(html);
-                    $('#addUserModal').on('hidden.bs.modal', function (e) {
-                        loadUser();
-                    })
-                });
-            });
-        });
-    }
-
-
-    function loadHistoryIndex(index) {
-        loadHistory(index);
-    }
-
-    function loadHistory(mainIndex) {
-        $('#load').load('/history', function () {
-            $(this).find('#history').each(function () {
-                loadLast3Sessions();
-                loadHistoryList($(this), mainIndex);
-            });
-        });
-    }
-
-    function loadLast3Sessions() {
-        $.get('/session/' + 0 + '/' + 2, function (data) {
-            var htmlCards = '';
-            data.forEach(function (session) {
-                htmlCards = createCard(htmlCards, session);
-            });
-
-            $('#cards').html('<div class="col"><div class="card-deck">' + htmlCards + '</div></div>');
-            $('.gpx-track').each(function () {
-                $(this).trigger("load-map", this);
-            });
-        });
-    }
-
-    function loadHistoryList(that, mainIndex) {
-        var start = mainIndex * globals.PAGE_SIZE, stop = (((mainIndex + 1) * globals.PAGE_SIZE)) - 1;
-        $.get('/session/' + start + '/' + stop, function (data) {
-            $.get('/users', function (users) {
-                var htmlTable = '', index = 0;
-                var userMap = users.reduce(function(map, obj) {
-                    map[obj.id] = obj;
-                    return map;
-                }, {});
-                data.forEach(function (session) {
-                    htmlTable = createLapTableRecord(htmlTable, index + (mainIndex * globals.PAGE_SIZE), session, userMap);
-                    index++;
-                });
-
-                $('#histor-table-body').html(htmlTable);
-                var pag = that.find('.page');
-                createHistoryNavPage(pag, mainIndex);
-            });
-        });
-    }
-
     function loadGpxMap() {
         var name = $(this).data('name');
         var element = $(this).find('.card-map-top');
         addGpxTrackToMap(name, element);
     }
 
-    function createHistoryNavPage(page, index) {
-        var htmlElement = $('<ul id="history-page" data-index="' + index + '"></ul>').addClass("pagination pagination-lg");
-        $.get("session/size", function (data) {
-            var size = parseInt(parseInt(data) / globals.PAGE_SIZE) + 1;
-            var prevDisabled = (index === 0 ? 'disabled' : '');
-            var nextDisabled = (index === size - 1 ? 'disabled' : '');
-            var prev = $('<li class="page-item ' + prevDisabled + '"></li>').append('<a class="page-link" href="#" data-next="-1" tabindex="-1">Previous</a>');
-            var next = $('<li class="page-item ' + nextDisabled + '"></li>').append('<a class="page-link" data-next="1" href="#">Next</a>');
-
-            htmlElement.append(prev);
-            for (var i = 0; i < size; i++) {
-                var active = '';
-                if (index === i) {
-                    active = "active";
-                }
-                var item = $('<li class="page-item ' + active + '"><a class="page-link" data-index="' + i + '" href="#">' + (i + 1) + '</a></li>');
-                htmlElement.append(item);
-            }
-            htmlElement.append(next);
-            $(page).html(htmlElement);
-        });
-    }
 
     function createRouteNavPage(page, index) {
         var htmlElement = $('<ul id="route-page" data-index="' + index + '"></ul>').addClass("pagination pagination-lg");
         $.get("routes/size", function (data) {
-            var size = parseInt(parseInt(data) / globals.PAGE_SIZE) + 1;
+            var size = parseInt(parseInt(data) / PAGE_SIZE) + 1;
             var prevDisabled = (index === 0 ? 'disabled' : '');
             var nextDisabled = (index === size - 1 ? 'disabled' : '');
             var prev = $('<li class="page-item ' + prevDisabled + '"></li>').append('<a class="page-link" href="#" data-next="-1" tabindex="-1">Previous</a>');
@@ -236,7 +144,7 @@ $(function () {
     };
 
     $(document).on("click", '#user', function (e) {
-        loadUser();
+        user.loadUser();
     });
 
     $(document).on("click", '#history-page a', function (e) {
@@ -248,7 +156,7 @@ $(function () {
         } else if (!isNaN(index)) {
             mainIndex = index;
         }
-        loadHistoryList($('#history-table'), mainIndex);
+        history.loadHistoryList($('#history-table'), mainIndex);
     });
 
     //TODO: refactory
@@ -276,7 +184,7 @@ $(function () {
     $(document).on("click", '.sessions', clickSession);
 
     $(document).on("click", 'a#history', function (e) {
-        loadHistoryIndex(0, 0);
+        history.loadHistoryIndex(0, 0);
     });
 
     $(document).on("click", 'a#route', function (e) {
@@ -294,12 +202,12 @@ $(function () {
     }
 
     function loadRouteTable(mainIndex) {
-        var start = mainIndex * globals.PAGE_SIZE, stop = (((mainIndex + 1) * globals.PAGE_SIZE)) - 1;
+        var start = mainIndex * PAGE_SIZE, stop = (((mainIndex + 1) * PAGE_SIZE)) - 1;
         $.get('/routes/' + start + '/' + stop, function (data) {
             var htmlTable = '';
             var index = 0;
             data.forEach(function (route) {
-                htmlTable = createRouteRecord(htmlTable, index + (mainIndex * globals.PAGE_SIZE), route);
+                htmlTable = createRouteRecord(htmlTable, index + (mainIndex * PAGE_SIZE), route);
                 index++;
             });
 
@@ -309,7 +217,6 @@ $(function () {
             })
         });
     }
-
 
     $(document).on("load-map", '.gpx-track', loadGpxMap);
 
@@ -415,7 +322,7 @@ $(function () {
                 type: 'DELETE',
                 success: function (result) {
                     alert("Session deleted");
-                    loadHistoryIndex(0, 0);
+                    history.loadHistoryIndex(0, 0);
                 }
             });
         }
@@ -474,7 +381,7 @@ $(function () {
                 url: '/users/' + id,
                 type: 'DELETE',
                 success: function (result) {
-                    loadUser();
+                    user.loadUser();
                 }
             });
         }
@@ -503,10 +410,10 @@ $(function () {
                 loadRoute(0);
                 break;
             case '#user':
-                loadUser();
+                user.loadUser();
                 break;
             case '#history':
-                loadHistory(0);
+                history.loadHistory(0);
                 break;
             case '#session':
                 loadSession(QueryString["name"]);
@@ -575,12 +482,6 @@ function get_rowInfo(continues, title) {
     });
 }
 
-function fmtMSS(s) {
-    var date = new Date(null);
-    date.setSeconds(s); // specify value for SECONDS here
-    return date.toISOString().substr(11, 8);
-}
-
 function getHtml(label, json, day) {
     if (parseInt(json.meters) === 0) {
         return;
@@ -590,11 +491,11 @@ function getHtml(label, json, day) {
         html += '<div class="row"><div class="col-sm-4">Day</div><div class="col">' + json.start.substr(2, json.start.lastIndexOf('T') - 2) + '</div></div>';
     }
     html += '<div class="row"><div class="col-sm-4">Start:</div><div class="col">' + json.start.substr(json.start.lastIndexOf('T') + 1, 8) + '</div></div>';
-    html += '<div class="row"><div class="col-sm-4">Time:</div><div class="col">' + fmtMSS(parseInt(json.seconds)) + '</div></div>';
+    html += '<div class="row"><div class="col-sm-4">Time:</div><div class="col">' + utils.fmtMSS(parseInt(json.seconds)) + '</div></div>';
     html += '<div class="row"><div class="col-sm-4">Length:</div><div class="col">' + parseInt(json.meters) + ' m (' + parseInt(json.routeLap) + ')</div></div>';
     html += '<div class="row"><div class="col-sm-4">Pace:</div><div class="col">' + Math.round(parseFloat(json.pace) * 3.6 * 10) / 10 + ' km/t</div></div>';
-    html += '<div class="row"><div class="col-sm-4">500m:</div><div class="col">' + fmtMSS(parseInt(json.lapPace)) + '</div></div>';
-    html += '<div class="row"><div class="col-sm-4">2k:</div><div class="col">' + fmtMSS(parseInt(json.towKPace)) + '</div></div>';
+    html += '<div class="row"><div class="col-sm-4">500m:</div><div class="col">' + utils.fmtMSS(parseInt(json.lapPace)) + '</div></div>';
+    html += '<div class="row"><div class="col-sm-4">2k:</div><div class="col">' + utils.fmtMSS(parseInt(json.towKPace)) + '</div></div>';
     html += '<div class="row"><div class="col-sm-4">Avg.W:</div><div class="col">' + Math.round(parseFloat(json.watt) * 10) / 10 + 'w</div></div>';
     html += '<div class="row"><div class="col-sm-4">SR:</div><div class="col">' + Math.round(parseFloat(json.stroke) * 10) / 10 + '</div></div>';
     if (parseInt(json.hr) > 0) {
@@ -619,7 +520,7 @@ function getLapHtml(label, json, reverse) {
             lapNum = laps.length;
         }
         laps.forEach(function (value) {
-            html += '<tr><th scope="row">' + lapNum + '</th><td>' + parseInt(value.meters) + '</td><td>' + fmtMSS(parseInt(value.seconds)) + '</td>';
+            html += '<tr><th scope="row">' + lapNum + '</th><td>' + parseInt(value.meters) + '</td><td>' + utils.fmtMSS(parseInt(value.seconds)) + '</td>';
             html += '<td>' + Math.round(parseFloat(value.watt) * 10) / 10 + 'w</td></tr>';
             if (reverse) {
                 lapNum--;
@@ -633,34 +534,6 @@ function getLapHtml(label, json, reverse) {
 }
 
 
-var createCard = function (htmlCards, session) {
-    htmlCards += '<div class="card gpx-track" data-name="' + session.name + '"">';
-    htmlCards += '<div class="card-body">';
-    htmlCards += '<div class="card-map-top "></div>';
-    htmlCards += '<h5 class="card-title mt-2"><a class="sessions" data-name="' + session.name + '" href="/session">' + utils.sessionNameToReadable(session.name) + '</a></h5>';
-    htmlCards += '<p class="card-text">Length: ' + parseInt(session.endStats.meters) + 'm, Time: ' + fmtMSS(parseInt(session.endStats.seconds)) + '</p>';
-    htmlCards += '<a href="/strava/upload/' + session.name + '" class="btn btn-primary strava btn-block">Upload to Strava</a>';
-    htmlCards += '</div>';
-    htmlCards += '</div>';
-    return htmlCards;
-};
-
-
-var createLapTableRecord = function (htmlTable, index, session, userMap) {
-    var user = userMap[session.user];
-    htmlTable += '<tr>';
-    htmlTable += '<th scope="row">' + (index + 1) + '</th>';
-    htmlTable += '<td><a class="sessions" data-name="' + session.name + '" href="/?name='+session.name+'#session">' + utils.sessionNameToReadable(session.name) + '</a></td>';
-    htmlTable += '<td>Length: ' + parseInt(session.endStats.meters) + 'm</td>';
-    if (user) {
-        htmlTable += '<td>' + user.firstName + ' ' + user.lastName + '</td>'; 
-    } else {
-        htmlTable += '<td></td>'; 
-    }
-    htmlTable += '<td> <a href="/sessions/' + session.name + '.gpx"><i class="material-icons md-36">file_download</i><a class="strava" href="/strava/upload/' + session.name + '"><i aria-hidden="true" title="Upload to Strava" class="material-icons md-36">cloud_upload</i></a> <a class="del-session" href="#" data-name="' + session.name + '"><i aria-hidden="true" title="Delete session local" class="material-icons md-36">delete</i></a></td>';
-    htmlTable += '</tr>';
-    return htmlTable;
-};
 
 var createRouteRecord = function (htmlTable, index, route) {
     htmlTable += '<tr>';
@@ -754,7 +627,7 @@ function addGraph(time, hr, start, strokes) {
         var timeVal = parseInt(time[i]);
         var strokeTime = parseInt(strokes[strokeConter]);
         var sec = ((timeVal - start) / 1000);
-        var lenght = (globals.RATION / 100);
+        var lenght = (RATION / 100);
         speed.push(((lenght / sec)) * 3.6);
         var wattValue = utils.calcWatt(sec / lenght);
         watt.push(wattValue);
