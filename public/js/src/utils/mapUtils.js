@@ -52,4 +52,80 @@ function createPolyLine(points) {
     });
 }
 
-export default { cleanMap, initMap, styles, createPolyLine }
+var addRouteTrackToMap = function (name, element) {
+    if (name) {
+        $.ajax({
+            type: "GET",
+            url: '/routes/' + name,
+            success: function (data) {
+                var points = [];
+                var map = new google.maps.Map(element[0], {
+                    zoom: 8,
+                    maxZoom: 16
+                });
+
+                map.set('styles', styles);
+
+                var bounds = new google.maps.LatLngBounds();
+
+                data.gps.forEach(function (point) {
+                    var lat = point.lat;
+                    var lon = point.lon;
+                    var p = new google.maps.LatLng(lat, lon);
+                    points.push(p);
+                    bounds.extend(p);
+                });
+
+                var poly = createPolyLine(points);
+
+                poly.setMap(map);
+
+                // fit bounds to track
+                map.fitBounds(bounds);
+            }
+        });
+    }
+};
+
+var addGpxTrackToMap = function (name, element) {
+    if (name) {
+        $.ajax({
+            type: "GET",
+            url: '/sessions/' + name + '.gpx',
+            success: function (xml) {
+                var points = [];
+                var map = new google.maps.Map(element[0], {
+                    zoom: 16
+                });
+
+                map.set('styles', styles);
+
+                var bounds = new google.maps.LatLngBounds();
+
+                $(xml).find("trkpt").each(function () {
+                    var lat = $(this).attr("lat");
+                    var lon = $(this).attr("lon");
+                    var p = new google.maps.LatLng(lat, lon);
+                    points.push(p);
+                    bounds.extend(p);
+                });
+
+                var poly = createPolyLine(points);
+
+                poly.setMap(map);
+
+                // fit bounds to track
+                map.fitBounds(bounds);
+            }
+        });
+    }
+};
+
+function loadGpxMap() {
+    var name = $(this).data('name');
+    var element = $(this).find('.card-map-top');
+    addGpxTrackToMap(name, element);
+}
+
+
+export default { cleanMap, initMap, styles, addRouteTrackToMap, addGpxTrackToMap, loadGpxMap }
