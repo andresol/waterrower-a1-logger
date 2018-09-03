@@ -30,7 +30,6 @@ function loadSession(name) {
     });
 }
 
-
 function getLapHtml(label, json, reverse) {
     var html = '';
     if (parseInt(json.totalLaps) > 0) {
@@ -58,7 +57,7 @@ function getLapHtml(label, json, reverse) {
 var clickSession = function (e) {
     e.preventDefault();
     var name = $(this).data('name');
-    session.loadSession(name);
+    loadSession(name);
 };
 
-export default { loadSession, clickSession }
+export default { loadSession, clickSession, getLapHtml }

@@ -19,15 +19,15 @@ var loadRoutes = function () {
                 html += '<optgroup label="' + value.country + '">';
                 group = value.country;
             }
-            html += '<option ' + selected + ' value="' + value.index + '" data-lat="' + value.gps[0].lat + '" data-lon="' + value.gps[0].lon + '">' + value.name + ' (' + value.meters + 'm)</option>';
+            html += '<option ' + selected + ' value="' + value.index + '" data-name="' + value.name + '" data-lat="' + value.gps[0].lat + '" data-lon="' + value.gps[0].lon + '">' + value.name + ' (' + value.meters + 'm)</option>';
             selected = '';
             index++;
         });
         $(that).html(html);
         var selected = $('#routes').find(":selected");
         mapUtils.cleanMap();
-        var p = new google.maps.LatLng($(selected).data("lat"), $(selected).data("lon"));
-        map.liveMap.panTo(p);
+        var name = selected.data('name');
+        mapUtils.addRouteTrackToMap(name, $("#live-map"));
     });
 
 };
@@ -96,4 +96,41 @@ function loadRouteTable(mainIndex) {
     });
 }
 
-export default { loadRoutes, createRouteRecord, loadRoute, loadRouteTable, createRouteNavPage }
+function editRoute(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    $.ajax({
+        url: '/routes/' + id,
+        type: 'GET',
+        success: function (result) {
+            var form = $("#addRoute");
+            form.find('#name').val(result.name);
+            form.find('#meters').val(result.meters);
+            form.find('#segmentId').val(result.segmentId);
+            form.find('#countries').val(result.country);
+            //gps.replace(/(.*),(.*),(.*)/gm, '{ "lat": $1, "lon": $2, "el": $3 },');
+            var gpsCvs = JSON.stringify(result.gps);
+            form.find('#gps').append(gpsCvs);
+            $('#add-route-modal').modal('show');
+        }
+    });
+}
+
+function showRouteModal(e) {
+    var name = $(e.relatedTarget).data('route-name');
+    var that = $(this);
+    $.get("/routes/" + name, function (data) {
+        var title = data.name;
+        if (data.segementId) {
+            title = '<a target="_blank" href="https://www.strava.com/segments/' + data.segementId + '">' + title + ' </a>';
+        }
+        that.find('#show-route-modal-title').html(title);
+        var html = '<li class="list-group-item"><h5 class="card-title">Display Lenght:</h5>' + data.meters + ' m</li>';
+        html += '<li class="list-group-item"><h5 class="card-title">Gps Lenght:</h5>' + data.gpsLenght + ' m</li>';
+        html += '<li class="list-group-item"><h5 class="card-title">Country:</h5>' + data.country + '</li>';
+        that.find('.card .list-group').html(html);
+    });
+}
+
+export default { loadRoutes, createRouteRecord, loadRoute, loadRouteTable,
+     createRouteNavPage, editRoute, showRouteModal }

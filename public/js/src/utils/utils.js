@@ -41,5 +41,39 @@ function fmtMSS(s) {
     return date.toISOString().substr(11, 8);
 }
 
-export default { calcWatt, sessionNameToReadable, getHeartRateColor, getUrlParameter, fmtMSS }
+
+/**
+ * This function returns an object that contains every get parameter from a URL (first argument) as a property
+ * 
+ * @param URL {String}
+ */
+function QueryString(URL) {
+    // This function is anonymous, is executed immediately and 
+    // the return value is assigned to QueryString!
+    var query_string = {};
+    var usefulParam = URL.split("?")[1] || "";
+    var query = usefulParam || "";
+    var vars = query.split("&");
+
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        
+        // If first entry with this name
+        if (typeof query_string[pair[0]] === "undefined") {
+            query_string[pair[0]] = decodeURIComponent(pair[1]);
+            // If second entry with this name
+        } else if (typeof query_string[pair[0]] === "string") {
+            var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
+            query_string[pair[0]] = arr;
+            // If third or later entry with this name
+        } else {
+            query_string[pair[0]].push(decodeURIComponent(pair[1]));
+        }
+    }
+
+    return query_string;
+}
+
+export default { calcWatt, sessionNameToReadable, getHeartRateColor, getUrlParameter, fmtMSS, 
+    QueryString }
 

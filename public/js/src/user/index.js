@@ -10,6 +10,27 @@ var loadUsers = function () {
     });
 };
 
+function editUser(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    $.ajax({
+        url: '/users/' + id,
+        type: 'GET',
+        success: function (result) {
+            var form = $("#addUserForm");
+            form.find('#firstName').val(result.firstName);
+            form.find('#lastName').val(result.lastName);
+            form.find('#userId').val(result.id);
+            $.get('/strava/url', function (data) {
+                var url = data.url.replace("%24", result.id);
+                $('.strava-url').attr('href', url);
+            });
+            var connect = $(".strava-connect");
+            connect.removeClass("sr-only");
+            $('#addUserModal').modal('show');
+        }
+    });
+}
 
 function loadUser() {
     $('#load').load('/user', function () {
@@ -32,4 +53,4 @@ function loadUser() {
 }
 
 
-export default { loadUsers, loadUser }
+export default { loadUsers, loadUser, editUser }

@@ -29,17 +29,22 @@ function cleanMap() {
     poly.setMap(map.liveMap);
 
     // fit bounds to track
-    map.liveMap.fitBounds(map.liveBounds);
+    if (typeof map.liveMap.fitBounds === 'function' ) {
+        map.liveMap.fitBounds(map.liveBounds);
+    }
+   
 }
 
 function initMap() {
-    map.liveMap = new google.maps.Map(document.getElementById('live-map'), {
-        zoom: 8,
-        maxZoom: 16
-    });
-
-    map.liveBounds = new google.maps.LatLngBounds();
-    map.liveMap.set('styles', styles);
+    var mapDiv = document.getElementById('live-map');
+    if (mapDiv) {
+        map.liveMap = new google.maps.Map(mapDiv, {
+            zoom: 8,
+            maxZoom: 16
+        });
+        map.liveBounds = new google.maps.LatLngBounds();
+        map.liveMap.set('styles', styles);
+    }
 }
 
 //TODO: Change color by speed or hr.
@@ -128,4 +133,5 @@ function loadGpxMap() {
 }
 
 
-export default { cleanMap, initMap, styles, addRouteTrackToMap, addGpxTrackToMap, loadGpxMap }
+export default { cleanMap, initMap, styles, addRouteTrackToMap, addGpxTrackToMap, loadGpxMap,
+    createPolyLine }

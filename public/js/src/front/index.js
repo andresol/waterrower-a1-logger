@@ -3,6 +3,10 @@ import user from '../user/index';
 import utils from '../utils/utils'
 import mapUtils from '../utils/mapUtils'
 import globals from '../utils/globals';
+import session from '../session/index';
+import map from '../map/index'
+
+var timeOut;
 
 function loadMain() {
     $('#load').load('/main', function () {
@@ -25,6 +29,36 @@ function loadMain() {
     });
 }
 
+
+function startRow(e) {
+    e.preventDefault();
+    var routes = $('#routes').val();
+    var that = this;
+    $.get("/row/start", { routes: routes }, function () {
+        start(that);
+    });
+}
+
+function stopRow(e) {
+    e.preventDefault();
+    var that = $(this);
+    clearTimeout(timeOut);
+    globals.run = false;
+    var routes = $('#routes').val();
+    var user = $('#session-user').val();
+    $.get("/row/stop", { routes: routes, user: user }, function (data) {
+        $('#table-content').html(getHtml("Stopped", data, false));
+        var startRow = $("#startRow");
+        startRow.removeAttr('disabled');
+        startRow.removeClass('d-none');
+        startRow.html('Start row');
+        that.addClass('d-none');
+        $('#routes').removeAttr('disabled');
+        $('#session-user').removeAttr('disabled');
+        $("#startSimulator").removeAttr('disabled');
+    });
+}
+
 function start(startButton) {
     $(window).scrollTop($('#main').offset().top); //Scroll
     get_rowInfo(true, "Rowing");
@@ -44,7 +78,7 @@ function get_rowInfo(continues, title) {
         var html = getHtml(title, data);
         if (html) {
             $('#table-content').html(html);
-            $('#laps-body').html(getLapHtml(title, data, true));
+            $('#laps-body').html(session.getLapHtml(title, data, true));
             var lat = data.gps.lat;
             var lon = data.gps.lon;
             var p = new google.maps.LatLng(lat, lon);
@@ -59,7 +93,7 @@ function get_rowInfo(continues, title) {
         }
     }).done(function () {
         if (globals.run) {
-            timeOut = setTimeout(function () { get_rowInfo(true, title); }, UPDATE_FREQ);
+            timeOut = setTimeout(function () { get_rowInfo(true, title); }, globals.UPDATE_FREQ);
         }
     });
 }
@@ -94,4 +128,4 @@ function getHtml(label, json, day) {
 }
 
 
-export default { loadMain, start, get_rowInfo, getHtml };
+export default { loadMain, start, get_rowInfo, getHtml, startRow, stopRow };

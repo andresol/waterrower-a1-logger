@@ -50,6 +50,18 @@ function loadHistoryList(that, mainIndex) {
     });
 }
 
+function openHistory(e) {
+    e.preventDefault();
+    var next = parseInt($(this).data('next')), index = parseInt($(this).data('index')),
+        mainIndex = parseInt($('#history-page').data('index'));
+    if (!isNaN(next)) {
+        mainIndex += next;
+    } else if (!isNaN(index)) {
+        mainIndex = index;
+    }
+    loadHistoryList($('#history-table'), mainIndex);
+}
+
 
 var createCard = function (htmlCards, session) {
     htmlCards += '<div class="card gpx-track" data-name="' + session.name + '"">';
@@ -103,4 +115,4 @@ function createHistoryNavPage(page, index) {
 }
 
 
-export default { loadHistoryIndex, loadHistory, loadHistoryList }
+export default { loadHistoryIndex, loadHistory, loadHistoryList, openHistory }
