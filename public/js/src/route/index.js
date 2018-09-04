@@ -19,15 +19,14 @@ var loadRoutes = function () {
                 html += '<optgroup label="' + value.country + '">';
                 group = value.country;
             }
-            html += '<option ' + selected + ' value="' + value.index + '" data-name="' + value.name + '" data-lat="' + value.gps[0].lat + '" data-lon="' + value.gps[0].lon + '">' + value.name + ' (' + value.meters + 'm)</option>';
+            html += '<option ' + selected + ' value="' + value.index + '" data-name="' + value.name + '" data-lat="' +
+                value.gps[0].lat + '" data-lon="' + value.gps[0].lon + '">' + value.name + ' (' + value.meters + 'm)</option>';
             selected = '';
             index++;
         });
         $(that).html(html);
-        var selected = $('#routes').find(":selected");
-        mapUtils.cleanMap();
-        var name = selected.data('name');
-        mapUtils.addRouteTrackToMap(name, $("#live-map"));
+
+        changeRouteSelect();
     });
 
 };
@@ -40,7 +39,9 @@ var createRouteRecord = function (htmlTable, index, route) {
     htmlTable += '<td>' + route.country + '</td>';
     htmlTable += '<td>'
     if (route.permanent !== true) {
-        htmlTable += '<a class="edit-route" href="#" data-id="' + route.name + '"><i class="material-icons">create</i></a><a class="del-route" href="#" data-id="' + route.name + '"><i aria-hidden="true" title="Delete route" class="material-icons">delete</i></a>' + '</td>';
+        htmlTable += '<a class="edit-route" href="#" data-id="' + route.name + '"><i class="material-icons">create</i></a>' +
+            '<a class="del-route" href="#" data-id="' + route.name + '">' +
+            '<i aria-hidden="true" title="Delete route" class="material-icons">delete</i></a>' + '</td>';
     }
     htmlTable += '</tr>';
     return htmlTable;
@@ -132,5 +133,63 @@ function showRouteModal(e) {
     });
 }
 
+function changeRouteSelect() {
+    var selected = $('#routes').find(":selected");
+    mapUtils.cleanMap();
+    var name = selected.data('name');
+    mapUtils.addRouteTrackToMap(name, $("#live-map"));
+}
+
+function deleteRoute(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    var result = confirm("Are you sure you want to delete route?");
+    if (result) {
+        $.ajax({
+            url: '/routes/' + id,
+            type: 'DELETE',
+            success: function (result) {
+                route.loadRoute(0);
+            }
+        });
+    }
+}
+
+function saveRoute(event) {
+    event.preventDefault();
+    var form = $("#addRoute");
+    var route = {};
+    route.name = form.find('#name').val();
+    route.meters = form.find('#meters').val();
+    route.stravaId = form.find('#segmentId').val();
+    route.country = form.find('#countries').val();
+    route.gps = form.find('textarea').val();
+    $.ajax({
+        type: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        url: "/routes/add",
+        data: JSON.stringify(route),
+        success: function () {
+            $('#add-route-modal').modal('hide');
+        }
+    });
+}
+
+function openRoute(e) {
+    e.preventDefault();
+    var next = parseInt($(this).data('next')), index = parseInt($(this).data('index')),
+        mainIndex = parseInt($('#route-page').data('index'));
+    if (!isNaN(next)) {
+        mainIndex += next;
+    } else if (!isNaN(index)) {
+        mainIndex = index;
+    }
+    var pag = $('#routes-table').find('.page');
+    createRouteNavPage(pag[0], mainIndex);
+    loadRouteTable(mainIndex);
+}
+
 export default { loadRoutes, createRouteRecord, loadRoute, loadRouteTable,
-     createRouteNavPage, editRoute, showRouteModal }
+     createRouteNavPage, editRoute, showRouteModal, changeRouteSelect, deleteRoute,
+saveRoute, openRoute}

@@ -32,3 +32,8 @@ body .container {
 #table-content .material-icons, #history-table .material-icons {
     font-size: 36px;
 }
+
+a.btn-primary.strava {
+    border-color: #fc4c02;
+    background-color: #fc4c02;
+}

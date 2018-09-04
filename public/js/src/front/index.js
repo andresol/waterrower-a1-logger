@@ -5,6 +5,7 @@ import mapUtils from '../utils/mapUtils'
 import globals from '../utils/globals';
 import session from '../session/index';
 import map from '../map/index'
+import history from '../history/index'
 
 var timeOut;
 
@@ -29,6 +30,14 @@ function loadMain() {
     });
 }
 
+function uploadToStrava(e) {
+    e.preventDefault();
+    var href = $(this).attr('href');
+    $.get(href, function (data) {
+        console.log(data);
+        alert("Uploaded to strava!");
+    });
+}
 
 function startRow(e) {
     e.preventDefault();
@@ -98,6 +107,26 @@ function get_rowInfo(continues, title) {
     });
 }
 
+function load() {
+    var hash = window.location.hash;
+    switch (hash) {
+        case '#route':
+            route.loadRoute(0);
+            break;
+        case '#user':
+            user.loadUser();
+            break;
+        case '#history':
+            history.loadHistory(0);
+            break;
+        case '#session':
+            session.loadSession(utils.QueryString["name"]);
+            break;
+        default:
+            loadMain();
+    }
+}
+
 
 function getHtml(label, json, day) {
     if (parseInt(json.meters) === 0) {
@@ -128,4 +157,4 @@ function getHtml(label, json, day) {
 }
 
 
-export default { loadMain, start, get_rowInfo, getHtml, startRow, stopRow };
+export default { loadMain, start, get_rowInfo, getHtml, startRow, stopRow, load, uploadToStrava };

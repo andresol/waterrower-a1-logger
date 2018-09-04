@@ -52,5 +52,43 @@ function loadUser() {
     });
 }
 
+function saveUser(event) {
+    event.preventDefault();
+    var form = $("#addUserForm");
+    var firstName = form.find('#firstName').val();
+    var lastName = form.find('#lastName').val();
+    var id = form.find('#userId').val();
+    var user = {};
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.id = id;
+    $.ajax({
+        type: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        url: "/users/add",
+        data: JSON.stringify(user),
+        success: function () {
+            $('#addUserModal').modal('hide');
+        }
+    });
 
-export default { loadUsers, loadUser, editUser }
+}
+
+function deleteUser(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    var result = confirm("Are you sure you want to delete?");
+    if (result) {
+        $.ajax({
+            url: '/users/' + id,
+            type: 'DELETE',
+            success: function (result) {
+                user.loadUser();
+            }
+        });
+    }
+}
+
+
+export default { loadUsers, loadUser, editUser, saveUser, deleteUser }

@@ -240,7 +240,7 @@ RowSession.prototype.totalInMeters = function () {
 
 RowSession.prototype.getRouteLap = function () {
     return ((this.totalInMeters() / this.routeObjectLenght) | 0) + 1;
-}
+};
 
 RowSession.prototype.totalTimeInSec = function () {
     return this.totalTime() / 1000

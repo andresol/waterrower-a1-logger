@@ -60,4 +60,20 @@ var clickSession = function (e) {
     loadSession(name);
 };
 
-export default { loadSession, clickSession, getLapHtml }
+function deleteSession(e) {
+    e.preventDefault();
+    var name = $(this).data('name');
+    var result = confirm("Are you sure you want to delete session?");
+    if (result) {
+        $.ajax({
+            url: '/session/del/' + name,
+            type: 'DELETE',
+            success: function (result) {
+                alert("Session deleted");
+                history.loadHistoryIndex(0, 0);
+            }
+        });
+    }
+}
+
+export default { loadSession, clickSession, getLapHtml, deleteSession }

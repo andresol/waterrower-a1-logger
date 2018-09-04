@@ -66,7 +66,7 @@ router.get('/:start/:stop', function(req, res) {
         }
         index++;
         if (index <= stop) {
-            return;
+
         }
     }).on('error', function (err) {
         console.log('Oh my!', err)

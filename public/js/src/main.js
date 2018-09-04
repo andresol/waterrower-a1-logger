@@ -52,19 +52,7 @@ $(function () {
     $(document).on("click", '#history-page a', history.openHistory);
 
     //TODO: refactory
-    $(document).on("click", '#route-page a', function (e) {
-        e.preventDefault();
-        var next = parseInt($(this).data('next')), index = parseInt($(this).data('index')),
-            mainIndex = parseInt($('#route-page').data('index'));
-        if (!isNaN(next)) {
-            mainIndex += next;
-        } else if (!isNaN(index)) {
-            mainIndex = index;
-        }
-        var pag = $('#routes-table').find('.page');
-        route.createRouteNavPage(pag[0], mainIndex);
-        route.loadRouteTable(mainIndex);
-    });
+    $(document).on("click", '#route-page a', route.openRoute);
 
     $(document).on("click", '.nav-link', function (e) {
         $('#main-nav').find(".nav-item").each(function () {
@@ -93,124 +81,19 @@ $(function () {
 
     $(document).on("click", '.edit-route', route.editRoute);
 
-    $(document).on("click", '.strava', function (e) {
-        e.preventDefault();
-        var href = $(this).attr('href');
-        $.get(href, function (data) {
-            console.log(data);
-            alert("Uploaded to strava!");
-        });
-    });
+    $(document).on("click", '.strava', front.uploadToStrava);
 
-    $(document).on("click", '.del-session', function (e) {
-        e.preventDefault();
-        var name = $(this).data('name');
-        var result = confirm("Are you sure you want to delete session?");
-        if (result) {
-            $.ajax({
-                url: '/session/del/' + name,
-                type: 'DELETE',
-                success: function (result) {
-                    alert("Session deleted");
-                    history.loadHistoryIndex(0, 0);
-                }
-            });
-        }
-    });
+    $(document).on("click", '.del-session', session.deleteSession);
 
-    $(document).on("click", "#save-route", function (event) {
-        event.preventDefault();
-        var form = $("#addRoute");
-        var route = {};
-        route.name = form.find('#name').val();
-        route.meters = form.find('#meters').val();
-        route.stravaId = form.find('#segmentId').val();
-        route.country = form.find('#countries').val();
-        route.gps = form.find('textarea').val();
-        $.ajax({
-            type: 'PUT',
-            contentType: 'application/json',
-            dataType: 'json',
-            url: "/routes/add",
-            data: JSON.stringify(route),
-            success: function () {
-                $('#add-route-modal').modal('hide');
-            }
-        });
-    });
+    $(document).on("click", "#save-route", route.saveRoute);
 
-    $(document).on("click", "#save-user", function (event) {
-        event.preventDefault();
-        var form = $("#addUserForm");
-        var firstName = form.find('#firstName').val();
-        var lastName = form.find('#lastName').val();
-        var id = form.find('#userId').val();
-        var user = {};
-        user.firstName = firstName;
-        user.lastName = lastName;
-        user.id = id;
-        $.ajax({
-            type: 'PUT',
-            contentType: 'application/json',
-            dataType: 'json',
-            url: "/users/add",
-            data: JSON.stringify(user),
-            success: function () {
-                $('#addUserModal').modal('hide');
-            }
-        });
+    $(document).on("click", "#save-user", user.saveUser);
 
-    });
+    $(document).on("click", '.del-user', user.deleteUser);
 
-    $(document).on("click", '.del-user', function (e) {
-        e.preventDefault();
-        var id = $(this).data('id');
-        var result = confirm("Are you sure you want to delete?");
-        if (result) {
-            $.ajax({
-                url: '/users/' + id,
-                type: 'DELETE',
-                success: function (result) {
-                    user.loadUser();
-                }
-            });
-        }
-    });
+    $(document).on("click", '.del-route', route.deleteRoute);
 
-    $(document).on("click", '.del-route', function (e) {
-        e.preventDefault();
-        var id = $(this).data('id');
-        var result = confirm("Are you sure you want to delete route?");
-        if (result) {
-            $.ajax({
-                url: '/routes/' + id,
-                type: 'DELETE',
-                success: function (result) {
-                    route.loadRoute(0);
-                }
-            });
-        }
-    });
-
-    $('#load').each(function () {
-        var hash = window.location.hash;
-        switch (hash) {
-            case '#route':
-                route.loadRoute(0);
-                break;
-            case '#user':
-                user.loadUser();
-                break;
-            case '#history':
-                history.loadHistory(0);
-                break;
-            case '#session':
-                session.loadSession(utils.QueryString["name"]);
-                break;
-            default:
-                front.loadMain();
-        }
-    });
+    $('#load').each(front.load);
 
     $('#routes').each(route.loadRoutes);
 
@@ -223,12 +106,7 @@ $(function () {
         mapUtils.addRouteTrackToMap(name, $("#live-route-map"));
     });
 
-    $(document).on("change", '#routes', function (e) {
-        var selected = $('#routes').find(":selected");
-        mapUtils.cleanMap();
-        var name = selected.data('name');
-        mapUtils.addRouteTrackToMap(name, $("#live-map"))
-    });
+    $(document).on("change", '#routes', route.changeRouteSelect);
 });
 
 
