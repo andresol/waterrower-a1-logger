@@ -71,7 +71,7 @@ const OSLO_SMALL = {
     country: 'Norway',
     index: 1,
     permanent: true,
-    segementId: 0,
+    segementId: 16860422,
     meters: '4300',
     gps: [
         {lat: 59.88458761, lon: 10.76097965, el: 3.0},

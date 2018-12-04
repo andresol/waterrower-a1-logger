@@ -37,3 +37,7 @@ a.btn-primary.strava {
     border-color: #fc4c02;
     background-color: #fc4c02;
 }
+
+a.strava i, a.strava-segment {
+    color: #fc4c02;
+}

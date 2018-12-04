@@ -148,7 +148,7 @@ function getHtml(label, json, day) {
         html += '<div class="row"><div class="col-sm-4">HR:</div><div class="col ' + utils.getHeartRateColor(parseInt(json.hr)) + '">' + parseInt(json.hr) + (parseInt(json.avgHr) > 0 ? '(' + parseInt(json.avgHr) + ')' : '') + '</div></div>';
     }
     if (json.fileName) {
-        html += '<div class="row"><div class="col">Actions:</div><div class="col"><a href="/sessions/' + json.fileName;
+        html += '<div class="row"><div class="col-sm-4">Actions:</div><div class="col"><a href="/sessions/' + json.fileName;
         html += '"><i class="material-icons">file_download</i><a class="strava" href="/strava/upload/' + json.name;
         html += '"><i aria-hidden="true" title="Upload to strava" class="material-icons">cloud_upload</i></a>';
         html += '<a class="sessions" data-name="' + json.name + '" href="/sessions"><i aria-hidden="true" title="Session" class="material-icons">fiber_new</i></a></div></div>';
