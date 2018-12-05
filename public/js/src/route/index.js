@@ -42,6 +42,8 @@ var createRouteRecord = function (htmlTable, index, route) {
         htmlTable += '<a class="edit-route" href="#" data-id="' + route.name + '"><i class="material-icons">create</i></a>' +
             '<a class="del-route" href="#" data-id="' + route.name + '">' +
             '<i aria-hidden="true" title="Delete route" class="material-icons">delete</i></a>' + '</td>';
+    } else {
+        htmlTable += '<i>Default</i>';
     }
     htmlTable += '</tr>';
     return htmlTable;
@@ -123,7 +125,7 @@ function showRouteModal(e) {
     $.get("/routes/" + name, function (data) {
         var title = data.name;
         if (data.segementId) {
-            title = '<a target="_blank" href="https://www.strava.com/segments/' + data.segementId + '">' + title + ' </a>';
+            title = '<a class="strava-segment" target="_blank" href="https://www.strava.com/segments/' + data.segementId + ' title="Strava Segment Url" ">' + title + ' </a>';
         }
         that.find('#show-route-modal-title').html(title);
         var html = '<li class="list-group-item"><h5 class="card-title">Display Lenght:</h5>' + data.meters + ' m</li>';
