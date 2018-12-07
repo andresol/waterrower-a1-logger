@@ -122,6 +122,9 @@ function load() {
         case '#session':
             session.loadSession(utils.QueryString["name"]);
             break;
+        case '#routeDetail':
+            route.loadRouteDetail(utils.QueryString["name"]);
+            break;
         default:
             loadMain();
     }

@@ -1,6 +1,7 @@
 import mapUtils from '../utils/mapUtils'
 import map from '../map/index'
 import utils from '../utils/utils';
+import strava from '../utils/strava';
 import graphUtils from '../utils/graphUtils';
 import { UPDATE_FREQ, PAGE_SIZE, RATION, run } from '../utils/globals';
 
@@ -178,6 +179,28 @@ function saveRoute(event) {
     });
 }
 
+function loadRouteDetail(name) {
+    console.log(name);
+    $('#load').load('/route/details', function () {
+        mapUtils.cleanMap();
+        strava.leaderboard(name, addToTable.bind(null, $(this).find('#strava-result')));
+        // $(this).find('#route-history').each(route.loadRoutes);
+        // $(this).find('#strava-result').each(route.loadRoutes);
+
+    });
+}
+
+function addToTable(table) {
+    console.log("test");
+    var html = '';
+    if (this.entries) {
+        this.entries.forEach(function(entry) {
+                html += '<tr> <td> ' + entry.athlete_name + ' </td><td> ' + entry.moving_time + '</td></tr>';
+        });
+    }
+    table.html(html);
+}
+
 function openRoute(e) {
     e.preventDefault();
     var next = parseInt($(this).data('next')), index = parseInt($(this).data('index')),
@@ -194,4 +217,4 @@ function openRoute(e) {
 
 export default { loadRoutes, createRouteRecord, loadRoute, loadRouteTable,
      createRouteNavPage, editRoute, showRouteModal, changeRouteSelect, deleteRoute,
-saveRoute, openRoute}
+saveRoute, openRoute, loadRouteDetail}
