@@ -66,12 +66,13 @@ First gen of Rasberry Pi is to slow. Please use v3 because of speed and wifi.
 This project was just a test project to see if it was possible to create a my own computer. It is badly
 written code that is just patched together. This project needs to be written again. Important notes if
 one wants to create there own project on the WaterRower A1. The WaterRower uses a magnet and the length
-in real world is that one rows 20.81 cm between each magnet hit. It is important to use some kind of 
-debounce to prevent false hits. 
+between 2 magnets is 20.81 cm in the real world. One need just to measure the time between this. It is important to use some kind of debounce to prevent false hits. 
 
 Ratio:
 100 cm is 4.805 clicks. 1 click is about 20.81 cm.
 
+Strok rate:
+Measure when the clicks are accelerating with a debounceing.
 
 ## Testing
 One can use the parameter ?test=test to get a button that simulates a rowing session.
