@@ -4,8 +4,8 @@ Raspberry Pi 3 project for logging rowing on a WaterRower A1. It will track watt
 pace, length, time, laps and heart rate (Needs ant plus stick). 
 
 The most important feature is the route feature. One needs to select route before starting a row session. 
-This route will be used as a template for the row sessiong. After a rowing session is done one can download 
-the gpx file or even just push it to strava.
+This route will be used as a template for the row session. After a rowing session is done one can download 
+the gpx file or even just push it to Strava.
 ![web-gui](web-gui.png "Main Gui")
 
 ## Getting Started
@@ -61,6 +61,17 @@ Complete strava integration, more routes, better route handling, live view of ro
 ## Errors
 Please make sure that GPIO is not shared.
 First gen of Rasberry Pi is to slow. Please use v3 because of speed and wifi.
+
+## Note
+This project was just a test project to see if it was possible to create a my own computer. It is badly
+written code that is just patched together. This project needs to be written again. Important notes if
+one wants to create there own project on the WaterRower A1. The WaterRower uses a magnet and the length
+in real world is that one rows 20.81 cm between each magnet hit. It is important to use some kind of 
+debounce to prevent false hits. 
+
+Ratio:
+100 cm is 4.805 clicks. 1 click is about 20.81 cm.
+
 
 ## Testing
 One can use the parameter ?test=test to get a button that simulates a rowing session.
