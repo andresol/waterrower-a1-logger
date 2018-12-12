@@ -28,6 +28,9 @@ router.get('/user/', function(req, res) {
 });
 
 router.get('/route/', function(req, res) {
+    res.sendFile('routes.html', {root: './public'});
+});
+router.get('/route/details', function(req, res) {
     res.sendFile('route.html', {root: './public'});
 });
 

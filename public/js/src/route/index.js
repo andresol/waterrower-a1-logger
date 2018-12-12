@@ -1,6 +1,7 @@
 import mapUtils from '../utils/mapUtils'
 import map from '../map/index'
 import utils from '../utils/utils';
+import strava from '../utils/strava';
 import graphUtils from '../utils/graphUtils';
 import { UPDATE_FREQ, PAGE_SIZE, RATION, run } from '../utils/globals';
 
@@ -34,7 +35,8 @@ var loadRoutes = function () {
 var createRouteRecord = function (htmlTable, index, route) {
     htmlTable += '<tr>';
     htmlTable += '<th scope="row">' + (index + 1) + '</th>';
-    htmlTable += '<td><a data-toggle="modal" data-route-name="' + route.name + '" data-target="#show-route-modal" href="/routes/' + route.name + '">' + route.name + '</a></td>';
+    //htmlTable += '<td><a data-toggle="modal" data-route-name="' + route.name + '" data-target="#show-route-modal" href="/routes/' + route.name + '">' + route.name + '</a></td>';
+    htmlTable += '<td><a class="route-detail" data-route-name="' + route.name + '" href="?route='+ route.name +'#routedetail">' + route.name + '</a></td>';
     htmlTable += '<td>' + parseInt(route.meters) + 'm</td>';
     htmlTable += '<td>' + route.country + '</td>';
     htmlTable += '<td>'
@@ -178,6 +180,44 @@ function saveRoute(event) {
     });
 }
 
+function loadRouteDetail(name) {
+    $('#load').load('/route/details', function () {
+        mapUtils.cleanMap();
+        var tableFunct = addToTable.bind($(this).find('#strava-result'));
+        strava.leaderboard(name, tableFunct);
+        mapUtils.addRouteTrackToMap(name, $("#live-map"));
+        $(this).find('#route-stats').each(loadRouteStats.bind((this), name));
+        $(this).find('#strava-result').each(route.loadRoutes);
+
+    });
+}
+
+function loadRouteStats(name) {
+    var that = this;
+    $.ajax({
+        url: '/routes/' + name,
+        type: 'GET',
+        success: function (result) {
+            let html = '<div class="card card-default"><div class="card-body"><div class="row">'
+            html += '<div class="col-md-5"><div class="statistic"><div class="value">' + result.name +'</div><div class="label">Name</div></div></div>';
+            html += '<div class="col-md-2"><div class="statistic"><div class="value">' + result.meters +'</div><div class="label">Lenght (m)</div></div></div>';
+            html += '<div class="col-md-5"><div class="statistic"><div class="value">' + result.country +'</div><div class="label">Country</div></div></div>';
+            html += '</div></div></div>'
+            $(that).find('#route-stats').html(html);
+        }
+    });
+}
+
+function addToTable(data) {
+    var html = '';
+    if (data.entries) {
+        data.entries.forEach(function(entry) {
+                html += '<tr> <th scope="row"> ' + entry.athlete_name + ' </th><td> ' + utils.fmtMSS(parseInt(entry.moving_time)) + '</td> <td>' + entry.start_date +'</td></tr>';
+        });
+    }
+    this.html(html);
+}
+
 function openRoute(e) {
     e.preventDefault();
     var next = parseInt($(this).data('next')), index = parseInt($(this).data('index')),
@@ -192,6 +232,12 @@ function openRoute(e) {
     loadRouteTable(mainIndex);
 }
 
+var clickRouteDetail = function (e) {
+    e.preventDefault();
+    var name = $(this).data('route-name');
+    loadRouteDetail(name);
+};
+
 export default { loadRoutes, createRouteRecord, loadRoute, loadRouteTable,
      createRouteNavPage, editRoute, showRouteModal, changeRouteSelect, deleteRoute,
-saveRoute, openRoute}
+saveRoute, openRoute, loadRouteDetail, clickRouteDetail}

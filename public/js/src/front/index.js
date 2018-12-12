@@ -120,7 +120,10 @@ function load() {
             history.loadHistory(0);
             break;
         case '#session':
-            session.loadSession(utils.QueryString["name"]);
+            session.loadSession(utils.QueryString(window.location.href)["name"]);
+            break;
+        case '#routedetail':
+            route.loadRouteDetail(utils.QueryString(window.location.href)["route"]);
             break;
         default:
             loadMain();

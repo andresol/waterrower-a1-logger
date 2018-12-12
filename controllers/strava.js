@@ -51,8 +51,8 @@ router.get('/route/:name', function (req, res) {
             return;
         }
         routeService.get(name).then(function (value) {
-            var route = JSON.parse(value);
-            getSegment(resRoute, res);
+            let route = JSON.parse(value);
+            getSegment(route, res);
         }).catch(function (err) {
             console.error(err); res.status(404).send('Not found.');
         });
@@ -71,8 +71,8 @@ router.get('/route/leaderboard/:name', function (req, res) {
             return;
         }
         routeService.get(name).then(function (value) {
-            var route = JSON.parse(value);
-            getLeaderboard(resRoute, res);
+            let route = JSON.parse(value);
+            getLeaderboard(route, res);
         }).catch(function (err) {
             console.error(err); res.status(404).send('Not found.');
         });
