@@ -1,7 +1,7 @@
 
 function leaderboard(name, callback) {
     $.get('/strava/route/leaderboard/' + name, function (data) {
-        callback.apply(data);
+        callback(data);
     });
 };
 

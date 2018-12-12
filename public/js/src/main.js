@@ -93,6 +93,8 @@ $(function () {
 
     $(document).on("click", '.del-route', route.deleteRoute);
 
+    $(document).on("click", '.route-detail', route.clickRouteDetail);
+
     $('#load').each(front.load);
 
     $('#routes').each(route.loadRoutes);

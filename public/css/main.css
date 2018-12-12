@@ -41,3 +41,132 @@ a.btn-primary.strava {
 a.strava i, a.strava-segment {
     color: #fc4c02;
 }
+
+#route-stats  {
+    text-align: center;
+}
+
+/****** Statistic ******/
+.statistic {
+    margin: 1em 0;
+    text-transform: uppercase;
+    display: inline-block;
+}
+.statistic .value {
+    font-size: 2em;
+    line-height: 1em;
+    text-align: center;
+}
+.statistic .value.text {
+    font-size: 2em;
+    font-weight: bold;
+}
+.statistic .value img {
+    max-height: .8em;
+    vertical-align: baseline;
+}
+.statistic .label {
+    color: inherit;
+    display: block;
+    font-size: 1em;
+    text-align: center;
+}
+.statistic + .statistic {
+    margin-left: 1.5em;
+}
+/*** Horizontal Statistic ***/
+.statistic.horizontal .value,
+.statistic.horizontal .label {
+    display: inline;
+    vertical-align: middle;
+}
+/****** Statistic Group ******/
+.statistic-group {
+    margin: 1em 0;
+}
+.statistic-group .statistic {
+    display: inline-block;
+}
+/*** Horizontal Statistic Group ***/
+.statistic-group.horizontal .statistic {
+    display: block;
+}
+.statistic-group.horizontal .statistic .value,
+.statistic-group.horizontal .statistic .label {
+    display: inline;
+    vertical-align: middle;
+}
+.statistic-group.horizontal .statistic + .statistic {
+    margin-left: 0;
+}
+/*** Float Statistics ***/
+.statistic.pull-left {
+    margin-right: 1em;
+}
+.statistic.pull-right {
+    margin-left: 1em;
+}
+/****** Statistic Sizes ******/
+.statistic.mini .value {
+    font-size: 1em;
+    font-weight: bold;
+}
+.statistic.tiny .value {
+    font-size: 2em;
+}
+.statistic.small .value {
+    font-size: 3em !important;
+}
+.statistic.large .value {
+    font-size: 5em;
+}
+.statistic.huge .value {
+    font-size: 6em;
+}
+/****** Statistic Types ******/
+.statistic.primary {
+    color: #337ab7;
+}
+.statistic.success {
+    color: #5cb85c;
+}
+.statistic.info {
+    color: #5bc0de;
+}
+.statistic.warning {
+    color: #f0ad4e;
+}
+.statistic.danger {
+    color: #d9534f;
+}
+.statistic.inverted {
+    color: white;
+}
+/****** Bootstrap Colors ******/
+/****** Bootstrap Typography ******/
+/****** Footer ******/
+.footer {
+    background-color: #eeeeee;
+}
+.footer p {
+    margin: 20px 0;
+    text-align: center;
+    color: #888888;
+}
+.footer .glyphicon-heart {
+    color: pink;
+}
+/*** Sticky Footer ***/
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    margin-bottom: 60px;
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+}
