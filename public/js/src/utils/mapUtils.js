@@ -25,6 +25,7 @@ const styles = [{
 function cleanMap() {
     initMap();
     map.livePoints = [];
+    map.markers = [];
     var poly = createPolyLine(map.livePoints);
     poly.setMap(map.liveMap);
 
@@ -132,6 +133,14 @@ function loadGpxMap() {
     addGpxTrackToMap(name, element);
 }
 
+function addMarker(p, title, round) {
+    map.markers.push(new google.maps.Marker({
+        position:p,
+        map: map.liveMap,
+        title: title,
+        label: round
+    }));
+}
 
 export default { cleanMap, initMap, styles, addRouteTrackToMap, addGpxTrackToMap, loadGpxMap,
-    createPolyLine }
+    createPolyLine, addMarker }

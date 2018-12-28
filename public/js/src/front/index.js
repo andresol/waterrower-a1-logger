@@ -94,6 +94,9 @@ function get_rowInfo(continues, title) {
             var lat = data.gps.lat;
             var lon = data.gps.lon;
             var p = new google.maps.LatLng(lat, lon);
+            if (map.markers.length < data.totalLaps ) {
+                mapUtils.addMarker(p, "Runde: " + data.totalLaps, String(data.totalLaps));
+            }
             map.livePoints.push(p);
             if (map.liveBounds) {
                 map.liveBounds.extend(p);
