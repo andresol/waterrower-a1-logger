@@ -29,7 +29,6 @@ var loadRoutes = function () {
 
         changeRouteSelect();
     });
-
 };
 
 var createRouteRecord = function (htmlTable, index, route) {

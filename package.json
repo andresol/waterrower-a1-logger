@@ -5,8 +5,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node app.js",
     "test": "cross-env PORT=3000 NODE_ENV=test node app.js",
-    "build-front": "webpack --config webpack.config.js",
-    "build-front-watch": "webpack --watch --config webpack.config.js"
+    "build-front": "node_modules/.bin/webpack --config webpack.config.js --mode=production",
+    "build-front-watch": "node_modules/.bin/webpack --watch --config webpack.config.js --mode=development"
   },
   "keywords": [
     "waterrower",
@@ -38,7 +38,8 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "pi-gpio": "0.0.8",
-    "webpack": "^4.17.1",
-    "webpack-cli": "^3.1.0"
+    "webpack": "^4.28.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-livereload-plugin": "^2.2.0"
   }
 }

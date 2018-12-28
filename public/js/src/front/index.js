@@ -50,6 +50,8 @@ function startRow(e) {
 
 function stopRow(e) {
     e.preventDefault();
+    $('main-nav').show();
+    $(window).scrollTop($('#main-nav').offset().top);
     var that = $(this);
     clearTimeout(timeOut);
     globals.run = false;
@@ -69,6 +71,7 @@ function stopRow(e) {
 }
 
 function start(startButton) {
+    $('main-nav').hide();
     $(window).scrollTop($('#main').offset().top); //Scroll
     get_rowInfo(true, "Rowing");
     mapUtils.cleanMap();
@@ -141,7 +144,7 @@ function getHtml(label, json, day) {
     }
     html += '<div class="row"><div class="col-sm-4">Start:</div><div class="col">' + json.start.substr(json.start.lastIndexOf('T') + 1, 8) + '</div></div>';
     html += '<div class="row"><div class="col-sm-4">Time:</div><div class="col">' + utils.fmtMSS(parseInt(json.seconds)) + '</div></div>';
-    html += '<div class="row"><div class="col-sm-4">Length:</div><div class="col">' + parseInt(json.meters) + ' m (' + parseInt(json.routeLap) + ')</div></div>';
+    html += '<div class="row"><div class="col-sm-4">Length:</div><div class="col">' + parseInt(json.meters) + ' m (' + json.percent + ')</div></div>';
     html += '<div class="row"><div class="col-sm-4">Pace:</div><div class="col">' + Math.round(parseFloat(json.pace) * 3.6 * 10) / 10 + ' km/t</div></div>';
     html += '<div class="row"><div class="col-sm-4">500m:</div><div class="col">' + utils.fmtMSS(parseInt(json.lapPace)) + '</div></div>';
     html += '<div class="row"><div class="col-sm-4">2k:</div><div class="col">' + utils.fmtMSS(parseInt(json.towKPace)) + '</div></div>';

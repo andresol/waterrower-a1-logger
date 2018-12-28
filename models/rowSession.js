@@ -1,18 +1,18 @@
 try {
-    var Gpio = require('onoff').Gpio;
+    const Gpio = require('onoff').Gpio;
 } catch (e) {
     console.log("GPIO is not supported.")
 }
 try {
-    var Ant = require('ant-plus');
+    const Ant = require('ant-plus');
 }catch (e) {
     console.log("Ant plus not supported.")
 }
-var dateFormat = require('dateformat');
-var debounce = require('debounce');
-var createGpx = require('gps-to-gpx');
-var sanitize = require("sanitize-filename");
-var DateDiff = require('date-diff');
+const dateFormat = require('dateformat');
+const debounce = require('debounce');
+const createGpx = require('gps-to-gpx');
+const sanitize = require("sanitize-filename");
+const DateDiff = require('date-diff');
 
 const RATION = 100 / 4.805; // 100 cm is 4.805 clicks. About 20.81 cm.
 const PID = 4;
@@ -42,8 +42,10 @@ function RowSession(status, route) {
 }
 
 RowSession.prototype.heartRate = function () {
-    this.stick = new Ant.GarminStick2();
-    openStick.bind(this)(this.stick, 1);
+    if (typeof Ant !== 'undefined' && Ant) {
+        this.stick = new Ant.GarminStick2();
+        openStick.bind(this)(this.stick, 1);
+    }
 };
 
 function openStick(stick, stickid) {
@@ -131,11 +133,13 @@ RowSession.prototype.laps = function () {
 RowSession.prototype.increment = function() {
     this.counter = this.counter + 1;
     if (this.counter % SAMPLE_SIZE === 1) { //Total length
-        var time = Date.now();
+        let time = Date.now();
         this.raw.push(time);
-        this.rawHr.push(this.hr);
-        var rawTime = new Date(time);
-        var distance = this.getLengthInMetersByClicks(6); //6 click per raw.
+        if (this.hr > 0) { // hr <= 0 means dead.
+            this.rawHr.push(this.hr);
+        }
+        let rawTime = new Date(time);
+        let distance = this.getLengthInMetersByClicks(6); //6 click per raw.
         this.p = this.routeObject.nextPoint(this.p, distance.toFixed(4));
         this.trackPoint = {
             'lat': this.p.lat.toFixed(7),
@@ -229,6 +233,7 @@ RowSession.prototype.stats = function() {
     stats.stroke = this.getStrokeRate();
     stats.hr = this.hr;
     stats.routeLap = this.getRouteLap();
+    stats.percent = this.getPercent();
     stats.routeLength = this.routeObjectLenght;
     stats.watt = watt(this.totalTimeInSec() / this.totalInMeters());
     return stats;
@@ -240,6 +245,10 @@ RowSession.prototype.totalInMeters = function () {
 
 RowSession.prototype.getRouteLap = function () {
     return ((this.totalInMeters() / this.routeObjectLenght) | 0) + 1;
+};
+
+RowSession.prototype.getPercent = function () {
+    return ((this.totalInMeters() / this.routeObjectLenght)).toFixed(2);
 };
 
 RowSession.prototype.totalTimeInSec = function () {
@@ -257,7 +266,7 @@ RowSession.prototype.meterPerSeconds = function () {
 RowSession.prototype.getAvgHr = function () {
     if (this.rawHr.length > 0) {
         return (this.rawHr.reduce(function (total, num) {return total + num}) / this.rawHr.length) | 0;
-    } else return -1;
+    } else return 0;
 };
 
 RowSession.prototype.fiveHundrePace = function () {
