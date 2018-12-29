@@ -22,22 +22,25 @@ const styles = [{
     { "featureType": "water", "elementType": "labels", "stylers": [{ "visibility": "on" }, { "lightness": -25 }, { "saturation": -100 }] },
     { "featureType": "water", "elementType": "geometry", "stylers": [{ "hue": "#ffff00" }, { "lightness": -25 }, { "saturation": -97 }] }];
 
-function cleanMap() {
-    initMap();
+function cleanMap(init = true) {
+    if (init) {
+        initMap();
+    }
+
     map.livePoints = [];
     map.markers = [];
-    var poly = createPolyLine(map.livePoints);
+    let poly = createPolyLine(map.livePoints);
     poly.setMap(map.liveMap);
 
     // fit bounds to track
-    if (typeof map.liveMap.fitBounds === 'function' ) {
+    if (typeof map.liveMap !== 'undefined' && typeof map.liveMap.fitBounds === 'function' ) {
         map.liveMap.fitBounds(map.liveBounds);
     }
    
 }
 
 function initMap() {
-    var mapDiv = document.getElementById('live-map');
+    let mapDiv = document.getElementById('live-map');
     if (mapDiv) {
         map.liveMap = new google.maps.Map(mapDiv, {
             zoom: 8,
@@ -64,25 +67,27 @@ var addRouteTrackToMap = function (name, element) {
             type: "GET",
             url: '/routes/' + name,
             success: function (data) {
-                var points = [];
-                var map = new google.maps.Map(element[0], {
+                let gps = data.gps;
+                let mapElement = element[0];
+                let points = [];
+                let map = new google.maps.Map(mapElement, {
                     zoom: 8,
                     maxZoom: 16
                 });
 
                 map.set('styles', styles);
 
-                var bounds = new google.maps.LatLngBounds();
+                let bounds = new google.maps.LatLngBounds();
 
-                data.gps.forEach(function (point) {
-                    var lat = point.lat;
-                    var lon = point.lon;
-                    var p = new google.maps.LatLng(lat, lon);
+                gps.forEach(function (point) {
+                    let lat = point.lat;
+                    let lon = point.lon;
+                    let p = new google.maps.LatLng(lat, lon);
                     points.push(p);
                     bounds.extend(p);
                 });
 
-                var poly = createPolyLine(points);
+                let poly = createPolyLine(points);
 
                 poly.setMap(map);
 
@@ -94,42 +99,57 @@ var addRouteTrackToMap = function (name, element) {
 };
 
 var addGpxTrackToMap = function (name, element) {
+    let map = new google.maps.Map(element[0], {
+        zoom: 16
+    });
+    var succesXml = addXml.bind(null, map);
     if (name) {
         $.ajax({
             type: "GET",
             url: '/sessions/' + name + '.gpx',
-            success: function (xml) {
-                var points = [];
-                var map = new google.maps.Map(element[0], {
-                    zoom: 16
-                });
-
-                map.set('styles', styles);
-
-                var bounds = new google.maps.LatLngBounds();
-
-                $(xml).find("trkpt").each(function () {
-                    var lat = $(this).attr("lat");
-                    var lon = $(this).attr("lon");
-                    var p = new google.maps.LatLng(lat, lon);
-                    points.push(p);
-                    bounds.extend(p);
-                });
-
-                var poly = createPolyLine(points);
-
-                poly.setMap(map);
-
-                // fit bounds to track
-                map.fitBounds(bounds);
-            }
+            success: succesXml
         });
     }
 };
 
+var addSessionTrackToMap = function (complete) {
+    var succesXml = addXml.bind(null, map.liveMap);
+    $.ajax({
+        type: "GET",
+        url: 'row/gpx',
+        success: succesXml,
+        complete: complete
+    });
+};
+
+
+function addXml(map, xml) {
+    let points = [];
+
+    map.set('styles', styles);
+
+    let bounds = new google.maps.LatLngBounds();
+
+    $(xml).find("trkpt").each(function () {
+        let lat = $(this).attr("lat");
+        let lon = $(this).attr("lon");
+        let p = new google.maps.LatLng(lat, lon);
+        points.push(p);
+        bounds.extend(p);
+        console.log("lat:" + lat + ". Lon:" + lon);
+    });
+
+    let poly = createPolyLine(points);
+
+    poly.setMap(map);
+
+    // fit bounds to track
+    map.fitBounds(bounds);
+}
+
 function loadGpxMap() {
-    var name = $(this).data('name');
-    var element = $(this).find('.card-map-top');
+    let name = $(this).data('name');
+    let element = $(this).find('.card-map-top');
     addGpxTrackToMap(name, element);
 }
 
@@ -143,4 +163,4 @@ function addMarker(p, title, round) {
 }
 
 export default { cleanMap, initMap, styles, addRouteTrackToMap, addGpxTrackToMap, loadGpxMap,
-    createPolyLine, addMarker }
+    createPolyLine, addMarker, addSessionTrackToMap }
