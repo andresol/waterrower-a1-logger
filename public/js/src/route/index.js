@@ -136,7 +136,7 @@ function showRouteModal(e) {
 
 function changeRouteSelect() {
     var selected = $('#routes').find(":selected");
-    mapUtils.cleanMap(false);
+    mapUtils.cleanMap();
     var name = selected.data('name');
     mapUtils.addRouteTrackToMap(name, $("#live-map"));
 }

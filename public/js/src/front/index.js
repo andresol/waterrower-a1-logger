@@ -137,7 +137,9 @@ function load() {
             history.loadHistory(0);
             break;
         case '#session':
-            session.loadSession(utils.QueryString(window.location.href)["name"]);
+            var name = utils.QueryString(window.location.href)["name"].replace('#session',"");
+            console.log(name);
+            session.loadSession(name);
             break;
         case '#routedetail':
             route.loadRouteDetail(utils.QueryString(window.location.href)["route"]);

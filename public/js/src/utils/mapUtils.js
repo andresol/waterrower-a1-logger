@@ -1,5 +1,6 @@
 import map from '../map/index'
 
+
 const styles = [{
     "featureType": "landscape", "stylers": [{ "saturation": -100 }, { "lightness": 65 },
         { "visibility": "on" }]
@@ -88,7 +89,6 @@ var addRouteTrackToMap = function (name, element) {
                 });
 
                 let poly = createPolyLine(points);
-
                 poly.setMap(map);
 
                 // fit bounds to track
@@ -129,14 +129,22 @@ function addXml(map, xml) {
     map.set('styles', styles);
 
     let bounds = new google.maps.LatLngBounds();
-
+    let laps = 1;
+    let marker = 1;
     $(xml).find("trkpt").each(function () {
         let lat = $(this).attr("lat");
         let lon = $(this).attr("lon");
         let p = new google.maps.LatLng(lat, lon);
+
         points.push(p);
+        let km = createPolyLine(points).inKm();
+        laps = parseInt(km / 0.5) + 1; // 0.5 is 500 lap
+        console.log(laps);
+        if (marker < laps ) {
+            addMarker(p, "Runde: " + (laps-1), String(laps - 1), map);
+            marker++;
+        }
         bounds.extend(p);
-        console.log("lat:" + lat + ". Lon:" + lon);
     });
 
     let poly = createPolyLine(points);
@@ -153,10 +161,10 @@ function loadGpxMap() {
     addGpxTrackToMap(name, element);
 }
 
-function addMarker(p, title, round) {
+function addMarker(p, title, round, liveMap=map.liveMap) {
     map.markers.push(new google.maps.Marker({
         position:p,
-        map: map.liveMap,
+        map: liveMap,
         title: title,
         label: round
     }));
