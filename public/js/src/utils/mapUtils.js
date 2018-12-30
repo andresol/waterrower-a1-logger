@@ -139,7 +139,6 @@ function addXml(map, xml) {
         points.push(p);
         let km = createPolyLine(points).inKm();
         laps = parseInt(km / 0.5) + 1; // 0.5 is 500 lap
-        console.log(laps);
         if (marker < laps ) {
             addMarker(p, "Runde: " + (laps-1), String(laps - 1), map);
             marker++;
