@@ -38,7 +38,6 @@ function RowSession(status, route) {
     this.routeObject = route;
     this.routeObjectLenght = route.getRouteLength();
     this.avgHr = -1;
-
 }
 
 RowSession.prototype.heartRate = function () {
@@ -296,6 +295,10 @@ function watt(pace) {
 
 function addStroke(stroke, val) {
     stroke.push(val);
+}
+
+RowSession.prototype.getStrokes = function () {
+    return this.stroke;
 }
 
 const addStrokeDebouce = debounce(addStroke, 1250);

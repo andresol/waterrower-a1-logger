@@ -19,6 +19,15 @@ router.get('/', function(req, res) {
     res.send(JSON.stringify(session.stats(), null, 3));
 });
 
+router.get('/gpx', function(req, res) {
+    res.setHeader('Content-Type', 'application/xml');
+    let route = session.routeObject;
+    let gpxFile = new GpxFile(JSON.parse(JSON.stringify(session)), new Route(route.coordinates));
+    let xml = gpxFile.createXml();
+    let stringXml = xml.root.end(({ pretty: true}));
+    res.send(stringXml, null, 3);
+});
+
 router.get('/status', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (session === NOT_ROWING) {

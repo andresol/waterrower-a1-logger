@@ -14,12 +14,16 @@ function loadMain() {
         $(this).find('#routes').each(route.loadRoutes);
         $(this).find('#session-user').each(user.loadUsers);
         $.get("/row/status", function (data) {
+            let rowing = false;
             if (data.status === 'ROWING') {
+                rowing = true;
                 var startButton = $('#startRow');
                 if (utils.getUrlParameter("test")) {
                     startButton = $('#startSimulator')
                 }
-                start(startButton);
+                start(startButton, true);
+            } else {
+                route.changeRouteSelect();
             }
         });
 
@@ -50,7 +54,7 @@ function startRow(e) {
 
 function stopRow(e) {
     e.preventDefault();
-    $('main-nav').show();
+    $('#main-nav').show();
     $(window).scrollTop($('#main-nav').offset().top);
     var that = $(this);
     clearTimeout(timeOut);
@@ -70,11 +74,18 @@ function stopRow(e) {
     });
 }
 
-function start(startButton) {
-    $('main-nav').hide();
+function start(startButton, loadMap=false) {
+    $('#main-nav').hide();
     $(window).scrollTop($('#main').offset().top); //Scroll
-    get_rowInfo(true, "Rowing");
-    mapUtils.cleanMap();
+    if (loadMap) {
+        mapUtils.cleanMap();
+        var rowInfo = get_rowInfo.bind(null, true, "Rowing");
+        mapUtils.addSessionTrackToMap(rowInfo);
+
+    } else {
+        get_rowInfo(true, "Rowing");
+        mapUtils.cleanMap();
+    }
     $('#routes').attr('disabled', 'disabled');
     $('#session-user').attr('disabled', 'disabled');
     $("#startSimulator").attr('disabled', 'disabled');
@@ -126,7 +137,9 @@ function load() {
             history.loadHistory(0);
             break;
         case '#session':
-            session.loadSession(utils.QueryString(window.location.href)["name"]);
+            var name = utils.QueryString(window.location.href)["name"].replace('#session',"");
+            console.log(name);
+            session.loadSession(name);
             break;
         case '#routedetail':
             route.loadRouteDetail(utils.QueryString(window.location.href)["route"]);

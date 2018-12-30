@@ -6,7 +6,7 @@ import graphUtils from '../utils/graphUtils';
 import { UPDATE_FREQ, PAGE_SIZE, RATION, run } from '../utils/globals';
 
 /** All load functions */
-var loadRoutes = function () {
+var loadRoutes = function() {
     var that = this;
     $.get("/row/routes", function (data) {
         var html = '';
@@ -26,8 +26,6 @@ var loadRoutes = function () {
             index++;
         });
         $(that).html(html);
-
-        changeRouteSelect();
     });
 };
 

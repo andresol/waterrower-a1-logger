@@ -8,16 +8,15 @@ var sanitize = require("sanitize-filename");
 const METER_RATION = (100 / 4.805);
 const SEGMENT_LENGTH = 500; //meters
 
-function GpxFile(rowSession, route ) {
+function GpxFile(rowSession, route, store=true) {
     this.rowSession = rowSession;
     this.route = route;
+    this.store = store;
 }
 
-GpxFile.prototype.createFile = function() {
-
-    var root = builder.create(this.getRootObject(),  {version: '1.0', encoding: 'UTF-8'});
+GpxFile.prototype.createXml = function () {
+    var root = builder.create(this.getRootObject(), {version: '1.0', encoding: 'UTF-8'});
     root.ele(this.getMetaData());
-
     var object = {
         trk: {
             name: new Date(this.rowSession.start).toISOString(),
@@ -47,7 +46,7 @@ GpxFile.prototype.createFile = function() {
             time: rawTime.toISOString()
         };
         if (this.rowSession.usingHr) {
-            var hr = parseInt( this.rowSession.rawHr[i]);
+            var hr = parseInt(this.rowSession.rawHr[i]);
             if (hr < 0) {
                 hr = 0;
             }
@@ -79,10 +78,18 @@ GpxFile.prototype.createFile = function() {
 
     object.trk.trkseg = trkseg;
     root.ele(object);
-    var filePath = path.sep + '..' + path.sep + 'public' + path.sep +
-        'sessions' + path.sep + sanitize(object.trk.name) +".gpx";
-    this.writeFile(__dirname  + filePath , root.end(({ pretty: true})));
+    return {root, object};
+};
 
+GpxFile.prototype.createFile = function() {
+
+    var {root, object} = this.createXml();
+
+    if (this.store) {
+        var filePath = path.sep + '..' + path.sep + 'public' + path.sep +
+            'sessions' + path.sep + sanitize(object.trk.name) +".gpx";
+        this.writeFile(__dirname  + filePath , root.end(({ pretty: true})));
+    }
     return sanitize(object.trk.name +".gpx");
 };
 

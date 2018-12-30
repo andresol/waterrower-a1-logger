@@ -7,7 +7,6 @@ var express = require('express'),
 var jsonParser = bodyParser.json();
 
 
-
 router.get('/', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var array = [];
