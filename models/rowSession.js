@@ -1,10 +1,10 @@
 try {
-    const Gpio = require('onoff').Gpio;
+    var Gpio = require('onoff').Gpio;
 } catch (e) {
     console.log("GPIO is not supported.")
 }
 try {
-    const Ant = require('ant-plus');
+    var Ant = require('ant-plus');
 }catch (e) {
     console.log("Ant plus not supported.")
 }
