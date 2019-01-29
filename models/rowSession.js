@@ -24,7 +24,7 @@ const MILLIS_MIN = 60 * 1000;
 var sensor;
 var runSimulator = false;
 
-function RowSession(status, route) {
+function RowSession(status, route, userId = "") {
     this.status = status;
     this.stroke = [];
     this.counter = 0;
@@ -38,6 +38,8 @@ function RowSession(status, route) {
     this.routeObject = route;
     this.routeObjectLenght = route.getRouteLength();
     this.avgHr = -1;
+    this.routeId = route.name;
+    this.userId = userId;
 }
 
 RowSession.prototype.heartRate = function () {
@@ -235,6 +237,8 @@ RowSession.prototype.stats = function() {
     stats.percent = this.getPercent();
     stats.routeLength = this.routeObjectLenght;
     stats.watt = watt(this.totalTimeInSec() / this.totalInMeters());
+    stats.route = this.routeId;
+    stats.user = this.userId;
     return stats;
 };
 

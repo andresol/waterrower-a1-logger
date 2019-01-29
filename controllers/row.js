@@ -44,6 +44,7 @@ router.get('/routes', function(req, res) {
 
 function startRow(req) {
     var routeParam = req.query.routes;
+    var userName = req.query.user;
     if (isNaN(routeParam)) {
         routeParam = 1;
     }
