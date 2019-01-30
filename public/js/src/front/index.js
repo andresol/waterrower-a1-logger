@@ -24,11 +24,14 @@ let setUserAndRoute = function (data) {
 
 function loadMain() {
     $('#load').load('/main', function () {
-        $(this).find('#routes').each(route.loadRoutes);
-        $(this).find('#session-user').each(user.loadUsers);
+        var that = $(this);
+
+        $.when(
+            that.find('#routes').each(route.loadRoutes),
+        that.find('#session-user').each(user.loadUsers)).done(
+
         $.get("/row/status", function (data) {
             let rowing = false;
-            setUserAndRoute(data);
             if (data.status === 'ROWING') {
                 rowing = true;
                 var startButton = $('#startRow');
@@ -40,8 +43,8 @@ function loadMain() {
             } else {
                 route.changeRouteSelect();
             }
-
-        });
+            setUserAndRoute(data);
+        }));
 
         //Run simulator if test.
         if (utils.getUrlParameter("test")) {
