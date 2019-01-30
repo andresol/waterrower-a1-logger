@@ -31,9 +31,9 @@ router.get('/gpx', function(req, res) {
 router.get('/status', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (session === NOT_ROWING) {
-        res.send(JSON.stringify(STATUS_NOT_ROWING, null, 3));
+        res.send(JSON.stringify({status: STATUS_NOT_ROWING.status, user: "", route: 1 }, null, 3)); //Default
     } else {
-        res.send(JSON.stringify(STATUS_ROWING, null, 3));
+        res.send(JSON.stringify({status: STATUS_ROWING.status, user: session.userId, route: session.route }, null, 3));
     }
 });
 
@@ -43,12 +43,14 @@ router.get('/routes', function(req, res) {
 });
 
 function startRow(req) {
-    var routeParam = req.query.routes;
+    let routeParam = req.query.routes;
+    let userId = req.query.user;
     if (isNaN(routeParam)) {
         routeParam = 1;
     }
+
     var r = Routes.routes[routeParam];
-    session = new RowSession("ROWING", new Route(r.gps));
+    session = new RowSession("ROWING", new Route(r.gps), userId);
     try {
         session.startRow();
         session.route = routeParam;
@@ -71,12 +73,13 @@ router.get('/start', function(req, res) {
 });
 
 function simulateRow(req) {
-    var routeParam = req.query.routes;
+    let routeParam = req.query.routes;
+    let userId = req.query.user;
     if (isNaN(routeParam)) {
         routeParam = 1;
     }
     var r = Routes.routes[routeParam];
-    session = new RowSession("SIMULATE", new Route(r.gps));
+    session = new RowSession("SIMULATE", new Route(r.gps), userId);
     session.heartRate();
     session.route = routeParam;
     session.simulate();
