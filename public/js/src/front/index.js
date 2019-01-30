@@ -9,32 +9,38 @@ import history from '../history/index'
 
 var timeOut;
 
+let setUserAndRoute = function (data) {
+    let user = data.user;
+    let routeId = data.route;
+
+    if (user) {
+        $("#session-user").val(user);
+    }
+
+    if (routeId) {
+        $("#routes").val(routeId);
+    }
+};
+
 function loadMain() {
     $('#load').load('/main', function () {
         $(this).find('#routes').each(route.loadRoutes);
         $(this).find('#session-user').each(user.loadUsers);
         $.get("/row/status", function (data) {
             let rowing = false;
+            setUserAndRoute(data);
             if (data.status === 'ROWING') {
                 rowing = true;
                 var startButton = $('#startRow');
                 if (utils.getUrlParameter("test")) {
                     startButton = $('#startSimulator')
                 }
-                let user = data.user;
-                let routeId = data.route;
 
-                $("#session-user").val(user);
-                $("#routes").val(routeId);
                 start(startButton, true);
             } else {
-                let user = data.user;
-                let routeId = data.route;
-
-                $("#session-user").val(user);
-                $("#routes").val(routeId);
                 route.changeRouteSelect();
             }
+
         });
 
         //Run simulator if test.
@@ -48,7 +54,6 @@ function uploadToStrava(e) {
     e.preventDefault();
     var href = $(this).attr('href');
     $.get(href, function (data) {
-        console.log(data);
         alert("Uploaded to strava!");
     });
 }
@@ -149,7 +154,6 @@ function load() {
             break;
         case '#session':
             var name = utils.QueryString(window.location.href)["name"].replace('#session',"");
-            console.log(name);
             session.loadSession(name);
             break;
         case '#routedetail':
