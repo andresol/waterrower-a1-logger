@@ -21,8 +21,18 @@ function loadMain() {
                 if (utils.getUrlParameter("test")) {
                     startButton = $('#startSimulator')
                 }
+                let user = data.user;
+                let routeId = data.route;
+
+                $("#session-user").val(user);
+                $("#routes").val(routeId);
                 start(startButton, true);
             } else {
+                let user = data.user;
+                let routeId = data.route;
+
+                $("#session-user").val(user);
+                $("#routes").val(routeId);
                 route.changeRouteSelect();
             }
         });
@@ -46,8 +56,9 @@ function uploadToStrava(e) {
 function startRow(e) {
     e.preventDefault();
     var routes = $('#routes').val();
+    var userId = $('#session-user').val();
     var that = this;
-    $.get("/row/start", { routes: routes }, function () {
+    $.get("/row/start", { routes: routes, user: userId }, function () {
         start(that);
     });
 }

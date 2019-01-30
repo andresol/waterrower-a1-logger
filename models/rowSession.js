@@ -38,7 +38,6 @@ function RowSession(status, route, userId = "") {
     this.routeObject = route;
     this.routeObjectLenght = route.getRouteLength();
     this.avgHr = -1;
-    this.routeId = route.name;
     this.userId = userId;
 }
 
@@ -237,7 +236,7 @@ RowSession.prototype.stats = function() {
     stats.percent = this.getPercent();
     stats.routeLength = this.routeObjectLenght;
     stats.watt = watt(this.totalTimeInSec() / this.totalInMeters());
-    stats.route = this.routeId;
+    stats.route = this.route;
     stats.user = this.userId;
     return stats;
 };
