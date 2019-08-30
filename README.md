@@ -56,11 +56,11 @@ create get a writeable access_token. Look at the "Running the tests" section.
 Mounting the cable and Raspberry Pi 3 is done with only glue and double sided tape.
 
 ## TODO
-Complete strava integration, more routes, better route handling, live view of rowing session. 
+Complete Strava integration, more routes, better route handling, live view of rowing session. 
 
 ## Errors
 Please make sure that GPIO is not shared.
-First gen of Rasberry Pi is to slow. Please use v3 because of speed and wifi.
+First gen of Raspberry Pi is to slow. Please use v3 because of speed and wifi.
 
 ## Note
 This project was just a test project to see if it was possible to create a my own computer. It is badly
@@ -72,7 +72,7 @@ Ratio:
 100 cm is 4.805 clicks. 1 click is about 20.81 cm.
 
 Strok rate:
-Measure when the clicks are accelerating with a debounceing.
+Measure when the clicks are accelerating with a debouching.
 
 ## Testing
 One can use the parameter ?test=test to get a button that simulates a rowing session.
