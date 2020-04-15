@@ -38,7 +38,6 @@ function loadMain() {
                 if (utils.getUrlParameter("test")) {
                     startButton = $('#startSimulator')
                 }
-
                 start(startButton, true);
             } else {
                 route.changeRouteSelect();

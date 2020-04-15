@@ -3,7 +3,7 @@ var express = require('express')
  compression = require('compression');
 
 const PORT = process.env.PORT || 3000;
-const env = process.env.NODE_ENV || '';
+const env = process.env.NODE_ENV || 'test';
 
 app.use(compression());
 app.use(express.static(__dirname + '/public'));

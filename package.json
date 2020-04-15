@@ -33,6 +33,7 @@
     "request": "^2.83.0",
     "sanitize-filename": "^1.6.1",
     "strava-v3": "^1.14.0",
+    "waterrower": "^0.8.4",
     "xmlbuilder": "^10.0.0"
   },
   "devDependencies": {

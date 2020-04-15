@@ -1,8 +1,5 @@
-try {
-    var Gpio = require('onoff').Gpio;
-} catch (e) {
-    console.log("GPIO is not supported.")
-}
+var WaterRower = require('waterrower').WaterRower;
+const rx = require('rxjs/Rx');
 try {
     var Ant = require('ant-plus');
 }catch (e) {
@@ -39,6 +36,7 @@ function RowSession(status, route, userId = "") {
     this.routeObjectLenght = route.getRouteLength();
     this.avgHr = -1;
     this.userId = userId;
+    this.waterrower = new WaterRower();
 }
 
 RowSession.prototype.heartRate = function () {
@@ -88,22 +86,13 @@ RowSession.prototype.simulate = function() {
     this.sim = true; //mark this as sim
     console.log("Starting RowSession simulator");
     runSimulator = true;
-    //this.heartRate();
-    var that = this;
-    (function loop() {
-        if(runSimulator) {
-            var rand = getRandomRowerSpeed((that.totalInMeters() % 1000) <= 500);
-            setTimeout(function () {
-                that.increase();
-                that.hr = getRandomArbitrary(76, 220);
-                loop();
-            }, rand);
-        }
-    }());
+    this.waterrower.startSimulation();
+    this.heartRate();
+    this.startRow(simulate=true)
 };
 
-RowSession.prototype.increase = function() {
-    this.increment(); //TODO: Debunce?
+RowSession.prototype.increase = function(meter) {
+    this.increment(meter);
 };
 
 RowSession.prototype.totalLaps = function () {
@@ -130,7 +119,7 @@ RowSession.prototype.laps = function () {
     return laps;
 };
 
-RowSession.prototype.increment = function() {
+RowSession.prototype.increment = function(meter) {
     this.counter = this.counter + 1;
     if (this.counter % SAMPLE_SIZE === 1) { //Total length
         let time = Date.now();
@@ -139,8 +128,8 @@ RowSession.prototype.increment = function() {
             this.rawHr.push(this.hr);
         }
         let rawTime = new Date(time);
-        let distance = this.getLengthInMetersByClicks(6); //6 click per raw.
-        this.p = this.routeObject.nextPoint(this.p, distance.toFixed(4));
+        let distance = parseInt(meter); //6 click per raw.
+        this.p = this.routeObject.nextPoint(this.p, distance);
         this.trackPoint = {
             'lat': this.p.lat.toFixed(7),
             'lon': this.p.lon.toFixed(7),
@@ -159,16 +148,21 @@ RowSession.prototype.increment = function() {
     }
 };
 
-RowSession.prototype.startRow = function() {
-    this.heartRate();
-    sensor = new Gpio(PID, 'in', 'falling');
+RowSession.prototype.startRow = function(simulate = false) {
+    this.waterrower.on('initialized', () => {
+        this.waterrower.reset();
+    });
+
+    if (!simulate) {
+        this.heartRate();
+    }
     var that = this;
-    sensor.watch(function (err, value) {
-        if (err) {
-            throw err;
+
+    this.waterrower.on('data', d => {
+        this.increase(this.waterrower.readDataPoints('distance'));
+        if (simulate) {
+            this.hr = getRandomArbitrary(76, 220);
         }
-        //console.log("Registered event. " + value);
-        that.increase();
     });
 };
 

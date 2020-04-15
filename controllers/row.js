@@ -7,7 +7,7 @@ var express = require('express'),
     sessionService = require('../service/sessionService'),
     sanitize = require("sanitize-filename");
 
-const env = process.env.NODE_ENV || '';
+const env = process.env.NODE_ENV || 'test';
 const NOT_ROWING = new RowSession("NOT_ROWING", new Route(Routes.routes[0].gps));
 
 var session = NOT_ROWING;
@@ -63,13 +63,11 @@ function startRow(req) {
 router.get('/start', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (session === NOT_ROWING) {
-        if (env === 'test') {
-            simulateRow(req);
-        } else {
-            startRow(req);
-        }
+        simulateRow(req);
     }
-    res.send(JSON.stringify(session, null, 3));
+    let val = Object.assign({}, session);
+    delete val.waterrower
+    res.send(JSON.stringify(val, null, 3));
 });
 
 function simulateRow(req) {
@@ -90,7 +88,9 @@ router.get('/simulate', function(req, res) {
     if (session === NOT_ROWING) {
         simulateRow(req);
     }
-    res.send(JSON.stringify(session, null, 3));
+    let val = Object.assign({}, session);
+    delete val.waterrower
+    res.send(JSON.stringify(val, null, 3));
 });
 
 router.get('/stop', function(req, res) {

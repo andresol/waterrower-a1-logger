@@ -2,7 +2,9 @@ var cuid = require('cuid');
 var db = require('../db/db');
 
 function addSession(session) {
-    db.sessions.put(session.name, JSON.stringify(session, null, 3));
+    let val = Object.assign({}, session);
+    delete val.waterrower
+    db.sessions.put(val.name, JSON.stringify(val, null, 3));
 }
 
 function getSession(id) {
