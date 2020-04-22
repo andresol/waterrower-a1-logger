@@ -21,7 +21,7 @@ const MILLIS_MIN = 60 * 1000;
 var sensor;
 var runSimulator = false;
 
-function RowSession(status, route, userId = "", env = 'test') {
+function RowSession(status, route, userId = "", real = 0) {
     this.status = status;
     this.stroke = [];
     this.counter = 0;
@@ -38,7 +38,10 @@ function RowSession(status, route, userId = "", env = 'test') {
     this.userId = userId;
     this.sessionLenght = 0;
     let options = {};
-    this.waterrower = new WaterRower();
+    if (real = 1) {
+        this.waterrower = new WaterRower();s
+    }
+    
    // this.waterrower = new WaterRower( {
    //     portName:'/dev/ttyACM0', //or perhaps 'COM6'
    //     baudRate:19200,
@@ -194,11 +197,14 @@ RowSession.prototype.startRow = function(simulate = false) {
 
 RowSession.prototype.stop = function() {
     console.log('Stopping RowSession');
-    if (sensor) {
-        sensor.unexport();
+    if (this.sensor) {
+        this.sensor.unexport();
     }
     if (runSimulator) {
         runSimulator = false;
+    }
+    if (this.waterrower) {
+        delete this.waterrower;
     }
     try {
         if (this.stick) {
