@@ -39,7 +39,14 @@ function RowSession(status, route, userId = "", env = 'test') {
     this.sessionLenght = 0;
     let options = {};
     if (env !== 'test') {
-        options = {datapoints:['distance','total_kcal', 'stroke_average']};
+        options = {
+            portName:'/dev/ttyACM0', //or perhaps 'COM6'
+            baudRate:19200,
+            refreshRate:200,
+            dataDirectory:'data',
+            datapoints:['distance','total_kcal']
+          };
+          console.log("using options:", options);
     }
     this.waterrower = new WaterRower(options);
 }
