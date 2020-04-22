@@ -158,20 +158,26 @@ RowSession.prototype.increment = function(meter) {
 };
 
 RowSession.prototype.startRow = function(simulate = false) {
-    waterrower.reset();
+    this.waterrower.reset();
 
     if (!simulate) {
         this.heartRate();
     }
     var that = this;
     let last = 0;
-    waterrower.on('data', d => {
-        // access the value that just changed using d
-        // or access any of the other datapoints using waterrower.readDataPoint('<datapointName>');
-        console.log(d);
-    });
-    this.waterrower.datapoints$.subscribe(d => {
-        let newLength = parseFloat(this.waterrower.readDataPoints('distance'));
+    this.waterrower.datapoints$
+    .filter(d => ['distance','stroke_average','speed_average','clock_down'].some(n => d.name === n))
+    .subscribe(d => {
+        //we're not using d here because it has the value for a single datapoint, but we want to return all of these values together when any one of them changes
+        let message = {
+            message: "strokedata",
+            name: "rowerName",
+            distance: this.waterrower.readDataPoint('distance'),
+            stroke_average: this.waterrower.readDataPoint('stroke_average'),
+            speed_average: this.waterrower.readDataPoint('speed_average'),
+            clock_down: this.waterrower.readDataPoint('clock_down')
+        };
+        let newLength = parseFloat(message.distance);
         this.sessionLenght = newLength;
         if (newLength > last) {
             this.increase((newLength - last));
@@ -182,12 +188,8 @@ RowSession.prototype.startRow = function(simulate = false) {
             this.hr = getRandomArbitrary(76, 220);
         }
     });
-    waterrower.reads$
-    .filter(r => r.type === 'ping')
-    .subscribe(r => {
-        console.log("ping");
-    });
-};
+}
+   
 
 RowSession.prototype.stop = function() {
     console.log('Stopping RowSession');
