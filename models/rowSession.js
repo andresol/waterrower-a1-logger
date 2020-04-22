@@ -1,4 +1,4 @@
-var WaterRower = require('waterrower').WaterRower;
+var WaterRower = require('waterrower').WaterRower;  
 const rx = require('rxjs/Rx');
 try {
     var Ant = require('ant-plus');
@@ -162,36 +162,40 @@ RowSession.prototype.increment = function(meter) {
 };
 
 RowSession.prototype.startRow = function(simulate = false) {
-    this.waterrower.reset();
+    this.waterrower.on('initialized', () => {
+        console.log("init");
+        this.waterrower.reset();
+        if (!simulate) {
+            this.heartRate();
+        }
+        var that = this;
+        let last = 0;
+        this.waterrower.datapoints$
+        .filter(d => ['distance','stroke_average','speed_average','clock_down'].some(n => d.name === n))
+        .subscribe(d => {
+            //we're not using d here because it has the value for a single datapoint, but we want to return all of these values together when any one of them changes
+            let message = {
+                message: "strokedata",
+                name: "rowerName",
+                distance: this.waterrower.readDataPoint('distance'),
+                stroke_average: this.waterrower.readDataPoint('stroke_average'),
+                speed_average: this.waterrower.readDataPoint('speed_average'),
+                clock_down: this.waterrower.readDataPoint('clock_down')
+            };
+            let newLength = parseFloat(message.distance);
+            this.sessionLenght = newLength;
+            if (newLength > last) {
+                this.increase((newLength - last));
+                last=newLength;
+            }
+            
+            if (simulate) {
+                this.hr = getRandomArbitrary(76, 220);
+            }
+        });
+    });   
 
-    if (!simulate) {
-        this.heartRate();
-    }
-    var that = this;
-    let last = 0;
-    this.waterrower.datapoints$
-    .filter(d => ['distance','stroke_average','speed_average','clock_down'].some(n => d.name === n))
-    .subscribe(d => {
-        //we're not using d here because it has the value for a single datapoint, but we want to return all of these values together when any one of them changes
-        let message = {
-            message: "strokedata",
-            name: "rowerName",
-            distance: this.waterrower.readDataPoint('distance'),
-            stroke_average: this.waterrower.readDataPoint('stroke_average'),
-            speed_average: this.waterrower.readDataPoint('speed_average'),
-            clock_down: this.waterrower.readDataPoint('clock_down')
-        };
-        let newLength = parseFloat(message.distance);
-        this.sessionLenght = newLength;
-        if (newLength > last) {
-            this.increase((newLength - last));
-            last=newLength;
-        }
-        
-        if (simulate) {
-            this.hr = getRandomArbitrary(76, 220);
-        }
-    });
+    
 }
    
 
