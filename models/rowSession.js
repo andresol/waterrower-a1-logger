@@ -38,13 +38,14 @@ function RowSession(status, route, userId = "", env = 'test') {
     this.userId = userId;
     this.sessionLenght = 0;
     let options = {};
-    this.waterrower = new WaterRower( {
-        portName:'/dev/ttyACM0', //or perhaps 'COM6'
-        baudRate:19200,
-        refreshRate:200,
-        dataDirectory:'data',
-        datapoints:['distance','total_kcal']
-      });
+    this.waterrower = new WaterRower();
+   // this.waterrower = new WaterRower( {
+   //     portName:'/dev/ttyACM0', //or perhaps 'COM6'
+   //     baudRate:19200,
+   //     refreshRate:200,
+   //     dataDirectory:'data',
+   //     datapoints:['distance','total_kcal']
+   //   });
 }
 
 RowSession.prototype.heartRate = function () {
