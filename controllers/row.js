@@ -10,6 +10,10 @@ var express = require('express'),
 const env = process.env.NODE_ENV || 'test';
 const WaterRower = require('waterrower').WaterRower; 
 const waterrower = new WaterRower(); 
+waterrower.on('initialized', () => {
+    console.log("init");
+    waterrower.reset();
+});
 const NOT_ROWING = new RowSession("NOT_ROWING", new Route(Routes.routes[0].gps), null);
 
 var session = NOT_ROWING;
