@@ -159,6 +159,8 @@ RowSession.prototype.increment = function(meter) {
 };
 
 RowSession.prototype.startRow = function(simulate = false) {
+    console.log("Start rowing.");
+    console.log(this.waterrower);
     this.waterrower.on('initialized', () => {
         console.log("init");
         this.waterrower.reset();

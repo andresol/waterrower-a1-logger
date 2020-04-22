@@ -56,7 +56,7 @@ function startRow(req) {
     var r = Routes.routes[routeParam];
     session = new RowSession("ROWING", new Route(r.gps), userId, waterrower);
     try {
-        session.startRow();
+        session.startRow(simulate = false);
         session.route = routeParam;
     } catch (e) {
         session = NOT_ROWING;
