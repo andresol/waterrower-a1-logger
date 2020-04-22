@@ -39,7 +39,7 @@ function RowSession(status, route, userId = "", real = 0) {
     this.sessionLenght = 0;
     let options = {};
     if (real = 1) {
-        this.waterrower = new WaterRower();s
+        this.waterrower = new WaterRower();
     }
     
    // this.waterrower = new WaterRower( {
