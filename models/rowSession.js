@@ -38,17 +38,13 @@ function RowSession(status, route, userId = "", env = 'test') {
     this.userId = userId;
     this.sessionLenght = 0;
     let options = {};
-    if (env !== 'test') {
-        options = {
-            portName:'/dev/ttyACM0', //or perhaps 'COM6'
-            baudRate:19200,
-            refreshRate:200,
-            dataDirectory:'data',
-            datapoints:['distance','total_kcal']
-          };
-          console.log("using options:", options);
-    }
-    this.waterrower = new WaterRower(options);
+    this.waterrower = new WaterRower( {
+        portName:'/dev/ttyACM0', //or perhaps 'COM6'
+        baudRate:19200,
+        refreshRate:200,
+        dataDirectory:'data',
+        datapoints:['distance','total_kcal']
+      });
 }
 
 RowSession.prototype.heartRate = function () {
@@ -162,9 +158,7 @@ RowSession.prototype.increment = function(meter) {
 };
 
 RowSession.prototype.startRow = function(simulate = false) {
-    this.waterrower.on('initialized', () => {
-        this.waterrower.reset();
-    });
+    waterrower.reset();
 
     if (!simulate) {
         this.heartRate();
@@ -182,6 +176,11 @@ RowSession.prototype.startRow = function(simulate = false) {
         if (simulate) {
             this.hr = getRandomArbitrary(76, 220);
         }
+    });
+    waterrower.reads$
+    .filter(r => r.type === 'ping')
+    .subscribe(r => {
+        console.log("ping");
     });
 };
 
