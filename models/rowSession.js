@@ -180,7 +180,7 @@ RowSession.prototype.startRow = function (simulate = false) {
   var that = this;
   let last = 0;
   this.waterrower.on("data", (d) => {
-    waterrower.readDataPoints("distance");
+    this.waterrower.readDataPoints("distance");
   });
 
   this.waterrower.datapoints$
