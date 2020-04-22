@@ -21,7 +21,7 @@ const MILLIS_MIN = 60 * 1000;
 var sensor;
 var runSimulator = false;
 
-function RowSession(status, route, userId = "") {
+function RowSession(status, route, userId = "", env = 'test') {
     this.status = status;
     this.stroke = [];
     this.counter = 0;

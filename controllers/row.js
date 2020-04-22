@@ -8,7 +8,7 @@ var express = require('express'),
     sanitize = require("sanitize-filename");
 
 const env = process.env.NODE_ENV || 'test';
-const NOT_ROWING = new RowSession("NOT_ROWING", new Route(Routes.routes[0].gps));
+const NOT_ROWING = new RowSession("NOT_ROWING", new Route(Routes.routes[0].gps), env);
 
 var session = NOT_ROWING;
 const STATUS_ROWING = {status: 'ROWING'};
@@ -52,7 +52,7 @@ function startRow(req) {
     }
 
     var r = Routes.routes[routeParam];
-    session = new RowSession("ROWING", new Route(r.gps), userId);
+    session = new RowSession("ROWING", new Route(r.gps), userId, env);
     try {
         session.startRow();
         session.route = routeParam;
@@ -83,7 +83,7 @@ function simulateRow(req) {
         routeParam = 1;
     }
     var r = Routes.routes[routeParam];
-    session = new RowSession("SIMULATE", new Route(r.gps), userId);
+    session = new RowSession("SIMULATE", new Route(r.gps), userId, env);
     session.heartRate();
     session.route = routeParam;
     session.simulate();
