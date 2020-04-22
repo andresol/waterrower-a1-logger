@@ -8,7 +8,9 @@ var express = require('express'),
     sanitize = require("sanitize-filename");
 
 const env = process.env.NODE_ENV || 'test';
-const NOT_ROWING = new RowSession("NOT_ROWING", new Route(Routes.routes[0].gps));
+const WaterRower = require('waterrower').WaterRower; 
+const waterrower = new WaterRower(); 
+const NOT_ROWING = new RowSession("NOT_ROWING", new Route(Routes.routes[0].gps), null);
 
 var session = NOT_ROWING;
 const STATUS_ROWING = {status: 'ROWING'};
@@ -52,7 +54,7 @@ function startRow(req) {
     }
 
     var r = Routes.routes[routeParam];
-    session = new RowSession("ROWING", new Route(r.gps), userId, 1);
+    session = new RowSession("ROWING", new Route(r.gps), userId, waterrower);
     try {
         session.startRow();
         session.route = routeParam;
@@ -83,7 +85,7 @@ function simulateRow(req) {
         routeParam = 1;
     }
     var r = Routes.routes[routeParam];
-    session = new RowSession("SIMULATE", new Route(r.gps), userId, 1);
+    session = new RowSession("SIMULATE", new Route(r.gps), userId, waterrower);
     session.heartRate();
     session.route = routeParam;
     session.simulate();

@@ -1,4 +1,4 @@
-var WaterRower = require('waterrower').WaterRower;  
+
 const rx = require('rxjs/Rx');
 try {
     var Ant = require('ant-plus');
@@ -21,7 +21,7 @@ const MILLIS_MIN = 60 * 1000;
 var sensor;
 var runSimulator = false;
 
-function RowSession(status, route, userId = "", real = 0) {
+function RowSession(status, route, userId = "", waterrower) {
     this.status = status;
     this.stroke = [];
     this.counter = 0;
@@ -38,10 +38,7 @@ function RowSession(status, route, userId = "", real = 0) {
     this.userId = userId;
     this.sessionLenght = 0;
     let options = {};
-    if (real = 1) {
-        this.waterrower = new WaterRower();
-    }
-    
+    this.waterrower = waterrower;
    // this.waterrower = new WaterRower( {
    //     portName:'/dev/ttyACM0', //or perhaps 'COM6'
    //     baudRate:19200,
