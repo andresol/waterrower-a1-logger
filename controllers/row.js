@@ -22,7 +22,9 @@ router.get('/', function(req, res) {
 router.get('/gpx', function(req, res) {
     res.setHeader('Content-Type', 'application/xml');
     let route = session.routeObject;
-    let gpxFile = new GpxFile(JSON.parse(JSON.stringify(session)), new Route(route.coordinates));
+    let val = Object.assign({}, session);
+    delete val.waterrower
+    let gpxFile = new GpxFile(JSON.parse(JSON.stringify(val)), new Route(route.coordinates));
     let xml = gpxFile.createXml();
     let stringXml = xml.root.end(({ pretty: true}));
     res.send(stringXml, null, 3);
@@ -56,14 +58,18 @@ function startRow(req) {
         session.route = routeParam;
     } catch (e) {
         session = NOT_ROWING;
-        console.log("Cannot start row. Look at error" + e);
+        console.log('Cannot start row. Look at error' + e);
     }
 }
 
 router.get('/start', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (session === NOT_ROWING) {
-        simulateRow(req);
+        if (env === 'test') {
+            simulateRow(req);
+        } else {
+            startRow(req);
+        }
     }
     let val = Object.assign({}, session);
     delete val.waterrower

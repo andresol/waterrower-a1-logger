@@ -11,6 +11,6 @@ app.use(require('./controllers'));
 
 
 app.listen(PORT, function() {
-    console.log("Environment is " + env);
+    console.log('Environment is ' + env);
     console.log('Listening on port ' + PORT)
 });
