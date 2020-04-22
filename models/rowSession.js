@@ -165,6 +165,11 @@ RowSession.prototype.startRow = function(simulate = false) {
     }
     var that = this;
     let last = 0;
+    waterrower.on('data', d => {
+        // access the value that just changed using d
+        // or access any of the other datapoints using waterrower.readDataPoint('<datapointName>');
+        console.log(d);
+    });
     this.waterrower.datapoints$.subscribe(d => {
         let newLength = parseFloat(this.waterrower.readDataPoints('distance'));
         this.sessionLenght = newLength;
