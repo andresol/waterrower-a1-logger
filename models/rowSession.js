@@ -37,7 +37,11 @@ function RowSession(status, route, userId = "") {
     this.avgHr = -1;
     this.userId = userId;
     this.sessionLenght = 0;
-    this.waterrower = new WaterRower();
+    let options = {};
+    if (env !== 'test') {
+        options = {datapoints:['distance','total_kcal', 'stroke_average']};
+    }
+    this.waterrower = new WaterRower(options);
 }
 
 RowSession.prototype.heartRate = function () {
