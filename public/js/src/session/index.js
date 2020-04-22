@@ -40,6 +40,7 @@ function getLapHtml(label, json, reverse) {
             lapNum = laps.length;
         }
         laps.forEach(function (value) {
+                console.log(value);
                 html += '<tr><th scope="row">' + lapNum + '</th><td>' + parseInt(value.meters) + '</td><td>' + utils.fmtMSS(parseInt(value.seconds)) + '</td>';
                 html += '<td>' + Math.round(parseFloat(value.watt) * 10) / 10 + 'w</td></tr>';
                 if (reverse) {

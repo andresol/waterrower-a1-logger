@@ -3,7 +3,7 @@ const rx = require('rxjs/Rx');
 try {
     var Ant = require('ant-plus');
 }catch (e) {
-    console.log("Ant plus not supported.")
+    console.log('Ant plus not supported.');
 }
 const dateFormat = require('dateformat');
 const debounce = require('debounce');
@@ -36,6 +36,7 @@ function RowSession(status, route, userId = "") {
     this.routeObjectLenght = route.getRouteLength();
     this.avgHr = -1;
     this.userId = userId;
+    this.sessionLenght = 0;
     this.waterrower = new WaterRower();
 }
 
@@ -84,7 +85,7 @@ function openStick(stick, stickid) {
 
 RowSession.prototype.simulate = function() {
     this.sim = true; //mark this as sim
-    console.log("Starting RowSession simulator");
+    console.log('Starting RowSession simulator');
     runSimulator = true;
     this.waterrower.startSimulation();
     this.heartRate();
@@ -121,14 +122,16 @@ RowSession.prototype.laps = function () {
 
 RowSession.prototype.increment = function(meter) {
     this.counter = this.counter + 1;
-    if (this.counter % SAMPLE_SIZE === 1) { //Total length
         let time = Date.now();
         this.raw.push(time);
         if (this.hr > 0) { // hr <= 0 means dead.
             this.rawHr.push(this.hr);
         }
         let rawTime = new Date(time);
-        let distance = parseInt(meter); //6 click per raw.
+        let distance = parseFloat(meter);
+        if (!distance) {
+            distance = 0;
+        }
         this.p = this.routeObject.nextPoint(this.p, distance);
         this.trackPoint = {
             'lat': this.p.lat.toFixed(7),
@@ -145,7 +148,6 @@ RowSession.prototype.increment = function(meter) {
                 addStrokeDebouce(this.stroke, this.raw[length])
             }
         }
-    }
 };
 
 RowSession.prototype.startRow = function(simulate = false) {
@@ -157,9 +159,15 @@ RowSession.prototype.startRow = function(simulate = false) {
         this.heartRate();
     }
     var that = this;
-
-    this.waterrower.on('data', d => {
-        this.increase(this.waterrower.readDataPoints('distance'));
+    let last = 0;
+    this.waterrower.datapoints$.subscribe(d => {
+        let newLength = parseFloat(this.waterrower.readDataPoints('distance'));
+        this.sessionLenght = newLength;
+        if (newLength > last) {
+            this.increase((newLength - last));
+            last=newLength;
+        }
+        
         if (simulate) {
             this.hr = getRandomArbitrary(76, 220);
         }
@@ -167,7 +175,7 @@ RowSession.prototype.startRow = function(simulate = false) {
 };
 
 RowSession.prototype.stop = function() {
-    console.log("Stopping RowSession");
+    console.log('Stopping RowSession');
     if (sensor) {
         sensor.unexport();
     }
@@ -184,14 +192,14 @@ RowSession.prototype.stop = function() {
             delete this.token;
         }
     } catch (e) {
-        console.log("Error with stick. " + e);
+        console.log('Error with stick. ' + e);
     }
 
     this.endStats = this.stats();
 };
 
 RowSession.prototype.getTotalLength = function() {
-    return this.counter * RATION;
+    return this.sessionLenght;
 };
 
 RowSession.prototype.getStrokeRate = function() {
@@ -203,13 +211,6 @@ RowSession.prototype.getStrokeRate = function() {
     }
 };
 
-RowSession.prototype.getLengthByClicks = function(clicks) {
-    return clicks * RATION;
-};
-
-RowSession.prototype.getLengthInMetersByClicks = function(clicks) {
-    return this.getLengthByClicks(clicks) / 100;
-};
 
 RowSession.prototype.stats = function() {
     var stats = {};
@@ -236,7 +237,7 @@ RowSession.prototype.stats = function() {
 };
 
 RowSession.prototype.totalInMeters = function () {
-    return this.getTotalLength() / 100
+    return this.getTotalLength();
 };
 
 RowSession.prototype.getRouteLap = function () {
@@ -279,11 +280,6 @@ function getRandomArbitrary(min, max) {
 
 function getRandomRowerSpeed(fast) {
     return getRandomArbitrary(10, 120) * ( fast ? 0.7 : 1)
-}
-
-function getClicksByMeters(meters) {
-    var cm = meters * 100;
-    return Math.floor(cm / RATION);
 }
 
 function watt(pace) {
