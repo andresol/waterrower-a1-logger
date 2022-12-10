@@ -25,7 +25,7 @@
     "date-diff": "^0.2.0",
     "dateformat": "^3.0.2",
     "debounce": "^1.1.0",
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "geodesy": "^1.1.2",
     "gps-to-gpx": "^1.1.0",
     "level": "^3.0.0",
